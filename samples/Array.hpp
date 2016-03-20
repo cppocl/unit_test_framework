@@ -1,5 +1,5 @@
-#ifndef OCL_SIMPLEARRAY_HPP
-#define OCL_SIMPLEARRAY_HPP
+#ifndef OCL_ARRAY_HPP
+#define OCL_ARRAY_HPP
 
 #include <cstddef>
 #include <stdexcept>
@@ -119,5 +119,5 @@ private:
 
 } // namespace ocl
 
-#endif // OCL_SIMPLEARRAY_HPP
+#endif // OCL_ARRAY_HPP
 
