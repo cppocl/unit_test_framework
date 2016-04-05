@@ -1,0 +1,274 @@
+/*
+Copyright 2016 Colin Girling
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+*******************************************************************************
+
+Extend class TestClass into easy to use MACROS which support testing functions
+and member functions, as well as providing check functions.
+
+E.g.
+
+TEST_MEMBER_FUNCTION(MyString, SetSize, size_t)
+{
+    MyString str;
+    CHECK_TRUE(str.SetSize(1));
+}
+*/
+
+#ifndef OCL_GUARD_TEST_TESTMACROS_HPP
+#define OCL_GUARD_TEST_TESTMACROS_HPP
+
+#ifndef TEST
+#define TEST(name) \
+class TestGeneral_##name : public ocl::TestClass \
+{ \
+public:TestGeneral_##name(); \
+} g_TestGeneral_##name; \
+TestGeneral_##name::TestGeneral_##name() \
+    : ocl::TestClass(#name, "", "")
+#else
+#error Unit test conflict with other macro!
+#endif // TEST_FUNCTION
+
+#ifndef TEST_FUNCTION
+#define TEST_FUNCTION(function_name, args) \
+class Test_##function_name##_##args : public ocl::TestClass \
+{ \
+public:Test_##function_name##_##args(); \
+} g_Test_##function_name##_##args; \
+Test_##function_name##_##args::Test_##function_name##_##args() \
+    : ocl::TestClass("", #function_name, #args)
+#else
+#error Unit test conflict with other macro!
+#endif // TEST_FUNCTION
+
+#ifndef TEST_FUNCTION_TIME
+#define TEST_FUNCTION_TIME(function_name, args, secs, millisecs) \
+class TimedTest_##function_name##_##args : public ocl::TestClass \
+{ \
+public:TimedTest_##function_name##_##args(); \
+} g_TimedTest_##function_name##_##args; \
+TimedTest_##function_name##_##args::TimedTest_##function_name##_##args() \
+    : ocl::TestClass("", #function_name, #args, false, true, secs, millisecs * ocl::TestTime::MICROSECONDS_PER_SECOND)
+#else
+#error Unit test conflict with other macro!
+#endif // TEST_FUNCTION_TIME
+
+#ifndef TEST_MEMBER_FUNCTION
+#define TEST_MEMBER_FUNCTION(class_name, function_name, args) \
+class Test_##class_name##_##function_name##_##args : public ocl::TestClass \
+{ \
+public:Test_##class_name##_##function_name##_##args(); \
+} g_Test_##class_name##_##function_name##_##args; \
+Test_##class_name##_##function_name##_##args::Test_##class_name##_##function_name##_##args() \
+    : ocl::TestClass(#class_name, #function_name, #args)
+#else
+#error Unit test conflict with other macro!
+#endif // TEST_MEMBER_FUNCTION
+
+#ifndef TEST_MEMBER_FUNCTION_TIME
+#define TEST_MEMBER_FUNCTION_TIME(class_name, function_name, args, secs, nanosecs) \
+class TimedTest_##class_name##_##function_name##_##args : public ocl::TestClass \
+{ \
+public:TimedTest_##class_name##_##function_name##_##args(); \
+} g_TimedTest_##class_name##_##function_name##_##args; \
+TimedTest_##class_name##_##function_name##_##args::TimedTest_##class_name##_##function_name##_##args() \
+    : ocl::TestClass(#class_name, #function_name, #args, false, true, secs, nanosecs * ocl::TestTime::MICROSECONDS_PER_SECOND)
+#else
+#error Unit test conflict with other macro!
+#endif // TEST_MEMBER_FUNCTION_TIME
+
+#ifndef TEST_CONST_MEMBER_FUNCTION
+#define TEST_CONST_MEMBER_FUNCTION(class_name, function_name, args) \
+class Test_##class_name##_##function_name##_##args##_const : public ocl::TestClass \
+{ \
+public:Test_##class_name##_##function_name##_##args##_const(); \
+} g_Test_##class_name##_##function_name##_##args##_const; \
+Test_##class_name##_##function_name##_##args##_const::Test_##class_name##_##function_name##_##args##_const() \
+    : ocl::TestClass(#class_name, #function_name, #args, true)
+#else
+#error Unit test conflict with other macro!
+#endif // TEST_CONST_MEMBER_FUNCTION
+
+#ifndef TEST_CONST_MEMBER_FUNCTION_TIME
+#define TEST_CONST_MEMBER_FUNCTION_TIME(class_name, function_name, args, secs, nanosecs) \
+class TimedTest_##class_name##_##function_name##_##args##_const : public ocl::TestClass \
+{ \
+public:TimedTest_##class_name##_##function_name##_##args##_const(); \
+} g_TimedTest_##class_name##_##function_name##_##args##_const; \
+TimedTest_##class_name##_##function_name##_##args##_const::TimedTest_##class_name##_##function_name##_##args##_const() \
+    : ocl::TestClass(#class_name, #function_name, #args, true, true, secs, nanosecs * ocl::TestTime::MICROSECONDS_PER_SECOND)
+#else
+#error Unit test conflict with other macro!
+#endif // TEST_CONST_MEMBER_FUNCTION_TIME
+
+// NOTE: This must only be used once in any .cpp file.
+#ifndef TEST_FAILURE_INDENT
+#define TEST_FAILURE_INDENT(num_spaces) class Test_SetFailureIndent : public ocl::TestClass \
+{ \
+    public: Test_SetFailureIndent() { ocl::TestClass::SetFailureIndent(num_spaces); } \
+} g_Test_SetFailureIndent
+#else
+#error Unit test conflict with other macro!
+#endif
+
+
+/*
+Override the function name passed into TEST_FUNCTION or TEST_MEMBER_FUNCTION.
+This will update the function name that appears in the results output.
+E.g.
+
+TEST_MEMBER_FUNCTION(MyString, operator_plus_equal, char)
+{
+    TEST_OVERRIDE_FUNCTION_NAME("operator +=");
+
+    MyString str;
+    str += 'a';
+    CHECK_EQUAL(str.GetLength(), 0U);
+}
+*/
+#ifndef TEST_OVERRIDE_FUNCTION_NAME
+#define TEST_OVERRIDE_FUNCTION_NAME(function_name) SetFunctionName(function_name)
+#else
+#error Unit test conflict with other macro!
+#endif
+
+
+/*
+Override the function argument(s) passed into TEST_FUNCTION or TEST_MEMBER_FUNCTION.
+This will update the function arguments that appears in the results output.
+E.g.
+
+TEST_MEMBER_FUNCTION(MyString, Append, char_const_ptr)
+{
+    TEST_OVERRIDE_ARGS("char const*");
+
+    MyString str;
+    CHECK_TRUE(str.Append("hello"));
+}
+*/
+#ifndef TEST_OVERRIDE_ARGS
+#define TEST_OVERRIDE_ARGS(args) SetArgs(args)
+#else
+#error Unit test conflict with other macro!
+#endif
+
+
+/*
+Override the function name and arguments passed into TEST_FUNCTION or TEST_MEMBER_FUNCTION.
+This will update the function name and arguments that appears in the results output.
+E.g.
+
+TEST_MEMBER_FUNCTION(MyString, operator_plus_equal, char)
+{
+    TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator +=", "char");
+
+    MyString str;
+    str += 'a';
+    CHECK_EQUAL(str.GetLength(), 0U);
+}
+*/
+#ifndef TEST_OVERRIDE_FUNCTION_NAME_ARGS
+#define TEST_OVERRIDE_FUNCTION_NAME_ARGS(function_name, args) SetFunctionName(function_name); SetArgs(args)
+#else
+#error Unit test conflict with other macro!
+#endif
+
+
+/**
+    CHECK_* macros
+ */
+
+#ifndef CHECK_TRUE
+#define CHECK_TRUE(expression) CheckTrue(#expression, __FILE__, (size_t)__LINE__, (expression))
+#else
+#error Unit test conflict with other macro!
+#endif
+
+#ifndef CHECK_FALSE
+#define CHECK_FALSE(expression) CheckFalse(#expression, __FILE__, (size_t)__LINE__, (expression))
+#else
+#error Unit test conflict with other macro!
+#endif
+
+#ifndef CHECK_EQUAL
+#define CHECK_EQUAL(value1, value2) CheckEqual(#value1 "==" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#else
+#error Unit test conflict with other macro!
+#endif
+
+#ifndef CHECK_NOT_EQUAL
+#define CHECK_NOT_EQUAL(value1, value2) CheckNotEqual(#value1 "!=" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#else
+#error Unit test conflict with other macro!
+#endif
+
+#ifndef CHECK_GREATER
+#define CHECK_GREATER(value1, value2) CheckGreater(#value1 ">=" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#else
+#error Unit test conflict with other macro!
+#endif
+
+#ifndef CHECK_GREATER_EQUAL
+#define CHECK_GREATER_EQUAL(value1, value2) CheckGreaterEqual(#value1 ">" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#else
+#error Unit test conflict with other macro!
+#endif
+
+#ifndef CHECK_LESS
+#define CHECK_LESS(value1, value2) CheckLess(#value1 "<" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#else
+#error Unit test conflict with other macro!
+#endif
+
+#ifndef CHECK_LESS_EQUAL
+#define CHECK_LESS_EQUAL(value1, value2) CheckLessEqual(#value1 "<=" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#else
+#error Unit test conflict with other macro!
+#endif
+
+#ifndef CHECK_NULL
+#define CHECK_NULL(value) CheckNull(#value "== NULL", __FILE__, (size_t)__LINE__, value)
+#else
+#error Unit test conflict with other macro!
+#endif
+
+#ifndef CHECK_NOT_NULL
+#define CHECK_NOT_NULL(value) CheckNotNull(#value "!= NULL", __FILE__, (size_t)__LINE__, value)
+#else
+#error Unit test conflict with other macro!
+#endif
+
+#ifndef CHECK_ZERO
+#define CHECK_ZERO(value) CheckZero(#value "== 0", __FILE__, (size_t)__LINE__, (value))
+#endif
+
+#ifndef CHECK_NOT_ZERO
+#define CHECK_NOT_ZERO(value) CheckNotZero(#value "!= 0", __FILE__, (size_t)__LINE__, (value))
+#endif
+
+#ifndef CHECK_COMPARE
+#define CHECK_COMPARE(value1, value2) CheckCompare("compare " #value1 " = " #value2, __FILE__, (size_t)__LINE__, value1, value2)
+#endif
+
+#ifndef CHECK_NOT_COMPARE
+#define CHECK_NOT_COMPARE(value1, value2) CheckNotCompare("compare " #value1 " != " #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#endif
+
+#ifndef CHECK_TIME
+#define CHECK_TIME(func) for (; !CheckTime(); ) func
+#endif
+
+#endif // OCL_GUARD_TEST_TESTMACROS_HPP
