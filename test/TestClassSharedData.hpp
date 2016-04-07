@@ -27,8 +27,31 @@ class TestClassSharedData
 friend class TestClass;
 
 public:
-    TestClassSharedData();
-    ~TestClassSharedData();
+    TestClassSharedData()
+        : m_max_member_function_length(0)
+        , m_failure_indent(0)
+        , m_constructions(0)
+        , m_logged_line(0)
+        , m_total_checks(0)
+        , m_total_not_tested(0)
+        , m_total_failed_tests(0)
+        , m_total_functions_tested(0)
+        , m_total_timed_functions(0)
+        , m_total_tests(0)
+
+        // Padded to be lined up for output as columns.
+        , m_success_message("SUCCESS - ")
+        , m_failed_message (" FAILED - ")
+        , m_not_run_message("NOT RUN - ")
+        , m_timed_message  ("  TIMED - ")
+    {
+        m_stdio_logger = new StdioTestLog;
+    }
+
+    ~TestClassSharedData()
+    {
+        delete m_stdio_logger;
+    }
 
 // Data only available to TestClass.
 private:
