@@ -267,6 +267,34 @@ TEST_MEMBER_FUNCTION(MyString, operator_plus_equal, char)
 #define CHECK_NOT_COMPARE(value1, value2) CheckNotCompare("compare " #value1 " != " #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
 #endif
 
+#define CHECK_EXCEPTION(expression, exception_type, expect_exception) \
+{ \
+    bool found_exception = false; \
+    try \
+    { \
+        expression; \
+    } \
+    catch (exception_type&) \
+    { \
+        found_exception = true; \
+    } \
+    CheckException(#expression, __FILE__, (size_t)__LINE__, found_exception, expect_exception); \
+}
+
+#define CHECK_ALL_EXCEPTIONS(expression, expect_exception) \
+{ \
+    bool found_exception = false; \
+    try \
+    { \
+        expression; \
+    } \
+    catch (...) \
+    { \
+        found_exception = true; \
+    } \
+    CheckException(#expression, __FILE__, (size_t)__LINE__, found_exception, expect_exception); \
+}
+
 #ifndef CHECK_TIME
 #define CHECK_TIME(func) for (; !CheckTime(); ) func
 #endif

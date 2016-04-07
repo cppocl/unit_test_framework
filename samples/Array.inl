@@ -145,9 +145,14 @@ Type* Array<Type, SizeType>::Ptr() throw()
 template<typename Type, typename SizeType>
 void Array<Type, SizeType>::Copy(simple_array_type const& array_value)
 {
-    privateRealloc(m_array, array_value.m_size);
-    privateCopy(m_array, array_value.m_size, array_value.m_array, array_value.m_size);
-    m_size = array_value.m_size;
+    if (!array_value.IsEmpty())
+    {
+        privateRealloc(m_array, array_value.m_size);
+        privateCopy(m_array, array_value.m_size, array_value.m_array, array_value.m_size);
+        m_size = array_value.m_size;
+    }
+    else
+        Clear();
 }
 
 template<typename Type, typename SizeType>

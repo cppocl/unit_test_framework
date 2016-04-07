@@ -101,6 +101,12 @@ public:
                       size_t line_number,
                       void const* ptr);
 
+    void CheckException(TestString const& expression,
+                        TestString const& filename,
+                        size_t line_number,
+                        bool found_exception,
+                        bool expect_exception);
+
     template<typename T1, typename T2>
     void CheckEqual(TestString const& expression,
                     TestString const& filename,

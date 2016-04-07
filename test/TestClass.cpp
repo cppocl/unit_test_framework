@@ -240,6 +240,16 @@ void TestClass::CheckNotNull(TestString const& expression,
     LogCheck(expression, filename, line_number, ptr == NULL);
 }
 
+void TestClass::CheckException(TestString const& expression,
+                               TestString const& filename,
+                               size_t line_number,
+                               bool found_exception,
+                               bool expect_exception)
+{
+    bool error = (expect_exception && !found_exception) || (!expect_exception && found_exception);
+    LogCheck(expression, filename, line_number, error);
+}
+
 void TestClass::privateLogFunction()
 {
     privateLogFunctionLineNumber();
