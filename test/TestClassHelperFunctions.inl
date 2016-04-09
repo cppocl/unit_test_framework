@@ -46,13 +46,6 @@ protected:
         return str;
     }
 
-    template<typename SizeType>
-    static void SetStr2(char const*& str, SizeType& len, char const* str_src)
-    {
-        str = str_src;
-        len = static_cast<SizeType>(StrLen(str_src));
-    }
-
     static char* StrCpy(char* str1, char const* str2)
     {
 #ifdef _MSC_VER
