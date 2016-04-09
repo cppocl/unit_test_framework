@@ -173,10 +173,6 @@
 				RelativePath="..\..\..\..\test\TestClass.cpp"
 				>
 			</File>
-			<File
-				RelativePath="..\..\..\..\test\TestClassSharedData.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
