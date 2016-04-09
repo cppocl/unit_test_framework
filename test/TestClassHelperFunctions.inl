@@ -111,7 +111,7 @@ protected:
     template<typename SizeType>
     static int MemCmp(void const* ptr1, void const* ptr2, SizeType size)
     {
-        return ::memcmp(ptr1, ptr2, size);
+        return ::memcmp(ptr1, ptr2, static_cast<size_t>(size));
     }
 
     template<typename Type, typename SizeType>
