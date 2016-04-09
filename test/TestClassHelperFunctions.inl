@@ -18,18 +18,12 @@ limitations under the License.
 protected:
     static size_t StrLen(char const* str)
     {
-        char const* str_end = str;
-        while (*str_end != '\0')
-            ++str_end;
-        return static_cast<size_t>(str_end - str);
+        return static_cast<size_t>(StrEnd(str) - str);
     }
 
     static size_t StrLen(wchar_t const* str)
     {
-        wchar_t const* str_end = str;
-        while (*str_end != L'\0')
-            ++str_end;
-        return static_cast<size_t>(str_end - str);
+        return static_cast<size_t>(StrEnd(str) - str);
     }
 
     static char const* StrEnd(char const* str)
@@ -60,7 +54,7 @@ protected:
 
     static wchar_t* StrCpy(wchar_t* str1, wchar_t const* str2)
     {
-        size_t const size = sizeof(wchar_t) * (StrLen(str1) + 1);
+        size_t const size = sizeof(wchar_t) * (StrLen(str2) + 1);
         return static_cast<wchar_t*>(::memcpy(str1, str2, size));
     }
 
