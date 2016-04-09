@@ -115,9 +115,9 @@ protected:
     }
 
     template<typename Type, typename SizeType>
-    static void MemSet(Type* ptr, SizeType size, Type value)
+    static void MemSet(Type* ptr, SizeType count, Type value)
     {
-        for (Type* ptr_end = ptr + size; ptr < ptr_end; ++ptr)
+        for (Type* ptr_end = ptr + count; ptr < ptr_end; ++ptr)
             *ptr = value;
     }
 
