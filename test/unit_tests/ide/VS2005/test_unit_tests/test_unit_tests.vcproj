@@ -39,6 +39,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				EnableIntrinsicFunctions="false"
+				WholeProgramOptimization="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -58,6 +60,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				GenerateDebugInformation="true"
+				OptimizeReferences="0"
+				EnableCOMDATFolding="0"
+				OptimizeForWindows98="1"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -175,6 +180,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\TestClass.tests.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\TestTime.tests.cpp"
 				>
 			</File>
 		</Filter>

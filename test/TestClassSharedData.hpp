@@ -28,7 +28,8 @@ friend class TestClass;
 
 public:
     TestClassSharedData()
-        : m_max_member_function_length(0)
+        : m_stdio_logger(new StdioTestLog)
+        , m_max_member_function_length(0)
         , m_failure_indent(0)
         , m_constructions(0)
         , m_logged_line(0)
@@ -45,7 +46,6 @@ public:
         , m_not_run_message("NOT RUN - ")
         , m_timed_message  ("  TIMED - ")
     {
-        m_stdio_logger = new StdioTestLog;
     }
 
     ~TestClassSharedData()
@@ -53,16 +53,20 @@ public:
         delete m_stdio_logger;
     }
 
+private:
+    TestClassSharedData(TestClassSharedData const&);
+    TestClassSharedData& operator=(TestClassSharedData const&);
+
 // Data only available to TestClass.
 private:
+    // Default logger when one is not provided.
+    StdioTestLog* m_stdio_logger;
+
     // Track longest member function for cleaner output.
     size_t m_max_member_function_length;
 
     // Number of spaces to indent error information.
     size_t m_failure_indent;
-
-    // Default logger when one is not provided.
-    StdioTestLog* m_stdio_logger;
 
     // Count all constructions and delete m_stdio_logger of last destructor.
     size_t m_constructions;

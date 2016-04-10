@@ -84,14 +84,34 @@ public:
     {
     }
 
+    bool operator ==(TestTime const& other_time) const throw()
+    {
+        return m_nanoseconds == other_time.m_nanoseconds;
+    }
+
+    bool operator !=(TestTime const& other_time) const throw()
+    {
+        return m_nanoseconds != other_time.m_nanoseconds;
+    }
+
     bool operator <(TestTime const& other_time) const throw()
     {
         return m_nanoseconds < other_time.m_nanoseconds;
     }
 
+    bool operator <=(TestTime const& other_time) const throw()
+    {
+        return m_nanoseconds <= other_time.m_nanoseconds;
+    }
+
     bool operator >(TestTime const& other_time) const throw()
     {
         return m_nanoseconds > other_time.m_nanoseconds;
+    }
+
+    bool operator >=(TestTime const& other_time) const throw()
+    {
+        return m_nanoseconds >= other_time.m_nanoseconds;
     }
 
     TestTime& operator +=(TestTime const& time_to_add) throw()

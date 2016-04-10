@@ -276,7 +276,7 @@ private:
 
 
 private:
-    ocl::TestClassSharedData& GetSharedData() const;
+    TestClassSharedData& GetSharedData() const;
 
 // Data for this test.
 private:
