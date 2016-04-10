@@ -7,7 +7,7 @@ CC = g++
 CFLAGS = -Wall -Wpedantic -Wextra -Wundef
 
 # the build target executable:
-TARGET = ArrayTests
+TARGET = Array.tests
 
 TARGETDIR = bin
 
@@ -15,7 +15,7 @@ all: $(TARGET)
 
 $(TARGET): $(TARGET).cpp
 	mkdir $(TARGETDIR)
-	$(CC) $(CFLAGS) -o $(TARGETDIR)/$(TARGET) $(TARGET).cpp
+	$(CC) $(CFLAGS) -o $(TARGETDIR)/$(TARGET) $(TARGET).cpp ../test/TestClass.cpp
 
 clean:
 	$(RM) $(TARGETDIR)/$(TARGET)
