@@ -28,11 +28,16 @@ class TestLog
 public:
     virtual void Write(TestString const&) = 0;
 
-    void WriteLine(TestString const& str)
+    virtual void WriteEOL()
     {
         static TestString const eol("\n");
-        Write(str);
         Write(eol);
+    }
+
+    void WriteLine(TestString const& str)
+    {
+        Write(str);
+        WriteEOL();
     }
 
     virtual ~TestLog()

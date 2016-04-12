@@ -30,6 +30,11 @@ public:
     {
         std::cout << str.Ptr();
     }
+
+    virtual void WriteEOL()
+    {
+        std::cout << std::endl;
+    }
 };
 
 }
