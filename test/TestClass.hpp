@@ -276,7 +276,7 @@ private:
 
 
 private:
-    TestClassSharedData& GetSharedData() const;
+    static TestClassSharedData& GetSharedData();
 
 // Data for this test.
 private:

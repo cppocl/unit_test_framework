@@ -501,7 +501,7 @@ void TestClass::privateRecordFailed(TestString const& expression,
     m_check_failures.Append("\n");
 }
 
-ocl::TestClassSharedData& TestClass::GetSharedData() const
+ocl::TestClassSharedData& TestClass::GetSharedData()
 {
     // Ensure shared data is available for first use.
     static TestClassSharedData shared_data;
