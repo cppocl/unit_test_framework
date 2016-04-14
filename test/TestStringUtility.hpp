@@ -150,7 +150,7 @@ struct TestStringUtility
         size_t new_len = str1_len + str2_len;
         if (new_len > 0)
         {
-            char* new_dest;
+            char* new_dest = NULL;
             Allocate(new_dest, new_len);
             if (new_dest != NULL)
             {
@@ -190,7 +190,7 @@ struct TestStringUtility
                                   size_t str2_len)
     {
         char* new_dest = NULL;
-        size_t new_dest_len;
+        size_t new_dest_len = 0;
         SafeAllocAppend(new_dest, new_dest_len, str1, str1_len, str2, str2_len);
         FastFree(dest);
         dest = new_dest;

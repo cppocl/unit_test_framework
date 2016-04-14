@@ -106,7 +106,7 @@ public:
         return ((m_string != NULL) && (index < m_length)) ? m_string[index] : spare;
     }
 
-    operator char const*() const
+    operator char const*() const throw()
     {
         return Ptr();
     }
@@ -126,17 +126,17 @@ public:
     }
 
 public:
-    char const* Ptr() const
+    char const* Ptr() const throw()
     {
         return m_string != NULL ? m_string : "";
     }
 
-    size_t GetLength() const
+    size_t GetLength() const throw()
     {
         return m_length;
     }
 
-    bool IsEmpty() const
+    bool IsEmpty() const throw()
     {
         return m_string == NULL;
     }
@@ -284,7 +284,7 @@ public:
         if (count > 0)
         {
             char* str = NULL;
-            TestStringUtility::Allocate(str, count + len + 1);
+            TestStringUtility::Allocate(str, count + len);
             if (str != NULL)
             {
                 char* start = str;
