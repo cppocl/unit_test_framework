@@ -124,6 +124,7 @@ TimedTest_##class_name##_##function_name##_##args##_const::TimedTest_##class_nam
 #error Unit test conflict with other macro!
 #endif
 
+#define TEST_HAS_FAILED ocl::TestClass::HasSharedFailure()
 
 /*
 Override the function name passed into TEST_FUNCTION or TEST_MEMBER_FUNCTION.

@@ -14,10 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "../Test.hpp"
+
 int main(int /*argc*/, char * /*argv*/[])
 {
     // Currently an empty stub that will be used to demonstrate
     // a command line unit test executable returning error codes.
 
-    return 0;
+    bool test_has_failed = TEST_HAS_FAILED;
+
+    return test_has_failed ? 1 : 0;
 }

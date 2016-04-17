@@ -203,11 +203,12 @@ public:
 // Check functions
 #include "TestClassCheckFunctions.inl"
 
-// Unit test helper functions
-#include "TestClassHelperFunctions.inl"
-
 // Shared data helper functions
 #include "TestClassSharedFunctions.inl"
+
+// Unit test helper functions.
+// NOTE: These are protected.
+#include "TestClassHelperFunctions.inl"
 
 protected:
     // TEST_FUNCTION and TEST_MEMBER_FUNCTION create their own constructor,

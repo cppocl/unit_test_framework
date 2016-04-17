@@ -16,3 +16,7 @@ limitations under the License.
 
 #include "../Test.hpp"
 #include "../TestString.hpp"
+
+TEST_MEMBER_FUNCTION(TestString, TestString, char_const_ptr)
+{
+}

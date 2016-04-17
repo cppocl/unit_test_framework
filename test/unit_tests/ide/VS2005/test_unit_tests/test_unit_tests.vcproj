@@ -183,7 +183,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\TestString.tests.hpp"
+				RelativePath="..\..\..\TestString.tests.cpp"
 				>
 			</File>
 			<File
