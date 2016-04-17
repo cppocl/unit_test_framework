@@ -201,174 +201,13 @@ public:
     }
 
 // Check functions
-public:
-    void CheckTrue(TestString const& expression,
-                   TestString const& filename,
-                   size_type line_number,
-                   bool value)
-    {
-        LogCheck(expression, filename, line_number, !value);
-    }
-
-    void CheckFalse(TestString const& expression,
-                    TestString const& filename,
-                    size_type line_number,
-                    bool value)
-    {
-        LogCheck(expression, filename, line_number, value);
-    }
-
-    void CheckNull(TestString const& expression,
-                   TestString const& filename,
-                   size_type line_number,
-                   void const* ptr)
-    {
-        LogCheck(expression, filename, line_number, ptr != NULL);
-    }
-
-    void CheckNotNull(TestString const& expression,
-                      TestString const& filename,
-                      size_type line_number,
-                      void const* ptr)
-    {
-        LogCheck(expression, filename, line_number, ptr == NULL);
-    }
-
-    void CheckException(TestString const& expression,
-                        TestString const& filename,
-                        size_type line_number,
-                        bool found_exception,
-                        bool expect_exception)
-    {
-        bool error = (expect_exception && !found_exception) || (!expect_exception && found_exception);
-        LogCheck(expression, filename, line_number, error);
-    }
-
-    template<typename T1, typename T2>
-    void CheckEqual(TestString const& expression,
-                    TestString const& filename,
-                    size_type line_number,
-                    T1 const& value1,
-                    T2 const& value2)
-    {
-        bool is_equal = value1 == value2;
-        LogCheck(expression, filename, line_number, !is_equal);
-    }
-
-    template<typename T1, typename T2>
-    void CheckNotEqual(TestString const& expression,
-                       TestString const& filename,
-                       size_type line_number,
-                       T1 const& value1,
-                       T2 const& value2)
-    {
-        bool is_not_equal = value1 != value2;
-        LogCheck(expression, filename, line_number, !is_not_equal);
-    }
-
-    template<typename T1, typename T2>
-    void CheckGreater(TestString const& expression,
-                      TestString const& filename,
-                      size_type line_number,
-                      T1 const& value1,
-                      T2 const& value2)
-    {
-        bool is_greater = value1 > value2;
-        LogCheck(expression, filename, line_number, !is_greater);
-    }
-
-    template<typename T1, typename T2>
-    void CheckGreaterEqual(TestString const& expression,
-                           TestString const& filename,
-                           size_type line_number,
-                           T1 const& value1,
-                           T2 const& value2)
-    {
-        bool is_greater_equal = value1>= value2;
-        LogCheck(expression, filename, line_number, !is_greater_equal);
-    }
-
-    template<typename T1, typename T2>
-    void CheckLess(TestString const& expression,
-                   TestString const& filename,
-                   size_type line_number,
-                   T1 const& value1,
-                   T2 const& value2)
-    {
-        bool is_less = value1 < value2;
-        LogCheck(expression, filename, line_number, !is_less);
-    }
-
-    template<typename T1, typename T2>
-    void CheckLessEqual(TestString const& expression,
-                        TestString const& filename,
-                        size_type line_number,
-                        T1 const& value1,
-                        T2 const& value2)
-    {
-        bool is_less_equal = value1 <= value2;
-        LogCheck(expression, filename, line_number, !is_less_equal);
-    }
-
-    template<typename T>
-    void CheckZero(TestString const& expression,
-                   TestString const& filename,
-                   size_type line_number,
-                   T value)
-    {
-        bool is_equal = value == static_cast<T>(0);
-        LogCheck(expression, filename, line_number, !is_equal);
-    }
-
-    template<typename T>
-    void CheckNotZero(TestString const& expression,
-                      TestString const& filename,
-                      size_type line_number,
-                      T value)
-    {
-        bool is_not_equal = value != static_cast<T>(0);
-        LogCheck(expression, filename, line_number, !is_not_equal);
-    }
-
-    template<typename T1, typename T2>
-    void CheckCompare(TestString const& expression,
-                      TestString const& filename,
-                      size_type line_number,
-                      T1 const& value1,
-                      T2 const& value2)
-    {
-        int compare = TestCompare<T1, T2>::Compare(value1, value2);
-        LogCheck(expression, filename, line_number, compare == 0);
-    }
-
-    template<typename T1, typename T2>
-    void CheckNotCompare(TestString const& expression,
-                         TestString const& filename,
-                         size_type line_number,
-                         T1 const& value1,
-                         T2 const& value2)
-    {
-        int compare = TestCompare<T1, T2>::Compare(value1, value2);
-        LogCheck(expression, filename, line_number, compare != 0);
-    }
-
-    /// While the current time has not reached the start time + sample time,
-    /// keep returning false.
-    /// @note This function also refreshes the current time.
-    bool CheckTime()
-    {
-        TestTime stop_time(m_start_time);
-        stop_time += m_sample_time;
-
-        m_current_time.Refresh();
-
-        ++m_timed_function_calls;
-
-        return m_current_time > stop_time;
-    }
+#include "TestClassCheckFunctions.inl"
 
 // Unit test helper functions
 #include "TestClassHelperFunctions.inl"
+
+// Shared data helper functions
+#include "TestClassSharedFunctions.inl"
 
 protected:
     // TEST_FUNCTION and TEST_MEMBER_FUNCTION create their own constructor,
@@ -574,7 +413,7 @@ private:
             privateLogCount("Total checks", GetSharedData().m_total_checks);
             if (GetSharedData().m_total_not_tested > 0)
                 privateLogCount("Total not tested", GetSharedData().m_total_not_tested);
-            if (GetSharedData().m_total_failed_tests > 0)
+            if (HasSharedFailure())
                 privateLogCount("Total failed tests", GetSharedData().m_total_failed_tests);
             privateLogCount("Total functions tested", GetSharedData().m_total_functions_tested);
             if (GetSharedData().m_total_timed_functions > 0)
