@@ -20,6 +20,7 @@ limitations under the License.
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
+#include "TestMemoryOverflowUtility.hpp"
 
 namespace ocl
 {
@@ -27,43 +28,71 @@ namespace ocl
 template<typename Type, typename SizeType = size_t>
 struct TestMemoryUtility
 {
-    static Type* Allocate(SizeType size)
+    typedef TestMemoryOverflowUtility<SizeType> overflow_utility;
+
+    static SizeType const SIZE_IN_BYTES = static_cast<SizeType>(sizeof(Type));
+
+    static SizeType const OVERFLOW_BUFFER_BYTES = overflow_utility::OVERFLOW_BUFFER_BYTES;
+
+    /// Allocate a number of elements on the heap, and optionally set an overflow marker
+    /// when OVERFLOW_BUFFER_BYTES is greater than 0.
+    static Type* Allocate(SizeType elements)
     {
-        return static_cast<Type*>(::malloc(size * sizeof(Type)));
+        SizeType const alloc_size_in_bytes = elements * sizeof(Type);
+        Type* ptr = static_cast<Type*>(::malloc(alloc_size_in_bytes + OVERFLOW_BUFFER_BYTES));
+
+        // After allocating memory, mark the bytes after the size for overflow detection.
+        if (ptr != NULL)
+            overflow_utility::SetOverflowBytes(reinterpret_cast<unsigned char*>(ptr) + alloc_size_in_bytes);
+
+        return ptr;
     }
 
-    static void Allocate(Type*& dest, SizeType size)
+    static void Allocate(Type*& dest, SizeType elements)
     {
-        dest = Allocate(size);
+        dest = Allocate(elements);
     }
 
-    static void SafeFree(Type*& ptr)
-    {
-        ::free(ptr);
-        ptr = NULL;
-    }
-
+    /// Free the memory but does not set ptr to NULL or return the pointer.
+    /// Useful in destructors or other out of scope situations.
     static void FastFree(Type* ptr)
     {
         ::free(ptr);
     }
 
-    static Type* UnsafeAllocateCopy(Type const* ptr, SizeType size)
+    static void SafeFree(Type*& ptr)
     {
-        if (size > 0)
+        FastFree(ptr);
+        ptr = NULL;
+    }
+
+    /// Does not check ptr for NULL, but will return NULL if size is 0.
+    static Type* UnsafeAllocateCopy(Type const* ptr, SizeType elements)
+    {
+        if (elements > 0)
         {
-            Type* dest = Allocate(size);
+            Type* dest = Allocate(elements);
             if (dest != NULL)
-                ::memcpy(dest, ptr, size * sizeof(Type));
+                ::memcpy(dest, ptr, static_cast<size_t>(elements * SIZE_IN_BYTES));
             return dest;
         }
 
         return NULL;
     }
 
-    static void AllocateCopy(Type*& dest, Type const* src, SizeType size)
+    static void UnsafeAllocateCopy(Type*& dest, Type const* src, SizeType size)
     {
         dest = UnsafeAllocateCopy(src, size);
+    }
+
+    static Type* SafeAllocateCopy(Type const* ptr, SizeType size)
+    {
+        return (ptr != NULL) ? UnsafeAllocateCopy(ptr, size) : NULL;
+    }
+
+    static void SafeAllocateCopy(Type*& dest, Type const* src, SizeType size)
+    {
+        dest = SafeAllocateCopy(src, size);
     }
 };
 

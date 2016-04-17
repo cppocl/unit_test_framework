@@ -36,19 +36,108 @@ namespace ocl
 
 struct TestStringUtility
 {
+    // NOTE: size_type is not used as it causes
+    // possible loss of data warnings for some compilers.
+    typedef unsigned int size_type;
+
+    template<typename IntType>
+    static char const* GetMinSignedIntAsString(IntType size_of_int) throw()
+    {
+        switch (size_of_int)
+        {
+            case 1: return "-128";
+            case 2: return "-32768";
+            case 4: return "-2147483648";
+            case 8: return "-9223372036854775808";
+        }
+
+        return "";
+    }
+
+    template<typename IntType>
+    static char const* GetMaxSignedIntAsString(IntType size_of_int) throw()
+    {
+        switch (size_of_int)
+        {
+            case 1: return "127";
+            case 2: return "32767";
+            case 4: return "2147483647";
+            case 8: return "9223372036854775807";
+        }
+
+        return "";
+    }
+
+    template<typename IntType>
+    static char const* GetMaxUnsignedIntAsString(IntType size_of_int) throw()
+    {
+        switch (size_of_int)
+        {
+            case 1: return "255";
+            case 2: return "65535";
+            case 4: return "4294967295";
+            case 8: return "18446744073709551615";
+        }
+
+        return "";
+    }
+
+    template<typename IntType>
+    static size_type GetMinSignedIntCharCount(IntType size_of_int) throw()
+    {
+        switch (size_of_int)
+        {
+            case 1: return 4U;
+            case 2: return 6U;
+            case 4: return 11U;
+            case 8: return 20U;
+        }
+
+        return 0U;
+    }
+
+    template<typename IntType>
+    static size_type GetMaxSignedIntCharCount(IntType size_of_int) throw()
+    {
+        switch (size_of_int)
+        {
+            case 1: return 3U;
+            case 2: return 5U;
+            case 4: return 10U;
+            case 8: return 19U;
+        }
+
+        return 0U;
+    }
+
+    template<typename IntType>
+    static size_type GetMaxUnsignedIntCharCount(IntType size_of_int) throw()
+    {
+        switch (size_of_int)
+        {
+            case 1: return 3U;
+            case 2: return 5U;
+            case 4: return 10U;
+            case 8: return 20U;
+        }
+
+        return 0U;
+    }
+
     template<typename T>
     static char* GetString(T value)
     {
-        return TestConverterUtility<T>::GetString(value);
+        size_type len = 0U;
+        return TestConverterUtility<T>::GetString(value, len);
     }
 
-    template<typename Type>
-    static char* GetString(Type value, size_t& length)
+    template<typename Type, typename SizeType>
+    static char* GetString(Type value, SizeType& length)
     {
-        return TestConverterUtility<Type>::GetString(value, length);
+        return TestConverterUtility<Type, SizeType>::GetString(value, length);
     }
 
-    static void UnsafeFill(char* str, char ch, size_t len)
+    static void UnsafeFill(char* str, char ch, size_type len)
     {
         char* end = str + len;
         for (; str < end; ++str)
@@ -56,23 +145,24 @@ struct TestStringUtility
         *str = '\0';
     }
 
-    static size_t SafeLength(char const* str)
+    static size_type SafeLength(char const* str)
     {
-        return str != NULL ? ::strlen(str) : 0U;
+        size_type len = str != NULL ? static_cast<size_type>(::strlen(str)) : 0U;
+        return len;
     }
 
-    static bool UnsafeFind(char const* str, char ch, size_t& pos, size_t start = 0)
+    static bool UnsafeFind(char const* str, char ch, size_type& pos, size_type start = 0)
     {
         char const* pch = str + start;
         for (; (*pch != '\0') && (*pch != ch); ++pch)
             ;
         if ((ch != '\0') && (*pch == '\0'))
             return false;
-        pos = static_cast<size_t>(pch - str);
+        pos = static_cast<size_type>(pch - str);
         return true;
     }
 
-    static void Allocate(char*& dest, size_t dest_len)
+    static void Allocate(char*& dest, size_type dest_len)
     {
         dest = TestMemoryUtility<char>::Allocate(dest_len + 1);
     }
@@ -88,14 +178,14 @@ struct TestStringUtility
     }
 
     static void SafeAllocateCopy(char*& dest,
-                                 size_t& dest_len,
+                                 size_type& dest_len,
                                  char const* src,
-                                 size_t src_len)
+                                 size_type src_len)
     {
         if ((src != NULL) && (src_len > 0))
         {
             dest = TestMemoryUtility<char>::UnsafeAllocateCopy(src, src_len + 1);
-            dest_len = (dest != NULL) ? src_len : static_cast<size_t>(0);
+            dest_len = (dest != NULL) ? src_len : static_cast<size_type>(0);
         }
         else
         {
@@ -104,14 +194,7 @@ struct TestStringUtility
         }
     }
 
-    static void UnsafeAllocateCopy(char*& dest, size_t& dest_len, char const* src)
-    {
-        size_t src_len = ::strlen(src);
-        dest = TestMemoryUtility<char>::UnsafeAllocateCopy(src, src_len + 1);
-        dest_len = (dest != NULL) ? src_len : static_cast<size_t>(0);
-    }
-
-    static void SafeAllocateCopy(char*& dest, size_t& dest_len, char const* src)
+    static void SafeAllocateCopy(char*& dest, size_type& dest_len, char const* src)
     {
         if (src == NULL)
         {
@@ -122,16 +205,23 @@ struct TestStringUtility
             UnsafeAllocateCopy(dest, dest_len, src);
     }
 
-    static void SafeReallocCopy(char*& dest, size_t& dest_len, char const* src)
+    static void UnsafeAllocateCopy(char*& dest, size_type& dest_len, char const* src)
+    {
+        size_type src_len = static_cast<size_type>(::strlen(src));
+        dest = TestMemoryUtility<char>::UnsafeAllocateCopy(src, src_len + 1);
+        dest_len = (dest != NULL) ? src_len : static_cast<size_type>(0);
+    }
+
+    static void SafeReallocCopy(char*& dest, size_type& dest_len, char const* src)
     {
         FastFree(dest);
         SafeAllocateCopy(dest, dest_len, src);
     }
 
     static void SafeReallocCopy(char*& dest,
-                                size_t& dest_len,
+                                size_type& dest_len,
                                 char const* src,
-                                size_t src_len)
+                                size_type src_len)
     {
         FastFree(dest);
         SafeAllocateCopy(dest, dest_len, src, src_len);
@@ -141,13 +231,13 @@ struct TestStringUtility
     /// @note It is safe for dest and str1 or str2 to be the same string.
     /// Also str1 or str2 can be NULL.
     static void SafeAllocAppend(char*& dest,
-                                size_t& dest_len,
+                                size_type& dest_len,
                                 char const* str1,
-                                size_t str1_len,
+                                size_type str1_len,
                                 char const* str2,
-                                size_t str2_len)
+                                size_type str2_len)
     {
-        size_t new_len = str1_len + str2_len;
+        size_type new_len = str1_len + str2_len;
         if (new_len > 0)
         {
             char* new_dest = NULL;
@@ -183,14 +273,14 @@ struct TestStringUtility
     /// Same as AllocAppend, except dest is first freed
     /// before being set with str1 and str2.
     static void SafeReallocAppend(char*& dest,
-                                  size_t& dest_len,
+                                  size_type& dest_len,
                                   char const* str1,
-                                  size_t str1_len,
+                                  size_type str1_len,
                                   char const* str2,
-                                  size_t str2_len)
+                                  size_type str2_len)
     {
         char* new_dest = NULL;
-        size_t new_dest_len = 0;
+        size_type new_dest_len = 0;
         SafeAllocAppend(new_dest, new_dest_len, str1, str1_len, str2, str2_len);
         FastFree(dest);
         dest = new_dest;

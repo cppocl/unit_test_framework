@@ -22,6 +22,7 @@ limitations under the License.
 namespace ocl
 {
 
+template<typename SizeType>
 class TestClassSharedData
 {
 friend class TestClass;
@@ -63,24 +64,24 @@ private:
     StdioTestLog* m_stdio_logger;
 
     // Track longest member function for cleaner output.
-    size_t m_max_member_function_length;
+    SizeType m_max_member_function_length;
 
     // Number of spaces to indent error information.
-    size_t m_failure_indent;
+    SizeType m_failure_indent;
 
     // Count all constructions and delete m_stdio_logger of last destructor.
-    size_t m_constructions;
+    SizeType m_constructions;
 
     // Currently logged line number.
-    size_t m_logged_line;
+    SizeType m_logged_line;
 
     // Counts for all tests.
-    size_t m_total_checks;
-    size_t m_total_not_tested;
-    size_t m_total_failed_tests;
-    size_t m_total_functions_tested;
-    size_t m_total_timed_functions;
-    size_t m_total_tests;
+    SizeType m_total_checks;
+    SizeType m_total_not_tested;
+    SizeType m_total_failed_tests;
+    SizeType m_total_functions_tested;
+    SizeType m_total_timed_functions;
+    SizeType m_total_tests;
 
     // message for start of each test.
     const char* m_success_message;

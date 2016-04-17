@@ -21,6 +21,22 @@ TEST_MEMBER_FUNCTION(TestClass, StrLen, char_const_ptr)
 {
     TEST_OVERRIDE_ARGS("char const*");
 
+    CHECK_ZERO(StrLen(""));
+    CHECK_EQUAL(StrLen("a"), 1U);
+}
+
+TEST_MEMBER_FUNCTION(TestClass, StrLen, wchar_t_const_ptr)
+{
+    TEST_OVERRIDE_ARGS("wchar_t const*");
+
+    CHECK_ZERO(StrLen(L""));
+    CHECK_EQUAL(StrLen(L"a"), 1U);
+}
+
+TEST_MEMBER_FUNCTION(TestClass, StrCmp, char_const_ptr_char_const_ptr)
+{
+    TEST_OVERRIDE_ARGS("char const*,char const*");
+
     CHECK_EQUAL(StrCmp("", ""), 0);
     CHECK_EQUAL(StrCmp("a", "a"), 0);
 
@@ -33,9 +49,9 @@ TEST_MEMBER_FUNCTION(TestClass, StrLen, char_const_ptr)
     CHECK_GREATER(StrCmp("a", ""), 0);
 }
 
-TEST_MEMBER_FUNCTION(TestClass, StrLen, wchar_t_const_ptr)
+TEST_MEMBER_FUNCTION(TestClass, StrCmp, wchar_t_const_ptr_wchar_t_const_ptr)
 {
-    TEST_OVERRIDE_ARGS("wchar_t const*");
+    TEST_OVERRIDE_ARGS("wchar_t const*,wchar_t const*");
 
     CHECK_EQUAL(StrCmp(L"", L""), 0);
     CHECK_EQUAL(StrCmp(L"a", L"a"), 0);

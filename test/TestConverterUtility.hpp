@@ -29,7 +29,7 @@ namespace ocl
  * Helper class for converting primitive types to char* which can then be output.
  */
 
-template<typename ValueType, typename SizeType = size_t>
+template<typename ValueType, typename SizeType = unsigned int>
 struct TestConverterUtility
 {
     static char* GetString(ValueType, SizeType& length) { length = 0; return NULL; }

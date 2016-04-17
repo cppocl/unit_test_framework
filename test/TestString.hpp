@@ -33,6 +33,9 @@ namespace ocl
 class TestString
 {
 public:
+    typedef TestStringUtility::size_type size_type;
+
+public:
     TestString(char const* str = NULL)
         : m_length(0)
         , m_string(NULL)
@@ -41,7 +44,7 @@ public:
             TestStringUtility::UnsafeAllocateCopy(m_string, m_length, str);
     }
 
-    TestString(char ch, size_t len)
+    TestString(char ch, size_type len)
         : m_length(len)
         , m_string(NULL)
     {
@@ -95,12 +98,12 @@ public:
         return *this;
     }
 
-    char operator [](size_t index) const
+    char operator [](size_type index) const
     {
         return ((m_string != NULL) && (index < m_length)) ? m_string[index] : '\0';
     }
 
-    char& operator [](size_t index)
+    char& operator [](size_type index)
     {
         static char spare = '\0';
         return ((m_string != NULL) && (index < m_length)) ? m_string[index] : spare;
@@ -131,7 +134,7 @@ public:
         return m_string != NULL ? m_string : "";
     }
 
-    size_t GetLength() const throw()
+    size_type GetLength() const throw()
     {
         return m_length;
     }
@@ -148,7 +151,7 @@ public:
         m_length = 0;
     }
 
-    bool Find(char ch, size_t& pos, size_t start = 0) const
+    bool Find(char ch, size_type& pos, size_type start = 0) const
     {
         if (m_string != NULL)
             return TestStringUtility::UnsafeFind(m_string, ch, pos, start);
@@ -158,8 +161,8 @@ public:
     /// Extract a partial string, and optionally remove the partial string
     /// from this string.
     void GetSubString(TestString& sub_str,
-                      size_t start,
-                      size_t count,
+                      size_type start,
+                      size_type count,
                       bool remove = false)
     {
         sub_str.Clear();
@@ -171,7 +174,7 @@ public:
         {
             if (sub_str.m_length < m_length)
             {
-                size_t chars_remaining = m_length - sub_str.m_length;
+                size_type chars_remaining = m_length - sub_str.m_length;
                 ::memmove(m_string, m_string + sub_str.m_length, chars_remaining);
                 *(m_string + chars_remaining) = '\0';
                 m_length = chars_remaining;
@@ -194,7 +197,7 @@ public:
     }
 
     /// Move str into this string.
-    void Move(char*& str, size_t len)
+    void Move(char*& str, size_type len)
     {
         TestStringUtility::FastFree(m_string);
         m_string = str;
@@ -222,7 +225,7 @@ public:
                                              privateSafeLength(str));
     }
 
-    void Append(char const* str, size_t count)
+    void Append(char const* str, size_type count)
     {
         TestStringUtility::SafeReallocAppend(m_string,
                                              m_length,
@@ -259,7 +262,7 @@ public:
     }
 
     /// Append number of characters.
-    void Append(char value, size_t count)
+    void Append(char value, size_type count)
     {
         if (count > 0)
         {
@@ -279,7 +282,7 @@ public:
     }
 
     /// Append number of characters then a string value.
-    void Append(char ch, size_t count, char const* value, size_t len)
+    void Append(char ch, size_type count, char const* value, size_type len)
     {
         if (count > 0)
         {
@@ -301,51 +304,51 @@ public:
             Append(value, len);
     }
 
-    void Append(signed char value, size_t pad = 0)
+    void Append(signed char value, size_type pad = 0)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(unsigned char value, size_t pad = 0)
+    void Append(unsigned char value, size_type pad = 0)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(signed short value, size_t pad = 0)
+    void Append(signed short value, size_type pad = 0)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(unsigned short value, size_t pad = 0)
+    void Append(unsigned short value, size_type pad = 0)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(signed int value, size_t pad = 0)
+    void Append(signed int value, size_type pad = 0)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(unsigned int value, size_t pad = 0)
+    void Append(unsigned int value, size_type pad = 0)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(signed long value, size_t pad = 0)
+    void Append(signed long value, size_type pad = 0)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(unsigned long value, size_t pad = 0)
+    void Append(unsigned long value, size_type pad = 0)
     {
         privateAppendValue(value, pad);
     }
 
 private:
     template<typename T>
-    void privateAppendValue(T value, size_t pad)
+    void privateAppendValue(T value, size_type pad)
     {
-        size_t length = 0;
+        size_type length = 0;
         char* str = TestStringUtility::GetString(value, length);
         if (str != NULL)
         {
@@ -362,13 +365,13 @@ private:
         }
     }
 
-    size_t privateSafeLength(char const* str)
+    size_type privateSafeLength(char const* str)
     {
         return TestStringUtility::SafeLength(str);
     }
 
 private:
-    size_t m_length;
+    size_type m_length;
     char* m_string;
 };
 

@@ -19,11 +19,7 @@ limitations under the License.
 
 #include <time.h>
 #include <limits.h>
-
-#if !defined(_MSC_VER)
-// Want to use uint64_t for all non-Winsows platforms
-#include <stdint.h>
-#endif
+#include "TestTypes.hpp"
 
 namespace ocl
 {
@@ -40,22 +36,13 @@ namespace ocl
 class TestTime
 {
 public:
-
-#if defined(_MSC_VER)
-    // For simplicity, always use Microsoft in-built 64-bit type,
-    // as various versions have different support.
-    typedef unsigned __int64 ocl_uint64;
-#else
-    typedef uint64_t ocl_uint64;
-#endif
-
     static const unsigned long HOURS_PER_DAY                = 24;
     static const unsigned long MINUTES_PER_HOUR             = 60;
     static const unsigned long SECONDS_PER_MINUTE           = 60;
     static const unsigned long MILLISECONDS_PER_SECOND      = 1000;
     static const unsigned long MICROSECONDS_PER_SECOND      = 1000000;
     static const unsigned long NANOSECONDS_PER_SECOND       = 1000000000;
-    static const unsigned long MICROSECONDS_PER_MILLISECOND = 1000;
+    static const unsigned long MILLISECONDS_PER_MICROSECOND = 1000;
     static const unsigned long NANOSECONDS_PER_MILLISECOND  = 1000000;
     static const unsigned long NANOSECONDS_PER_MICROSECOND  = 1000;
 
@@ -160,6 +147,8 @@ public:
         return static_cast<unsigned long>(m_nanoseconds / NANOSECONDS_PER_SECOND);
     }
 
+    // Return the number of seconds, converted to Nanoseconds.
+    // NOTE: This does not include the nanoseconds returned by GetNanoseconds.
     ocl_uint64 GetSecondsInNanoseconds() const throw()
     {
         ocl_uint64 seconds = GetSeconds();
@@ -171,6 +160,11 @@ public:
         // Remove the seconds and return the remaining part.
         ocl_uint64 seconds_in_nanoseconds = GetSecondsInNanoseconds();
         return static_cast<unsigned long>(m_nanoseconds - seconds_in_nanoseconds);
+    }
+
+    unsigned long GetMicroseconds() const throw()
+    {
+        return static_cast<unsigned long>(NanosecondsToMicroseconds(GetNanoseconds()));
     }
 
     unsigned long GetMilliseconds() const throw()
@@ -204,7 +198,7 @@ public:
     }
 
     /// Sets the nanoseconds part of the time.
-    /// @note if this is equal or greater than MICROSECONDS_PER_SECOND
+    /// @note if this is equal or greater than NANOSECONDS_PER_MILLISECOND
     /// then the behaviour is undefined.
     void SetMicroseconds(unsigned long microseconds) throw()
     {
@@ -212,10 +206,20 @@ public:
         m_nanoseconds += MicrosecondsToNanoseconds(microseconds);
     }
 
+    ocl_uint64 GetTimeInNanoseconds() const throw()
+    {
+        return m_nanoseconds;
+    }
+
     void SetTime(unsigned long seconds, unsigned long nanoseconds)
     {
         m_nanoseconds = static_cast<ocl_uint64>(seconds) * NANOSECONDS_PER_SECOND;
         m_nanoseconds += nanoseconds;
+    }
+
+    void SetTimeInNanoseconds(ocl_uint64 nanoseconds)
+    {
+        m_nanoseconds = nanoseconds;
     }
 
     void GetDiffTime(TestTime const& other_time,
@@ -227,10 +231,29 @@ public:
             diff_time.m_nanoseconds = other_time.m_nanoseconds - m_nanoseconds;
     }
 
-    /// Helpers for aiding code readability.
+// Static helper member functions,
+// with conversion functions added to aid readability of code.
+public:
+    static void Sleep(unsigned long milliseconds)
+    {
+        unsigned long expected_seconds = milliseconds / MILLISECONDS_PER_SECOND;
+        milliseconds -= expected_seconds * MILLISECONDS_PER_SECOND;
+
+        TestTime tt;
+        for (;;)
+        {
+            tt.Refresh();
+            unsigned long seconds = tt.GetSeconds();
+            if (seconds > expected_seconds)
+                break;
+            if ((seconds == expected_seconds) && (tt.GetMilliseconds() >= milliseconds))
+                break;
+        }
+    }
+
     static unsigned long MillisecondsToNanoseconds(unsigned long milliseconds)
     {
-        return milliseconds * MICROSECONDS_PER_SECOND;
+        return milliseconds * NANOSECONDS_PER_MILLISECOND;
     }
 
     static unsigned long MicrosecondsToNanoseconds(unsigned long microseconds)
@@ -238,12 +261,32 @@ public:
         return microseconds * MILLISECONDS_PER_SECOND;
     }
 
-    static ocl_uint64 NanosecondsToMilliseconds(ocl_uint64 nanoseconds)
+    static unsigned long NanosecondsToMilliseconds(unsigned long nanoseconds)
     {
-        return nanoseconds / MICROSECONDS_PER_SECOND;
+        return nanoseconds / NANOSECONDS_PER_MILLISECOND;
     }
 
-    static ocl_uint64 NanosecondsToMicroseconds(ocl_uint64 nanoseconds)
+    static unsigned long NanosecondsToMicroseconds(unsigned long nanoseconds)
+    {
+        return nanoseconds / MILLISECONDS_PER_SECOND;
+    }
+
+    static ocl_uint64 MillisecondsToNanoseconds64(ocl_uint64 milliseconds)
+    {
+        return milliseconds * NANOSECONDS_PER_MILLISECOND;
+    }
+
+    static ocl_uint64 MicrosecondsToNanoseconds64(ocl_uint64 microseconds)
+    {
+        return microseconds * MILLISECONDS_PER_SECOND;
+    }
+
+    static ocl_uint64 NanosecondsToMilliseconds64(ocl_uint64 nanoseconds)
+    {
+        return nanoseconds / NANOSECONDS_PER_MILLISECOND;
+    }
+
+    static ocl_uint64 NanosecondsToMicroseconds64(ocl_uint64 nanoseconds)
     {
         return nanoseconds / MILLISECONDS_PER_SECOND;
     }
@@ -268,7 +311,7 @@ private:
                 milliseconds = ticks;
 
             time_in_nanoseconds = static_cast<ocl_uint64>(milliseconds) *
-                                  MICROSECONDS_PER_SECOND;
+                                  NANOSECONDS_PER_MILLISECOND;
         }
         else
             time_in_nanoseconds = 0;

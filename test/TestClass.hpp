@@ -33,6 +33,9 @@ namespace ocl
 class TestClass
 {
 public:
+    typedef TestString::size_type size_type;
+
+public:
     TestClass(TestString const& class_name,
               TestString const& function_name,
               TestString const& args,
@@ -138,7 +141,7 @@ public:
 // General helper functions.
 public:
     /// Underlying function for TEST_FAILURE_INDENT macro.
-    void SetFailureIndent(size_t indent)
+    void SetFailureIndent(size_type indent)
     {
         m_recorded = false;
         GetSharedData().m_failure_indent = indent;
@@ -201,7 +204,7 @@ public:
 public:
     void CheckTrue(TestString const& expression,
                    TestString const& filename,
-                   size_t line_number,
+                   size_type line_number,
                    bool value)
     {
         LogCheck(expression, filename, line_number, !value);
@@ -209,7 +212,7 @@ public:
 
     void CheckFalse(TestString const& expression,
                     TestString const& filename,
-                    size_t line_number,
+                    size_type line_number,
                     bool value)
     {
         LogCheck(expression, filename, line_number, value);
@@ -217,7 +220,7 @@ public:
 
     void CheckNull(TestString const& expression,
                    TestString const& filename,
-                   size_t line_number,
+                   size_type line_number,
                    void const* ptr)
     {
         LogCheck(expression, filename, line_number, ptr != NULL);
@@ -225,7 +228,7 @@ public:
 
     void CheckNotNull(TestString const& expression,
                       TestString const& filename,
-                      size_t line_number,
+                      size_type line_number,
                       void const* ptr)
     {
         LogCheck(expression, filename, line_number, ptr == NULL);
@@ -233,7 +236,7 @@ public:
 
     void CheckException(TestString const& expression,
                         TestString const& filename,
-                        size_t line_number,
+                        size_type line_number,
                         bool found_exception,
                         bool expect_exception)
     {
@@ -244,7 +247,7 @@ public:
     template<typename T1, typename T2>
     void CheckEqual(TestString const& expression,
                     TestString const& filename,
-                    size_t line_number,
+                    size_type line_number,
                     T1 const& value1,
                     T2 const& value2)
     {
@@ -255,7 +258,7 @@ public:
     template<typename T1, typename T2>
     void CheckNotEqual(TestString const& expression,
                        TestString const& filename,
-                       size_t line_number,
+                       size_type line_number,
                        T1 const& value1,
                        T2 const& value2)
     {
@@ -266,7 +269,7 @@ public:
     template<typename T1, typename T2>
     void CheckGreater(TestString const& expression,
                       TestString const& filename,
-                      size_t line_number,
+                      size_type line_number,
                       T1 const& value1,
                       T2 const& value2)
     {
@@ -277,7 +280,7 @@ public:
     template<typename T1, typename T2>
     void CheckGreaterEqual(TestString const& expression,
                            TestString const& filename,
-                           size_t line_number,
+                           size_type line_number,
                            T1 const& value1,
                            T2 const& value2)
     {
@@ -288,7 +291,7 @@ public:
     template<typename T1, typename T2>
     void CheckLess(TestString const& expression,
                    TestString const& filename,
-                   size_t line_number,
+                   size_type line_number,
                    T1 const& value1,
                    T2 const& value2)
     {
@@ -299,7 +302,7 @@ public:
     template<typename T1, typename T2>
     void CheckLessEqual(TestString const& expression,
                         TestString const& filename,
-                        size_t line_number,
+                        size_type line_number,
                         T1 const& value1,
                         T2 const& value2)
     {
@@ -310,7 +313,7 @@ public:
     template<typename T>
     void CheckZero(TestString const& expression,
                    TestString const& filename,
-                   size_t line_number,
+                   size_type line_number,
                    T value)
     {
         bool is_equal = value == static_cast<T>(0);
@@ -320,7 +323,7 @@ public:
     template<typename T>
     void CheckNotZero(TestString const& expression,
                       TestString const& filename,
-                      size_t line_number,
+                      size_type line_number,
                       T value)
     {
         bool is_not_equal = value != static_cast<T>(0);
@@ -330,7 +333,7 @@ public:
     template<typename T1, typename T2>
     void CheckCompare(TestString const& expression,
                       TestString const& filename,
-                      size_t line_number,
+                      size_type line_number,
                       T1 const& value1,
                       T2 const& value2)
     {
@@ -341,7 +344,7 @@ public:
     template<typename T1, typename T2>
     void CheckNotCompare(TestString const& expression,
                          TestString const& filename,
-                         size_t line_number,
+                         size_type line_number,
                          T1 const& value1,
                          T2 const& value2)
     {
@@ -391,7 +394,7 @@ protected:
     // Log check function used by all check macros.
     void LogCheck(TestString const& expression,
                   TestString const& filename,
-                  size_t line_number,
+                  size_type line_number,
                   bool failed)
     {
         privateSetFilename(filename);
@@ -432,11 +435,11 @@ private:
     void privateLogFunctionLineNumber()
     {
         TestString line_number_str;
-        unsigned long total_tests = static_cast<unsigned long>(GetSharedData().m_total_tests);
-        size_t pad_size = TestNumericUtility<unsigned long>::GetNumberOfCharsForInt(total_tests);
+        size_type total_tests = static_cast<size_type>(GetSharedData().m_total_tests);
+        size_type pad_size = TestNumericUtility<size_type, size_type>::GetNumberOfCharsForInt(total_tests);
         line_number_str.Append("(");
         ++GetSharedData().m_logged_line;
-        line_number_str.Append(static_cast<unsigned long>(GetSharedData().m_logged_line), pad_size);
+        line_number_str.Append(static_cast<size_type>(GetSharedData().m_logged_line), pad_size);
         line_number_str.Append(") ");
         LogWrite(line_number_str);
     }
@@ -536,7 +539,7 @@ private:
         // Extract each line from the string until there are no more failed checks.
         while (!m_check_failures.IsEmpty())
         {
-            size_t pos = 0;
+            size_type pos = 0;
             if (m_check_failures.Find('\n', pos))
             {
                 m_check_failures.GetSubString(msg, 0, pos + 1, true);
@@ -553,7 +556,7 @@ private:
     }
 
     // Log the number of checks for a tested function, e.g. 5 TESTS or 1 TEST.
-    void privateLogCount(TestString const& msg, size_t count)
+    void privateLogCount(TestString const& msg, size_type count)
     {
         TestString count_msg(msg);
         count_msg += " = ";
@@ -603,7 +606,7 @@ private:
     TestString privateGetMemberFunctionPadding()
     {
         TestString padding;
-        size_t len = m_member_function.GetLength();
+        size_type len = m_member_function.GetLength();
         if (len < GetSharedData().m_max_member_function_length)
             padding.Append(TestString(' ', GetSharedData().m_max_member_function_length - len));
         return padding;
@@ -614,7 +617,7 @@ private:
         GetTestName(m_member_function);
         if (m_previous_member_function_length > 0)
         {
-            size_t new_len = m_member_function.GetLength();
+            size_type new_len = m_member_function.GetLength();
 
             // a call to SetFunctionName or SetArgs has changed the length,
             // so re-calculate the max length.
@@ -640,7 +643,7 @@ private:
 
     void privateRecordFailed(TestString const& expression,
                              TestString const& filename,
-                             size_t line_number)
+                             size_type line_number)
     {
         ++GetSharedData().m_total_failed_tests;
         m_check_failures.Append("LINE: ");
@@ -653,10 +656,10 @@ private:
     }
 
 private:
-    static TestClassSharedData& GetSharedData()
+    static TestClassSharedData<size_type>& GetSharedData()
     {
         // Ensure shared data is available for first use.
-        static TestClassSharedData shared_data;
+        static TestClassSharedData<size_type> shared_data;
         return shared_data;
     }
 
@@ -675,7 +678,7 @@ private:
 
     // Timer used to check progress in the sample time period.
     TestTime m_current_time;
-    size_t m_timed_function_calls;
+    size_type m_timed_function_calls;
 
     // The amount of time to run the performance test.
     TestTime m_sample_time;
@@ -685,18 +688,18 @@ private:
     TestString m_member_function;
 
     // total checks for this function.
-    size_t m_check_count;
+    size_type m_check_count;
 
     // test failures for this function.
-    size_t m_failure_check_count;
+    size_type m_failure_check_count;
     TestString m_check_failures;
 
     // Store m_max_member_function_length before update in this class.
     // This can change as SetFunctionName or SetArgs is called.
-    size_t m_previous_member_function_length;
+    size_type m_previous_member_function_length;
 
     // Debug test number helper for identifying when a test crashes.
-    size_t m_test_number;
+    size_type m_test_number;
 
     // When this test is used to set the indentation for failure messages,
     // then this test does not need to be recorded.

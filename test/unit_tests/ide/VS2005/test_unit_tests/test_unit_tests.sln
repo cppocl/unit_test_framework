@@ -7,7 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\..\..\..\StdioTestLog.hpp = ..\..\..\..\StdioTestLog.hpp
 		..\..\..\..\Test.hpp = ..\..\..\..\Test.hpp
-		..\..\..\..\TestClass.cpp = ..\..\..\..\TestClass.cpp
 		..\..\..\..\TestClass.hpp = ..\..\..\..\TestClass.hpp
 		..\..\..\..\TestClassHelperFunctions.inl = ..\..\..\..\TestClassHelperFunctions.inl
 		..\..\..\..\TestClassSharedData.hpp = ..\..\..\..\TestClassSharedData.hpp
@@ -21,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\..\..\..\TestStringUtility.hpp = ..\..\..\..\TestStringUtility.hpp
 		..\..\..\..\TestTime.hpp = ..\..\..\..\TestTime.hpp
 		..\..\..\..\TestTypeInfo.hpp = ..\..\..\..\TestTypeInfo.hpp
+		..\..\..\..\TestTypes.hpp = ..\..\..\..\TestTypes.hpp
 	EndProjectSection
 EndProject
 Global

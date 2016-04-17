@@ -175,11 +175,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\TestClass.cpp"
+				RelativePath="..\..\..\TestClass.tests.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\TestClass.tests.cpp"
+				RelativePath="..\..\..\TestMemoryUtility.tests.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\TestString.tests.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\TestStringUtility.tests.cpp"
 				>
 			</File>
 			<File

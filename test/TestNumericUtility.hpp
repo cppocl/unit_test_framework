@@ -79,7 +79,7 @@ struct TestNumericUtility
             if (str != NULL)
             {
                 sprintf(str, fmt, value);
-                length = ::strlen(str);
+                length = static_cast<SizeType>(::strlen(str));
             }
         }
         return str;

@@ -16,14 +16,14 @@ limitations under the License.
 
 #ifndef OCL_TEST_HELPERS_DISABLED
 protected:
-    static size_t StrLen(char const* str)
+    static size_type StrLen(char const* str)
     {
-        return static_cast<size_t>(StrEnd(str) - str);
+        return static_cast<size_type>(StrEnd(str) - str);
     }
 
-    static size_t StrLen(wchar_t const* str)
+    static size_type StrLen(wchar_t const* str)
     {
-        return static_cast<size_t>(StrEnd(str) - str);
+        return static_cast<size_type>(StrEnd(str) - str);
     }
 
     static char const* StrEnd(char const* str)
@@ -54,7 +54,7 @@ protected:
 
     static wchar_t* StrCpy(wchar_t* str1, wchar_t const* str2)
     {
-        size_t const size = sizeof(wchar_t) * (StrLen(str2) + 1);
+        size_type const size = sizeof(wchar_t) * (StrLen(str2) + 1);
         return static_cast<wchar_t*>(::memcpy(str1, str2, size));
     }
 
@@ -68,28 +68,28 @@ protected:
         return ::memcmp(str1, str2, sizeof(wchar_t) * (StrLen(str1) + 1));
     }
 
-    static size_t CharCount(char const* str, char char_to_find)
+    static size_type CharCount(char const* str, char char_to_find)
     {
-        size_t count = 0;
+        size_type count = 0;
         for (; *str != '\0'; ++str)
             if (*str == char_to_find)
                 ++count;
         return count;
     }
 
-    static size_t CharCount(wchar_t const* str, wchar_t char_to_find)
+    static size_type CharCount(wchar_t const* str, wchar_t char_to_find)
     {
-        size_t count = 0;
+        size_type count = 0;
         for (; *str != L'\0'; ++str)
             if (*str == char_to_find)
                 ++count;
         return count;
     }
 
-    static size_t CharCount(char const* str, char const* chars_to_find)
+    static size_type CharCount(char const* str, char const* chars_to_find)
     {
         char const* char_to_find;
-        size_t count = 0;
+        size_type count = 0;
         for (; *str != '\0'; ++str)
             for (char_to_find = chars_to_find; *char_to_find != '\0'; ++char_to_find)
                 if (*str == *char_to_find)
@@ -97,10 +97,10 @@ protected:
         return count;
     }
 
-    static size_t CharCount(wchar_t const* str, wchar_t const* chars_to_find)
+    static size_type CharCount(wchar_t const* str, wchar_t const* chars_to_find)
     {
         wchar_t const* char_to_find;
-        size_t count = 0;
+        size_type count = 0;
         for (; *str != L'\0'; ++str)
             for (char_to_find = chars_to_find; *char_to_find != L'\0'; ++char_to_find)
                 if (*str == *char_to_find)
@@ -111,7 +111,7 @@ protected:
     template<typename SizeType>
     static int MemCmp(void const* ptr1, void const* ptr2, SizeType size)
     {
-        return ::memcmp(ptr1, ptr2, static_cast<size_t>(size));
+        return ::memcmp(ptr1, ptr2, static_cast<size_type>(size));
     }
 
     template<typename Type, typename SizeType>
@@ -228,7 +228,7 @@ protected:
     }
 
     template<typename CharType, typename IntType>
-    static bool ToInt(CharType const* str, IntType& value, unsigned int& error_pos)
+    static bool ToInt(CharType const* str, IntType& value, size_type& error_pos)
     {
         bool success = true;
         IntType multiply;
@@ -259,7 +259,7 @@ protected:
                 {
                     value = 0;
                     success = false;
-                    error_pos = static_cast<unsigned int>(str - start);
+                    error_pos = static_cast<size_type>(str - start);
                 }
             }
             else
@@ -281,7 +281,7 @@ protected:
     template<typename CharType, typename IntType>
     static bool ToInt(CharType const* str, IntType& value)
     {
-        unsigned int error_pos = 0;
+        size_type error_pos = 0;
         return ToInt<CharType, IntType>(str, value, error_pos);
     }
 
@@ -292,5 +292,10 @@ protected:
         if (!ToInt(str, value))
             value = 0;
         return value;
+    }
+
+    static void Sleep(unsigned long milliseconds)
+    {
+        ocl::TestTime::Sleep(milliseconds);
     }
 #endif // OCL_TEST_HELPERS_ENABLED

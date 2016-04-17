@@ -79,13 +79,13 @@ Test_##class_name##_##function_name##_##args::Test_##class_name##_##function_nam
 #endif // TEST_MEMBER_FUNCTION
 
 #ifndef TEST_MEMBER_FUNCTION_TIME
-#define TEST_MEMBER_FUNCTION_TIME(class_name, function_name, args, secs, nanosecs) \
+#define TEST_MEMBER_FUNCTION_TIME(class_name, function_name, args, secs, millisecs) \
 class TimedTest_##class_name##_##function_name##_##args : public ocl::TestClass \
 { \
 public:TimedTest_##class_name##_##function_name##_##args(); \
 } g_TimedTest_##class_name##_##function_name##_##args; \
 TimedTest_##class_name##_##function_name##_##args::TimedTest_##class_name##_##function_name##_##args() \
-    : ocl::TestClass(#class_name, #function_name, #args, false, true, secs, nanosecs * ocl::TestTime::MICROSECONDS_PER_SECOND)
+    : ocl::TestClass(#class_name, #function_name, #args, false, true, secs, millisecs * ocl::TestTime::MICROSECONDS_PER_SECOND)
 #else
 #error Unit test conflict with other macro!
 #endif // TEST_MEMBER_FUNCTION_TIME
@@ -103,13 +103,13 @@ Test_##class_name##_##function_name##_##args##_const::Test_##class_name##_##func
 #endif // TEST_CONST_MEMBER_FUNCTION
 
 #ifndef TEST_CONST_MEMBER_FUNCTION_TIME
-#define TEST_CONST_MEMBER_FUNCTION_TIME(class_name, function_name, args, secs, nanosecs) \
+#define TEST_CONST_MEMBER_FUNCTION_TIME(class_name, function_name, args, secs, millisecs) \
 class TimedTest_##class_name##_##function_name##_##args##_const : public ocl::TestClass \
 { \
 public:TimedTest_##class_name##_##function_name##_##args##_const(); \
 } g_TimedTest_##class_name##_##function_name##_##args##_const; \
 TimedTest_##class_name##_##function_name##_##args##_const::TimedTest_##class_name##_##function_name##_##args##_const() \
-    : ocl::TestClass(#class_name, #function_name, #args, true, true, secs, nanosecs * ocl::TestTime::MICROSECONDS_PER_SECOND)
+    : ocl::TestClass(#class_name, #function_name, #args, true, true, secs, millisecs * ocl::TestTime::MICROSECONDS_PER_SECOND)
 #else
 #error Unit test conflict with other macro!
 #endif // TEST_CONST_MEMBER_FUNCTION_TIME
@@ -192,79 +192,79 @@ TEST_MEMBER_FUNCTION(MyString, operator_plus_equal, char)
  */
 
 #ifndef CHECK_TRUE
-#define CHECK_TRUE(expression) CheckTrue(#expression, __FILE__, (size_t)__LINE__, (expression))
+#define CHECK_TRUE(expression) CheckTrue(#expression, __FILE__, __LINE__, (expression))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_FALSE
-#define CHECK_FALSE(expression) CheckFalse(#expression, __FILE__, (size_t)__LINE__, (expression))
+#define CHECK_FALSE(expression) CheckFalse(#expression, __FILE__, __LINE__, (expression))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_EQUAL
-#define CHECK_EQUAL(value1, value2) CheckEqual(#value1 "==" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#define CHECK_EQUAL(value1, value2) CheckEqual(#value1 "==" #value2, __FILE__, __LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_NOT_EQUAL
-#define CHECK_NOT_EQUAL(value1, value2) CheckNotEqual(#value1 "!=" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#define CHECK_NOT_EQUAL(value1, value2) CheckNotEqual(#value1 "!=" #value2, __FILE__, __LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_GREATER
-#define CHECK_GREATER(value1, value2) CheckGreater(#value1 ">=" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#define CHECK_GREATER(value1, value2) CheckGreater(#value1 ">=" #value2, __FILE__, __LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_GREATER_EQUAL
-#define CHECK_GREATER_EQUAL(value1, value2) CheckGreaterEqual(#value1 ">" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#define CHECK_GREATER_EQUAL(value1, value2) CheckGreaterEqual(#value1 ">" #value2, __FILE__, __LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_LESS
-#define CHECK_LESS(value1, value2) CheckLess(#value1 "<" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#define CHECK_LESS(value1, value2) CheckLess(#value1 "<" #value2, __FILE__, __LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_LESS_EQUAL
-#define CHECK_LESS_EQUAL(value1, value2) CheckLessEqual(#value1 "<=" #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#define CHECK_LESS_EQUAL(value1, value2) CheckLessEqual(#value1 "<=" #value2, __FILE__, __LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_NULL
-#define CHECK_NULL(value) CheckNull(#value "== NULL", __FILE__, (size_t)__LINE__, value)
+#define CHECK_NULL(value) CheckNull(#value "== NULL", __FILE__, __LINE__, value)
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_NOT_NULL
-#define CHECK_NOT_NULL(value) CheckNotNull(#value "!= NULL", __FILE__, (size_t)__LINE__, value)
+#define CHECK_NOT_NULL(value) CheckNotNull(#value "!= NULL", __FILE__, __LINE__, value)
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_ZERO
-#define CHECK_ZERO(value) CheckZero(#value "== 0", __FILE__, (size_t)__LINE__, (value))
+#define CHECK_ZERO(value) CheckZero(#value "== 0", __FILE__, __LINE__, (value))
 #endif
 
 #ifndef CHECK_NOT_ZERO
-#define CHECK_NOT_ZERO(value) CheckNotZero(#value "!= 0", __FILE__, (size_t)__LINE__, (value))
+#define CHECK_NOT_ZERO(value) CheckNotZero(#value "!= 0", __FILE__, __LINE__, (value))
 #endif
 
 #ifndef CHECK_COMPARE
-#define CHECK_COMPARE(value1, value2) CheckCompare("compare " #value1 " = " #value2, __FILE__, (size_t)__LINE__, value1, value2)
+#define CHECK_COMPARE(value1, value2) CheckCompare("compare " #value1 " = " #value2, __FILE__, __LINE__, value1, value2)
 #endif
 
 #ifndef CHECK_NOT_COMPARE
-#define CHECK_NOT_COMPARE(value1, value2) CheckNotCompare("compare " #value1 " != " #value2, __FILE__, (size_t)__LINE__, (value1), (value2))
+#define CHECK_NOT_COMPARE(value1, value2) CheckNotCompare("compare " #value1 " != " #value2, __FILE__, __LINE__, (value1), (value2))
 #endif
 
 #define CHECK_EXCEPTION(expression, exception_type, expect_exception) \
@@ -278,7 +278,7 @@ TEST_MEMBER_FUNCTION(MyString, operator_plus_equal, char)
     { \
         found_exception = true; \
     } \
-    CheckException(#expression, __FILE__, (size_t)__LINE__, found_exception, expect_exception); \
+    CheckException(#expression, __FILE__, __LINE__, found_exception, expect_exception); \
 }
 
 #define CHECK_ALL_EXCEPTIONS(expression, expect_exception) \
@@ -292,7 +292,7 @@ TEST_MEMBER_FUNCTION(MyString, operator_plus_equal, char)
     { \
         found_exception = true; \
     } \
-    CheckException(#expression, __FILE__, (size_t)__LINE__, found_exception, expect_exception); \
+    CheckException(#expression, __FILE__, __LINE__, found_exception, expect_exception); \
 }
 
 #ifndef CHECK_TIME
