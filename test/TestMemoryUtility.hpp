@@ -20,7 +20,6 @@ limitations under the License.
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
-#include "TestMemoryOverflowUtility.hpp"
 
 namespace ocl
 {
@@ -28,23 +27,12 @@ namespace ocl
 template<typename Type, typename SizeType = size_t>
 struct TestMemoryUtility
 {
-    typedef TestMemoryOverflowUtility<SizeType> overflow_utility;
-
     static SizeType const SIZE_IN_BYTES = static_cast<SizeType>(sizeof(Type));
 
-    static SizeType const OVERFLOW_BUFFER_BYTES = overflow_utility::OVERFLOW_BUFFER_BYTES;
-
-    /// Allocate a number of elements on the heap, and optionally set an overflow marker
-    /// when OVERFLOW_BUFFER_BYTES is greater than 0.
     static Type* Allocate(SizeType elements)
     {
         SizeType const alloc_size_in_bytes = elements * sizeof(Type);
-        Type* ptr = static_cast<Type*>(::malloc(alloc_size_in_bytes + OVERFLOW_BUFFER_BYTES));
-
-        // After allocating memory, mark the bytes after the size for overflow detection.
-        if (ptr != NULL)
-            overflow_utility::SetOverflowBytes(reinterpret_cast<unsigned char*>(ptr) + alloc_size_in_bytes);
-
+        Type* ptr = static_cast<Type*>(::malloc(alloc_size_in_bytes));
         return ptr;
     }
 
