@@ -30,7 +30,7 @@ limitations under the License.
 namespace ocl
 {
 
-template<typename Type, typename SizeType = size_t>
+template<typename Type, typename SizeType = unsigned int>
 struct TestNumericUtility
 {
     /// Get the number of characters required to store the largest int
