@@ -45,7 +45,7 @@ struct TestConverterUtility<bool, SizeType>
     {
         char const* str = value ? "true" : "false";
         length = ::strlen(str);
-        return TestMemoryUtility<char>::UnsafeAllocateCopy(str, length + 1);
+        return TestMemoryUtility<char, SizeType>::UnsafeAllocateCopy(str, length + 1);
     }
 };
 
@@ -58,7 +58,7 @@ struct TestConverterUtility<char, SizeType>
     {
         char str[2] = {value, '\0'};
         length = 1;
-        return TestMemoryUtility<char>::UnsafeAllocateCopy(str, 2);
+        return TestMemoryUtility<char, SizeType>::UnsafeAllocateCopy(str, 2);
     }
 };
 
@@ -69,7 +69,7 @@ struct TestConverterUtility<signed char, SizeType>
 
     static char* GetString(type value, SizeType& length)
     {
-        return TestNumericUtility<signed int>::GetString(value, "%d", length);
+        return TestNumericUtility<signed int, SizeType>::GetString(value, "%d", length);
     }
 };
 
@@ -80,7 +80,7 @@ struct TestConverterUtility<unsigned char, SizeType>
 
     static char* GetString(type value, SizeType& length)
     {
-        return TestNumericUtility<unsigned int>::GetString(value, "%u", length);
+        return TestNumericUtility<unsigned int, SizeType>::GetString(value, "%u", length);
     }
 };
 
@@ -91,7 +91,7 @@ struct TestConverterUtility<signed short, SizeType>
 
     static char* GetString(type value, SizeType& length)
     {
-        return TestNumericUtility<signed int>::GetString(value, "%d", length);
+        return TestNumericUtility<signed int, SizeType>::GetString(value, "%d", length);
     }
 };
 
@@ -102,7 +102,7 @@ struct TestConverterUtility<unsigned short, SizeType>
 
     static char* GetString(type value, SizeType& length)
     {
-        return TestNumericUtility<unsigned int>::GetString(value, "%u", length);
+        return TestNumericUtility<unsigned int, SizeType>::GetString(value, "%u", length);
     }
 };
 
@@ -113,7 +113,7 @@ struct TestConverterUtility<signed int, SizeType>
 
     static char* GetString(type value, SizeType& length)
     {
-        return TestNumericUtility<type>::GetString(value, "%d", length);
+        return TestNumericUtility<type, SizeType>::GetString(value, "%d", length);
     }
 };
 
@@ -124,7 +124,7 @@ struct TestConverterUtility<unsigned int, SizeType>
 
     static char* GetString(type value, SizeType& length)
     {
-        return TestNumericUtility<type>::GetString(value, "%u", length);
+        return TestNumericUtility<type, SizeType>::GetString(value, "%u", length);
     }
 };
 
@@ -135,7 +135,7 @@ struct TestConverterUtility<signed long, SizeType>
 
     static char* GetString(type value, SizeType& length)
     {
-        return TestNumericUtility<type>::GetString(value, "%ld", length);
+        return TestNumericUtility<type, SizeType>::GetString(value, "%ld", length);
     }
 };
 
@@ -146,7 +146,7 @@ struct TestConverterUtility<unsigned long, SizeType>
 
     static char* GetString(type value, SizeType& length)
     {
-        return TestNumericUtility<type>::GetString(value, "%lu", length);
+        return TestNumericUtility<type, SizeType>::GetString(value, "%lu", length);
     }
 };
 
