@@ -573,9 +573,33 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeFree, char_ptr_ref)
 TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_ref_char_const_ptr_size_t)
 {
     using ocl::TestStringUtility;
+    typedef TestStringUtility::size_type size_type;
 
     TEST_OVERRIDE_ARGS("char*&,size_t&,char const*,size_t");
 
+    char const* src = "hello";
+    size_type src_len = StrLen(src);
+
+    char* dest = NULL;
+    size_type dest_len = 0;
+    TestStringUtility::SafeAllocateCopy(dest, dest_len, src, src_len);
+    CHECK_NOT_NULL(dest);
+    CHECK_EQUAL(StrCmp(dest, src), 0);
+    CHECK_EQUAL(dest_len, src_len);
+    TestStringUtility::FastFree(dest);
+
+    // Test fail conditions return a NULL pointer and zero length.
+    TestStringUtility::SafeAllocateCopy(dest, dest_len, NULL, 1U);
+    CHECK_NULL(dest);
+    CHECK_ZERO(dest_len);
+
+    TestStringUtility::SafeAllocateCopy(dest, dest_len, src, 0U);
+    CHECK_NULL(dest);
+    CHECK_ZERO(dest_len);
+
+    TestStringUtility::SafeAllocateCopy(dest, dest_len, NULL, 0U);
+    CHECK_NULL(dest);
+    CHECK_ZERO(dest_len);
 }
 
 TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_ref_char_const_ptr)
