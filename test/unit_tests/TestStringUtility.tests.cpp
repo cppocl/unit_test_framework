@@ -514,9 +514,35 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeLength, char_const_ptr)
 TEST_MEMBER_FUNCTION(TestStringUtility, UnsafeFind, char_const_ptr_char_size_t_size_t)
 {
     using ocl::TestStringUtility;
+    typedef TestStringUtility::size_type size_type;
 
     TEST_OVERRIDE_ARGS("char const*,char,size_t&,size_t");
 
+    char str[] = "abcABDabcd";
+
+    size_type pos = 1U;
+    TestStringUtility::UnsafeFind(str, 'a', pos, 0U);
+    CHECK_EQUAL(pos, 0U);
+
+    pos = 0U;
+    TestStringUtility::UnsafeFind(str, 'b', pos, 0U);
+    CHECK_EQUAL(pos, 1U);
+
+    pos = 1U;
+    TestStringUtility::UnsafeFind(str, 'A', pos, 0U);
+    CHECK_EQUAL(pos, 3U);
+
+    TestStringUtility::UnsafeFind(str, 'a', pos, 1U);
+    CHECK_EQUAL(pos, 6U);
+
+    TestStringUtility::UnsafeFind(str, 'c', pos, 2U);
+    CHECK_EQUAL(pos, 2U);
+
+    TestStringUtility::UnsafeFind(str, 'c', pos, 3U);
+    CHECK_EQUAL(pos, 8U);
+
+    TestStringUtility::UnsafeFind(str, 'd', pos, 1U);
+    CHECK_EQUAL(pos, 9U);
 }
 
 TEST_MEMBER_FUNCTION(TestStringUtility, Allocate, char_ptr_ref_size_t)
