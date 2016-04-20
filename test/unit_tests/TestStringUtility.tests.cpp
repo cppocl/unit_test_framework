@@ -588,6 +588,16 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
     CHECK_EQUAL(dest_len, src_len);
     TestStringUtility::FastFree(dest);
 
+    // When copying less than the whole string, ensure the new string is terminated with '\0'.
+    TestStringUtility::SafeAllocateCopy(dest, dest_len, src, 1);
+    CHECK_NOT_NULL(dest);
+    bool is_null_terminated = *(dest + 1) == '\0';
+    CHECK_TRUE(is_null_terminated);
+    if (is_null_terminated)
+        CHECK_EQUAL(StrCmp(dest, "h"), 0);
+    CHECK_EQUAL(dest_len, 1U);
+    TestStringUtility::FastFree(dest);
+
     // Test fail conditions return a NULL pointer and zero length.
     TestStringUtility::SafeAllocateCopy(dest, dest_len, NULL, 1U);
     CHECK_NULL(dest);
@@ -629,9 +639,20 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
 TEST_MEMBER_FUNCTION(TestStringUtility, UnsafeAllocateCopy, char_ptr_ref_size_t_ref_char_const_ptr)
 {
     using ocl::TestStringUtility;
+    typedef TestStringUtility::size_type size_type;
 
     TEST_OVERRIDE_ARGS("char*&,size_t&,char const*");
 
+    char const* src = "hello";
+    size_type src_len = StrLen(src);
+
+    char* dest = NULL;
+    size_type dest_len = 0;
+    TestStringUtility::UnsafeAllocateCopy(dest, dest_len, src);
+    CHECK_NOT_NULL(dest);
+    CHECK_EQUAL(StrCmp(dest, src), 0);
+    CHECK_EQUAL(dest_len, src_len);
+    TestStringUtility::FastFree(dest);
 }
 
 TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocCopy, char_ptr_ref_size_t_char_const_ptr)
