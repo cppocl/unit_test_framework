@@ -551,14 +551,10 @@ TEST_MEMBER_FUNCTION(TestStringUtility, Allocate, char_ptr_ref_size_t)
 
     TEST_OVERRIDE_ARGS("char*&,size_t");
 
-}
-
-TEST_MEMBER_FUNCTION(TestStringUtility, FastFree, char_ptr)
-{
-    using ocl::TestStringUtility;
-
-    TEST_OVERRIDE_ARGS("char*");
-
+    char* ptr = NULL;
+    TestStringUtility::Allocate(ptr, 10);
+    CHECK_NOT_NULL(ptr);
+    TestStringUtility::FastFree(ptr);
 }
 
 TEST_MEMBER_FUNCTION(TestStringUtility, SafeFree, char_ptr_ref)
@@ -567,6 +563,11 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeFree, char_ptr_ref)
 
     TEST_OVERRIDE_ARGS("char*&");
 
+    char* ptr = NULL;
+    TestStringUtility::Allocate(ptr, 10);
+    CHECK_NOT_NULL(ptr);
+    TestStringUtility::SafeFree(ptr);
+    CHECK_NULL(ptr);
 }
 
 TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_ref_char_const_ptr_size_t)
