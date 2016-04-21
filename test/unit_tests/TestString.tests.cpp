@@ -19,4 +19,6 @@ limitations under the License.
 
 TEST_MEMBER_FUNCTION(TestString, TestString, char_const_ptr)
 {
+    ocl::TestString empty_string;
+    CHECK_TRUE(empty_string.IsEmpty());
 }
