@@ -216,12 +216,6 @@ struct TestStringUtility
         dest_len = (dest != NULL) ? src_len : static_cast<size_type>(0);
     }
 
-    static void SafeReallocCopy(char*& dest, size_type& dest_len, char const* src)
-    {
-        FastFree(dest);
-        SafeAllocateCopy(dest, dest_len, src);
-    }
-
     static void SafeReallocCopy(char*& dest,
                                 size_type& dest_len,
                                 char const* src,
@@ -229,6 +223,12 @@ struct TestStringUtility
     {
         FastFree(dest);
         SafeAllocateCopy(dest, dest_len, src, src_len);
+    }
+
+    static void SafeReallocCopy(char*& dest, size_type& dest_len, char const* src)
+    {
+        FastFree(dest);
+        SafeAllocateCopy(dest, dest_len, src);
     }
 
     /// Allocate enough space in dest to copy str1 and append str2.
