@@ -90,6 +90,7 @@ TEST_MEMBER_FUNCTION(TestString, operator_assignment, char_const_ptr)
     TestString str;
     str = "";
     CHECK_TRUE(str.IsEmpty());
+    CHECK_ZERO(str.GetLength());
     str = hello_str;
     CHECK_FALSE(str.IsEmpty());
     CHECK_ZERO(StrCmp(str.Ptr(), hello_str));
@@ -102,6 +103,23 @@ TEST_MEMBER_FUNCTION(TestString, operator_assignment, TestString_const_ref)
 
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator =", "TestString const&");
 
+    TestString empty_string;
+    TestString hello_string("Hello");
+
+    TestString str;
+    str = empty_string;
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_ZERO(str.GetLength());
+
+    str = hello_string;
+    CHECK_FALSE(str.IsEmpty());
+    CHECK_ZERO(StrCmp(str.Ptr(), hello_string.Ptr()));
+    CHECK_EQUAL(str.GetLength(), hello_string.GetLength());
+
+    // Ensure assigning to nothing will clear any existing string.
+    str = empty_string;
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_ZERO(str.GetLength());
 }
 
 TEST_MEMBER_FUNCTION(TestString, operator_plus_equal, TestString_const_ref)
