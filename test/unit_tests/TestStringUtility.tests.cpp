@@ -693,6 +693,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocCopy, char_ptr_ref_size_t_ref
     CHECK_EQUAL(dest_len, src2_len);
     CHECK_EQUAL(StrLen(dest), src2_len);
     CHECK_ZERO(StrCmp(dest, src2));
+    TestStringUtility::FastFree(dest);
 }
 
 TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocAppend, char_ptr_ref_size_t_ref_char_const_ptr_size_t_char_const_ptr_size_t)
@@ -715,4 +716,5 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocAppend, char_ptr_ref_size_t_r
     CHECK_EQUAL(dest_len, src_len + src2_len);
     CHECK_EQUAL(StrLen(dest), src_len + src2_len);
     CHECK_ZERO(StrCmp(dest, "HelloGoodbye"));
+    TestStringUtility::FastFree(dest);
 }
