@@ -35,9 +35,13 @@ class TestString
 public:
     typedef TestStringUtility::size_type size_type;
 
+    /// size_type has the potential of being signed or unsigned,
+    /// so ensure signed/unsigned mismatch compiler warnings are suppressed.
+    static size_type const size_type_default = static_cast<size_type>(0);
+
 public:
     TestString(char const* str = NULL)
-        : m_length(0)
+        : m_length(size_type_default)
         , m_string(NULL)
     {
         if (str != NULL)
@@ -48,18 +52,18 @@ public:
         : m_length(len)
         , m_string(NULL)
     {
-        if (len > 0)
+        if (len > size_type_default)
         {
             TestStringUtility::Allocate(m_string, len);
             if (m_string != NULL)
                 TestStringUtility::UnsafeFill(m_string, ch, len);
             else
-                m_length = 0;
+                m_length = size_type_default;
         }
     }
 
     TestString(TestString const& str)
-        : m_length(0)
+        : m_length(size_type_default)
         , m_string(NULL)
     {
         TestStringUtility::SafeAllocateCopy(m_string, m_length, str.m_string, str.m_length);
@@ -81,7 +85,9 @@ public:
 
     TestString& operator =(TestString const& str)
     {
-        if ((str.m_string != NULL) && (*str.m_string != '\0') && (str.m_length > 0))
+        if ((str.m_string != NULL) &&
+            (*str.m_string != '\0') &&
+            (str.m_length > size_type_default))
         {
             TestStringUtility::SafeReallocCopy(m_string,
                                                m_length,
@@ -156,10 +162,10 @@ public:
     {
         TestStringUtility::FastFree(m_string);
         m_string = NULL;
-        m_length = 0;
+        m_length = size_type_default;
     }
 
-    bool Find(char ch, size_type& pos, size_type start = 0) const
+    bool Find(char ch, size_type& pos, size_type start = size_type_default) const
     {
         if (m_string != NULL)
             return TestStringUtility::UnsafeFind(m_string, ch, pos, start);
@@ -215,42 +221,57 @@ public:
 
     void Prepend(char const* str)
     {
-        TestStringUtility::SafeReallocAppend(m_string,
-                                             m_length,
-                                             str,
-                                             privateSafeLength(str),
-                                             m_string,
-                                             m_length);
+        if ((str != NULL) && (*str != '\0'))
+        {
+            TestStringUtility::SafeReallocAppend(m_string,
+                                                 m_length,
+                                                 str,
+                                                 privateSafeLength(str),
+                                                 m_string,
+                                                 m_length);
+        }
     }
 
     void Append(char const* str)
     {
-        TestStringUtility::SafeReallocAppend(m_string,
-                                             m_length,
-                                             m_string,
-                                             m_length,
-                                             str,
-                                             privateSafeLength(str));
+        if ((str != NULL) && (*str != '\0'))
+        {
+            TestStringUtility::SafeReallocAppend(m_string,
+                                                 m_length,
+                                                 m_string,
+                                                 m_length,
+                                                 str,
+                                                 privateSafeLength(str));
+        }
     }
 
     void Append(char const* str, size_type count)
     {
-        TestStringUtility::SafeReallocAppend(m_string,
-                                             m_length,
-                                             m_string,
-                                             m_length,
-                                             str,
-                                             count);
+        if ((str != NULL) && (*str != '\0') &&
+            (count > size_type_default))
+        {
+            TestStringUtility::SafeReallocAppend(m_string,
+                                                 m_length,
+                                                 m_string,
+                                                 m_length,
+                                                 str,
+                                                 count);
+        }
     }
 
     void Append(TestString const& str)
     {
-        TestStringUtility::SafeReallocAppend(m_string,
-                                             m_length,
-                                             m_string,
-                                             m_length,
-                                             str.m_string,
-                                             str.m_length);
+        if ((str.m_string != NULL) &&
+            (*str.m_string != '\0') &&
+            (str.m_length > size_type_default))
+        {
+            TestStringUtility::SafeReallocAppend(m_string,
+                                                 m_length,
+                                                 m_string,
+                                                 m_length,
+                                                 str.m_string,
+                                                 str.m_length);
+        }
     }
 
     /// Append a boolean converted to a "true" ot "false" string.
@@ -272,7 +293,7 @@ public:
     /// Append number of characters.
     void Append(char value, size_type count)
     {
-        if (count > 0)
+        if (count > size_type_default)
         {
             char* str = NULL;
             TestStringUtility::Allocate(str, count);
@@ -292,7 +313,7 @@ public:
     /// Append number of characters then a string value.
     void Append(char ch, size_type count, char const* value, size_type len)
     {
-        if (count > 0)
+        if (count > size_type_default)
         {
             char* str = NULL;
             TestStringUtility::Allocate(str, count + len);
@@ -312,42 +333,42 @@ public:
             Append(value, len);
     }
 
-    void Append(signed char value, size_type pad = 0)
+    void Append(signed char value, size_type pad = size_type_default)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(unsigned char value, size_type pad = 0)
+    void Append(unsigned char value, size_type pad = size_type_default)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(signed short value, size_type pad = 0)
+    void Append(signed short value, size_type pad = size_type_default)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(unsigned short value, size_type pad = 0)
+    void Append(unsigned short value, size_type pad = size_type_default)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(signed int value, size_type pad = 0)
+    void Append(signed int value, size_type pad = size_type_default)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(unsigned int value, size_type pad = 0)
+    void Append(unsigned int value, size_type pad = size_type_default)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(signed long value, size_type pad = 0)
+    void Append(signed long value, size_type pad = size_type_default)
     {
         privateAppendValue(value, pad);
     }
 
-    void Append(unsigned long value, size_type pad = 0)
+    void Append(unsigned long value, size_type pad = size_type_default)
     {
         privateAppendValue(value, pad);
     }
@@ -356,11 +377,11 @@ private:
     template<typename T>
     void privateAppendValue(T value, size_type pad)
     {
-        size_type length = 0;
+        size_type length = size_type_default;
         char* str = TestStringUtility::GetString(value, length);
         if (str != NULL)
         {
-            if (IsEmpty() && (pad == 0))
+            if (IsEmpty() && (pad == size_type_default))
                 Move(str, length);
             else
             {
