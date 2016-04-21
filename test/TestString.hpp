@@ -72,7 +72,10 @@ public:
 
     TestString& operator =(char const* str)
     {
-        TestStringUtility::SafeReallocCopy(m_string, m_length, str);
+        if ((str == NULL) || (*str == '\0'))
+            Clear();
+        else
+            TestStringUtility::SafeReallocCopy(m_string, m_length, str);
         return *this;
     }
 
