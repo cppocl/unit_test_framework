@@ -577,7 +577,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
 
     TEST_OVERRIDE_ARGS("char*&,size_t&,char const*,size_t");
 
-    char const* src = "hello";
+    char const* src = "Hello";
     size_type src_len = StrLen(src);
 
     char* dest = NULL;
@@ -594,7 +594,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
     bool is_null_terminated = *(dest + 1) == '\0';
     CHECK_TRUE(is_null_terminated);
     if (is_null_terminated)
-        CHECK_EQUAL(StrCmp(dest, "h"), 0);
+        CHECK_EQUAL(StrCmp(dest, "H"), 0);
     CHECK_EQUAL(dest_len, 1U);
     TestStringUtility::FastFree(dest);
 
@@ -619,7 +619,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
 
     TEST_OVERRIDE_ARGS("char*&,size_t&,char const*");
 
-    char const* src = "hello";
+    char const* src = "Hello";
     size_type src_len = StrLen(src);
 
     char* dest = NULL;
@@ -643,7 +643,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, UnsafeAllocateCopy, char_ptr_ref_size_t_
 
     TEST_OVERRIDE_ARGS("char*&,size_t&,char const*");
 
-    char const* src = "hello";
+    char const* src = "Hello";
     size_type src_len = StrLen(src);
 
     char* dest = NULL;
@@ -658,17 +658,47 @@ TEST_MEMBER_FUNCTION(TestStringUtility, UnsafeAllocateCopy, char_ptr_ref_size_t_
 TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocCopy, char_ptr_ref_size_t_char_const_ptr)
 {
     using ocl::TestStringUtility;
+    typedef TestStringUtility::size_type size_type;
 
     TEST_OVERRIDE_ARGS("char*&,size_t&,char const*");
 
+    char const* src = "Hello";
+    size_type src_len = StrLen(src);
+
+    char* dest = NULL;
+    size_type dest_len = 0;
+    TestStringUtility::UnsafeAllocateCopy(dest, dest_len, src);
+    CHECK_NOT_NULL(dest);
+    CHECK_EQUAL(StrCmp(dest, src), 0);
+    CHECK_EQUAL(dest_len, src_len);
+    TestStringUtility::FastFree(dest);
 }
 
 TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocCopy, char_ptr_ref_size_t_ref_char_const_ptr_size_t)
 {
     using ocl::TestStringUtility;
+    typedef TestStringUtility::size_type size_type;
 
     TEST_OVERRIDE_ARGS("char*&,size_t&,char const*,size_t");
 
+    char const* src = "Hello";
+    size_type src_len = StrLen(src);
+    char const* src2 = "Goodbye";
+    size_type src2_len = StrLen(src2);
+
+    char* dest = NULL;
+    size_type dest_len = 0;
+    TestStringUtility::UnsafeAllocateCopy(dest, dest_len, src);
+    CHECK_NOT_NULL(dest);
+    CHECK_EQUAL(dest_len, src_len);
+    CHECK_EQUAL(StrLen(dest), src_len);
+    CHECK_ZERO(StrCmp(dest, src));
+
+    TestStringUtility::SafeReallocCopy(dest, dest_len, src2, src2_len);
+    CHECK_NOT_NULL(dest);
+    CHECK_EQUAL(dest_len, src2_len);
+    CHECK_EQUAL(StrLen(dest), src2_len);
+    CHECK_ZERO(StrCmp(dest, src2));
 }
 
 TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocAppend, char_ptr_ref_size_t_ref_char_const_ptr_size_t_char_const_ptr_size_t)
