@@ -185,11 +185,16 @@ struct TestStringUtility
         if ((src != NULL) && (src_len > 0))
         {
             dest = TestMemoryUtility<char>::UnsafeAllocateCopy(src, src_len + 1);
-            dest_len = (dest != NULL) ? src_len : static_cast<size_type>(0);
+            if (dest != NULL)
+            {
+                dest_len = src_len;
 
-            // If src is longer than src_len, add the terminating '\0'.
-            if (*(src + src_len) != '\0')
-                *(dest + dest_len) = '\0';
+                // If src is longer than src_len, add the terminating '\0'.
+                if (*(src + src_len) != '\0')
+                    *(dest + dest_len) = '\0';
+            }
+            else
+                dest_len = static_cast<size_type>(0);
         }
         else
         {
