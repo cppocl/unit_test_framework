@@ -46,6 +46,17 @@ TEST_MEMBER_FUNCTION(TestString, TestString, char_size_type)
 
     TEST_OVERRIDE_ARGS("char,size_type");
 
+    {
+        TestString str('a', 1U);
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_ZERO(StrCmp(str.Ptr(), "a"));
+    }
+
+    {
+        TestString str('b', 2U);
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_ZERO(StrCmp(str.Ptr(), "bb"));
+    }
 }
 
 TEST_MEMBER_FUNCTION(TestString, TestString, TestString_const_ref)
@@ -54,6 +65,18 @@ TEST_MEMBER_FUNCTION(TestString, TestString, TestString_const_ref)
 
     TEST_OVERRIDE_ARGS("TestString const&");
 
+    {
+        TestString str_src;
+        TestString str(str_src);
+        CHECK_TRUE(str.IsEmpty());
+    }
+
+    {
+        TestString str_src("Hello");
+        TestString str(str_src);
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_ZERO(StrCmp(str.Ptr(), str_src.Ptr()));
+    }
 }
 
 TEST_MEMBER_FUNCTION(TestString, operator_assignment, char_const_ptr)
@@ -62,6 +85,15 @@ TEST_MEMBER_FUNCTION(TestString, operator_assignment, char_const_ptr)
 
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator =", "char const*");
 
+    char const* hello_str = "Hello";
+
+    TestString str;
+    str = "";
+    CHECK_TRUE(str.IsEmpty());
+    str = hello_str;
+    CHECK_FALSE(str.IsEmpty());
+    CHECK_ZERO(StrCmp(str.Ptr(), hello_str));
+    CHECK_EQUAL(str.GetLength(), StrLen(hello_str));
 }
 
 TEST_MEMBER_FUNCTION(TestString, operator_assignment, TestString_const_ref)
