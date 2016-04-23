@@ -205,7 +205,10 @@ public:
     /// Replace the current sting with str.
     void Assign(char const* str)
     {
-        TestStringUtility::SafeReallocCopy(m_string, m_length, str);
+        if ((str != NULL) && (*str != '\0'))
+            TestStringUtility::SafeReallocCopy(m_string, m_length, str);
+        else
+            Clear();
     }
 
     /// Replace the current sting with str.
