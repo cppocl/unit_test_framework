@@ -218,12 +218,13 @@ public:
     }
 
     /// Move str into this string.
-    void Move(char*& str, size_type len)
+    void Move(char*& str, size_type& len)
     {
         TestStringUtility::FastFree(m_string);
         m_string = str;
         m_length = len;
         str = NULL;
+        len = 0U;
     }
 
     void Move(TestString& str)
