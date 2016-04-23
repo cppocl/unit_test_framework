@@ -226,6 +226,15 @@ public:
         str = NULL;
     }
 
+    void Move(TestString& str)
+    {
+        TestStringUtility::FastFree(m_string);
+        m_string = str.m_string;
+        m_length = str.m_length;
+        str.m_string = NULL;
+        str.m_length = 0U;
+    }
+
     void Prepend(char const* str)
     {
         if ((str != NULL) && (*str != '\0'))
