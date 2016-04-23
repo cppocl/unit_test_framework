@@ -274,7 +274,7 @@ struct TestStringUtility
         }
         else
         {
-            dest = NULL;
+            SafeFree(dest);
             dest_len = 0;
         }
     }
