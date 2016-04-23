@@ -227,6 +227,13 @@ TEST_CONST_MEMBER_FUNCTION(TestString, operator_is_equal, char_const_ptr)
 
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator ==", "char const*");
 
+    TestString str;
+    CHECK_TRUE(str == "");
+    CHECK_TRUE(str == static_cast<char const*>(NULL));
+
+    str = "A";
+    CHECK_TRUE(str == "A");
+    CHECK_FALSE(str == "a");
 }
 
 TEST_MEMBER_FUNCTION(TestString, operator_is_equal, TestString_const_ref)
@@ -235,12 +242,34 @@ TEST_MEMBER_FUNCTION(TestString, operator_is_equal, TestString_const_ref)
 
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator ==", "TestString const&");
 
+    TestString empty_string;
+    TestString a_str("a");
+    TestString A_str("A");
+
+    TestString str;
+    CHECK_TRUE(str == empty_string);
+
+    str = A_str;
+    CHECK_TRUE(str == A_str);
+    CHECK_FALSE(str == a_str);
 }
 
 TEST_CONST_MEMBER_FUNCTION(TestString, Ptr, NA)
 {
     using ocl::TestString;
 
+    char const* hello_string = "Hello";
+
+    TestString str;
+    CHECK_NOT_NULL(str.Ptr());
+    CHECK_ZERO(StrCmp(str.Ptr(), ""));
+
+    str = hello_string;
+
+    // Make sure assignment of hello_string does not just reference the same pointer.
+    CHECK_NOT_EQUAL(str.Ptr(), hello_string);
+
+    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
 }
 
 TEST_CONST_MEMBER_FUNCTION(TestString, GetLength, NA)
