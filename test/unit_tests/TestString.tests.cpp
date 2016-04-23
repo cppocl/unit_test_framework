@@ -24,7 +24,7 @@ TEST_MEMBER_FUNCTION(TestString, TestString, char_const_ptr)
     TEST_OVERRIDE_ARGS("char const*");
 
     {
-        TestString empty_string;
+        TestString const empty_string;
         CHECK_TRUE(empty_string.IsEmpty());
     }
 
@@ -103,8 +103,8 @@ TEST_MEMBER_FUNCTION(TestString, operator_assignment, TestString_const_ref)
 
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator =", "TestString const&");
 
-    TestString empty_string;
-    TestString hello_string("Hello");
+    TestString const empty_string;
+    TestString const hello_string("Hello");
 
     TestString str;
     str = empty_string;
@@ -152,7 +152,8 @@ TEST_MEMBER_FUNCTION(TestString, operator_plus_equal, TestString_const_ref)
 
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator +=", "TestString const&");
 
-    TestString empty_string;
+    TestString const empty_string;
+
     TestString str;
 
     str += empty_string;
@@ -242,9 +243,9 @@ TEST_MEMBER_FUNCTION(TestString, operator_is_equal, TestString_const_ref)
 
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator ==", "TestString const&");
 
-    TestString empty_string;
-    TestString a_str("a");
-    TestString A_str("A");
+    TestString const empty_string;
+    TestString const a_str("a");
+    TestString const A_str("A");
 
     TestString str;
     CHECK_TRUE(str == empty_string);
@@ -368,6 +369,7 @@ TEST_MEMBER_FUNCTION(TestString, GetSubString, TestString_ref_size_type_size_typ
     size_type hello_string_len = StrLen(hello_string);
 
     TestString empty_string;
+
     TestString str(hello_string);
 
     bool remove_sub_string = false;
@@ -562,9 +564,43 @@ TEST_MEMBER_FUNCTION(TestString, GetSubString, TestString_ref_size_type_size_typ
 TEST_MEMBER_FUNCTION(TestString, Assign, char_const_ptr)
 {
     using ocl::TestString;
+    typedef TestString::size_type size_type;
 
     TEST_OVERRIDE_ARGS("char const*");
 
+    char const* hello_string = "Hello";
+    size_type hello_string_len = StrLen(hello_string);
+    TestString str;
+
+    str.Assign(NULL);
+    CHECK_NOT_NULL(str.Ptr());
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 0U);
+
+    str.Assign("");
+    CHECK_NOT_NULL(str.Ptr());
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 0U);
+
+    str.Assign(hello_string);
+    CHECK_FALSE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), hello_string_len);
+    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+
+    str.Assign("");
+    CHECK_NOT_NULL(str.Ptr());
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 0U);
+
+    str.Assign(hello_string);
+    CHECK_FALSE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), hello_string_len);
+    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+
+    str.Assign(NULL);
+    CHECK_NOT_NULL(str.Ptr());
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 0U);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Assign, TestString_const_ref)
@@ -573,14 +609,82 @@ TEST_MEMBER_FUNCTION(TestString, Assign, TestString_const_ref)
 
     TEST_OVERRIDE_ARGS("TestString const&");
 
+    TestString const empty_string;
+    TestString const hello_string("Hello");
+
+    TestString str;
+
+    str.Assign(empty_string);
+    CHECK_NOT_NULL(str.Ptr());
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 0U);
+
+    str.Assign(hello_string);
+    CHECK_NOT_NULL(str.Ptr());
+    CHECK_FALSE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 5U);
+    CHECK_ZERO(StrCmp(str.Ptr(), hello_string.Ptr()));
+
+    str.Assign(empty_string);
+    CHECK_NOT_NULL(str.Ptr());
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 0U);
+}
+
+TEST_MEMBER_FUNCTION(TestString, Move, TestString_ref)
+{
+    using ocl::TestString;
+
+    TEST_OVERRIDE_ARGS("TestString&");
+
+    TestString empty_string;
+    TestString hello_string("Hello");
+
+    TestString str;
+    str.Move(empty_string);
+    CHECK_NOT_NULL(str.Ptr());
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 0U);
+    CHECK_NOT_NULL(empty_string.Ptr());
+    CHECK_TRUE(empty_string.IsEmpty());
+    CHECK_EQUAL(empty_string.GetLength(), 0U);
+
+    str.Move(hello_string);
+    CHECK_ZERO(StrCmp(str.Ptr(), "Hello"));
+    CHECK_FALSE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 5U);
+    CHECK_ZERO(StrCmp(hello_string.Ptr(), ""));
+    CHECK_TRUE(hello_string.IsEmpty());
+    CHECK_EQUAL(hello_string.GetLength(), 0U);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Move, char_ptr_ref_size_type)
 {
     using ocl::TestString;
+    using ocl::TestStringUtility;
+    typedef TestString::size_type size_type;
 
     TEST_OVERRIDE_ARGS("char*&,size_type");
 
+    char const* hello_string = "Hello";
+    size_type hello_string_len = StrLen(hello_string);
+
+    char* dest = NULL;
+    size_type dest_len = 0U;
+
+    TestString str;
+    str.Move(dest, dest_len);
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_ZERO(str.GetLength());
+    CHECK_NULL(dest);
+    CHECK_ZERO(dest_len);
+
+    TestStringUtility::SafeAllocateCopy(dest, dest_len, hello_string, hello_string_len);
+    str.Move(dest, dest_len);
+    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_EQUAL(str.GetLength(), hello_string_len);
+    CHECK_NULL(dest);
+    CHECK_ZERO(dest_len);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Prepend, char_const_ptr)
