@@ -763,6 +763,44 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_const_ptr)
 
     TEST_OVERRIDE_ARGS("char const*");
 
+    {
+        TestString str;
+
+        str.Append(static_cast<char const*>(NULL));
+        CHECK_TRUE(str.IsEmpty());
+        CHECK_ZERO(str.GetLength());
+
+        str.Append("");
+        CHECK_TRUE(str.IsEmpty());
+        CHECK_ZERO(str.GetLength());
+
+        str.Append("A");
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), 1U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "A"));
+
+        str.Append("B");
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), 2U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+    }
+
+    {
+        TestString str("AB");
+
+        str.Append(static_cast<char const*>(NULL));
+        CHECK_EQUAL(str.GetLength(), 2U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+
+        str.Append("");
+        CHECK_EQUAL(str.GetLength(), 2U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+
+        str.Append("CD");
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), 4U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "ABCD"));
+    }
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, char_const_ptr_size_type)
