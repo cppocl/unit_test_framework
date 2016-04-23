@@ -122,12 +122,52 @@ TEST_MEMBER_FUNCTION(TestString, operator_assignment, TestString_const_ref)
     CHECK_ZERO(str.GetLength());
 }
 
+TEST_MEMBER_FUNCTION(TestString, operator_plus_equal, char_const_ptr)
+{
+    using ocl::TestString;
+
+    TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator +=", "char const* str");
+
+    TestString str;
+    str += static_cast<char const*>(NULL);
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 0U);
+
+    str += "";
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 0U);
+
+    str += "H";
+    CHECK_ZERO(StrCmp(str.Ptr(), "H"));
+    CHECK_EQUAL(str.GetLength(), 1U);
+
+    str += "ello";
+    CHECK_ZERO(StrCmp(str.Ptr(), "Hello"));
+    CHECK_EQUAL(str.GetLength(), 5U);
+}
+
 TEST_MEMBER_FUNCTION(TestString, operator_plus_equal, TestString_const_ref)
 {
     using ocl::TestString;
 
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator +=", "TestString const&");
 
+    TestString empty_string;
+    TestString str;
+
+    str += empty_string;
+    CHECK_TRUE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 0U);
+
+    TestString h_str("H");
+    str += h_str;
+    CHECK_ZERO(StrCmp(str.Ptr(), h_str.Ptr()));
+    CHECK_EQUAL(str.GetLength(), 1U);
+
+    TestString ello_str("ello");
+    str += ello_str;
+    CHECK_ZERO(StrCmp(str.Ptr(), "Hello"));
+    CHECK_EQUAL(str.GetLength(), 5U);
 }
 
 TEST_CONST_MEMBER_FUNCTION(TestString, operator_subscript, size_type)
