@@ -276,18 +276,51 @@ TEST_CONST_MEMBER_FUNCTION(TestString, GetLength, NA)
 {
     using ocl::TestString;
 
+    TestString str;
+    CHECK_ZERO(str.GetLength());
+
+    str = "A";
+    CHECK_EQUAL(str.GetLength(), 1U);
+
+    str += "B";
+    CHECK_EQUAL(str.GetLength(), 2U);
+
+    str.Clear();
+    CHECK_ZERO(str.GetLength());
 }
 
 TEST_CONST_MEMBER_FUNCTION(TestString, IsEmpty, NA)
 {
     using ocl::TestString;
 
+    TestString str;
+    CHECK_TRUE(str.IsEmpty());
+
+    str = "A";
+    CHECK_FALSE(str.IsEmpty());
+
+    str += "B";
+    CHECK_FALSE(str.IsEmpty());
+
+    str.Clear();
+    CHECK_TRUE(str.IsEmpty());
 }
 
 TEST_MEMBER_FUNCTION(TestString, Clear, NA)
 {
     using ocl::TestString;
 
+    TestString str;
+    str.Clear();
+    CHECK_TRUE(str.IsEmpty());
+
+    str = "A";
+    str.Clear();
+    CHECK_TRUE(str.IsEmpty());
+
+    str += "B";
+    str.Clear();
+    CHECK_TRUE(str.IsEmpty());
 }
 
 TEST_CONST_MEMBER_FUNCTION(TestString, Find, char_size_type_ref_size_type)
