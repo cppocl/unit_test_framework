@@ -131,7 +131,7 @@ public:
     bool operator ==(char const* str) const
     {
         if (m_string == NULL)
-            return str == NULL;
+            return (str == NULL) || (*str == '\0');
         return ::strcmp(m_string, str) == 0;
     }
 
