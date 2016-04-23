@@ -180,21 +180,24 @@ public:
                       bool remove = false)
     {
         sub_str.Clear();
-        TestStringUtility::SafeReallocCopy(sub_str.m_string,
-                                           sub_str.m_length,
-                                           m_string + start,
-                                           count);
-        if (remove)
+        if (start + count <= m_length)
         {
-            if (sub_str.m_length < m_length)
+            TestStringUtility::SafeReallocCopy(sub_str.m_string,
+                                               sub_str.m_length,
+                                               m_string + start,
+                                               count);
+            if (remove)
             {
-                size_type chars_remaining = m_length - sub_str.m_length;
-                ::memmove(m_string, m_string + sub_str.m_length, chars_remaining);
-                *(m_string + chars_remaining) = '\0';
-                m_length = chars_remaining;
+                if (sub_str.m_length < m_length)
+                {
+                    size_type chars_remaining = m_length - sub_str.m_length;
+                    ::memmove(m_string, m_string + sub_str.m_length, chars_remaining);
+                    *(m_string + chars_remaining) = '\0';
+                    m_length = chars_remaining;
+                }
+                else
+                    Clear();
             }
-            else
-                Clear();
         }
     }
 
