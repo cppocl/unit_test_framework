@@ -174,6 +174,7 @@ public:
 
     /// Extract a partial string, and optionally remove the partial string
     /// from this string.
+    /// If count is 0 then get the sub string from start to the end.
     void GetSubString(TestString& sub_str,
                       size_type start,
                       size_type count,
@@ -182,21 +183,21 @@ public:
         sub_str.Clear();
         if (start + count <= m_length)
         {
+            if (count == 0)
+                count = m_length - start;
+
             TestStringUtility::SafeReallocCopy(sub_str.m_string,
                                                sub_str.m_length,
                                                m_string + start,
                                                count);
             if (remove)
             {
-                if (sub_str.m_length < m_length)
-                {
-                    size_type chars_remaining = m_length - sub_str.m_length;
-                    ::memmove(m_string, m_string + sub_str.m_length, chars_remaining);
-                    *(m_string + chars_remaining) = '\0';
-                    m_length = chars_remaining;
-                }
-                else
-                    Clear();
+                size_type chars_remaining = m_length - sub_str.m_length - start;
+                ::memmove(m_string + start, m_string + start + count, chars_remaining);
+                *(m_string + start + chars_remaining) = '\0';
+                m_length -= count;
+                if (m_length == 0)
+                    TestStringUtility::SafeFree(m_string);
             }
         }
     }
