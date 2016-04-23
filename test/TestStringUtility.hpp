@@ -145,6 +145,12 @@ struct TestStringUtility
         *str = '\0';
     }
 
+    static size_type UnsafeLength(char const* str)
+    {
+        size_type len = static_cast<size_type>(::strlen(str));
+        return len;
+    }
+
     static size_type SafeLength(char const* str)
     {
         size_type len = str != NULL ? static_cast<size_type>(::strlen(str)) : 0U;

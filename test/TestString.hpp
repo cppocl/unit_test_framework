@@ -243,7 +243,20 @@ public:
             TestStringUtility::SafeReallocAppend(m_string,
                                                  m_length,
                                                  str,
-                                                 privateSafeLength(str),
+                                                 privateUnsafeLength(str),
+                                                 m_string,
+                                                 m_length);
+        }
+    }
+
+    void Prepend(TestString const& str)
+    {
+        if ((str != NULL) && (*str != '\0'))
+        {
+            TestStringUtility::SafeReallocAppend(m_string,
+                                                 m_length,
+                                                 str.m_string,
+                                                 str.m_length,
                                                  m_string,
                                                  m_length);
         }
@@ -258,7 +271,7 @@ public:
                                                  m_string,
                                                  m_length,
                                                  str,
-                                                 privateSafeLength(str));
+                                                 privateUnsafeLength(str));
         }
     }
 
@@ -409,6 +422,11 @@ private:
                 TestStringUtility::FastFree(str);
             }
         }
+    }
+
+    size_type privateUnsafeLength(char const* str)
+    {
+        return TestStringUtility::UnsafeLength(str);
     }
 
     size_type privateSafeLength(char const* str)
