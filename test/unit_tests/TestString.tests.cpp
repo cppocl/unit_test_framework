@@ -800,6 +800,11 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_const_ptr)
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), 4U);
         CHECK_ZERO(StrCmp(str.Ptr(), "ABCD"));
+
+        str.Append(str.Ptr());
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), 8U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "ABCDABCD"));
     }
 }
 
@@ -809,6 +814,49 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_const_ptr_size_type)
 
     TEST_OVERRIDE_ARGS("char const*,size_type");
 
+    {
+        TestString str;
+
+        str.Append(static_cast<char const*>(NULL), 0U);
+        CHECK_TRUE(str.IsEmpty());
+        CHECK_ZERO(str.GetLength());
+
+        str.Append("", 0U);
+        CHECK_TRUE(str.IsEmpty());
+        CHECK_ZERO(str.GetLength());
+
+        str.Append("A", 1U);
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), 1U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "A"));
+
+        str.Append("B", 1U);
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), 2U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+    }
+
+    {
+        TestString str("AB");
+
+        str.Append(static_cast<char const*>(NULL), 0U);
+        CHECK_EQUAL(str.GetLength(), 2U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+
+        str.Append("", 0U);
+        CHECK_EQUAL(str.GetLength(), 2U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+
+        str.Append("CD", 2U);
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), 4U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "ABCD"));
+
+        str.Append(str.Ptr(), 4U);
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), 8U);
+        CHECK_ZERO(StrCmp(str.Ptr(), "ABCDABCD"));
+    }
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, TestString_const_ptr)
