@@ -176,6 +176,10 @@ TEST_CONST_MEMBER_FUNCTION(TestString, operator_subscript, size_type)
 
     TEST_OVERRIDE_FUNCTION_NAME("operator []");
 
+    TestString const str("Hello");
+
+    CHECK_EQUAL(str[0U], 'H');
+    CHECK_EQUAL(str[4U], 'o');
 }
 
 TEST_MEMBER_FUNCTION(TestString, operator_subscript, size_type)
@@ -184,6 +188,17 @@ TEST_MEMBER_FUNCTION(TestString, operator_subscript, size_type)
 
     TEST_OVERRIDE_FUNCTION_NAME("operator []");
 
+    TestString str("Hello");
+
+    char& ch0 = str[0U];
+    CHECK_EQUAL(ch0, 'H');
+    ch0 = 'h';
+    CHECK_EQUAL(str[0U], 'h');
+
+    char& ch4 = str[4U];
+    CHECK_EQUAL(ch4, 'o');
+    ch4 = 'Z';
+    CHECK_EQUAL(str[4U], 'Z');
 }
 
 TEST_CONST_MEMBER_FUNCTION(TestString, char_const_ptr, NA)
@@ -192,6 +207,18 @@ TEST_CONST_MEMBER_FUNCTION(TestString, char_const_ptr, NA)
 
     TEST_OVERRIDE_FUNCTION_NAME("char const*");
 
+    char const* hello_str = "Hello";
+
+    TestString str;
+    char const* ptr = static_cast<char const*>(str);
+    CHECK_NOT_NULL(ptr);
+    CHECK_EQUAL(*ptr, '\0');
+
+    str = hello_str;
+    ptr = static_cast<char const*>(str);
+    CHECK_NOT_NULL(ptr);
+    CHECK_ZERO(StrCmp(ptr, hello_str));
+    CHECK_EQUAL(StrLen(ptr), 5U);
 }
 
 TEST_CONST_MEMBER_FUNCTION(TestString, operator_is_equal, char_const_ptr)
