@@ -693,6 +693,68 @@ TEST_MEMBER_FUNCTION(TestString, Prepend, char_const_ptr)
 
     TEST_OVERRIDE_ARGS("char const*");
 
+    TestString str;
+    str.Prepend("A");
+    CHECK_FALSE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "A"));
+
+    str.Prepend("B");
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "BA"));
+
+    str.Prepend("");
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "BA"));
+
+    str.Prepend(NULL);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "BA"));
+
+    str.Prepend("DC");
+    CHECK_EQUAL(str.GetLength(), 4U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "DCBA"));
+
+    str.Prepend(str.Ptr());
+    CHECK_EQUAL(str.GetLength(), 8U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "DCBADCBA"));
+}
+
+TEST_MEMBER_FUNCTION(TestString, Prepend, TestString_const_ref)
+{
+    using ocl::TestString;
+
+    TEST_OVERRIDE_ARGS("TestString const&");
+
+    TestString const empty_string;
+    TestString const A_string("A");
+    TestString const B_string("B");
+    TestString const BA_string("BA");
+    TestString const DC_string("DC");
+    TestString const DCBA_string("DCBA");
+    TestString const DCBADCBA_string("DCBADCBA");
+
+    TestString str;
+    str.Prepend(A_string);
+    CHECK_FALSE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), A_string.GetLength());
+    CHECK_ZERO(StrCmp(str.Ptr(), A_string.Ptr()));
+
+    str.Prepend(B_string);
+    CHECK_EQUAL(str.GetLength(), BA_string.GetLength());
+    CHECK_ZERO(StrCmp(str.Ptr(), BA_string.Ptr()));
+
+    str.Prepend(empty_string);
+    CHECK_EQUAL(str.GetLength(), BA_string.GetLength());
+    CHECK_ZERO(StrCmp(str.Ptr(), BA_string.Ptr()));
+
+    str.Prepend(DC_string);
+    CHECK_EQUAL(str.GetLength(), DCBA_string.GetLength());
+    CHECK_ZERO(StrCmp(str.Ptr(), DCBA_string.Ptr()));
+
+    str.Prepend(str.Ptr());
+    CHECK_EQUAL(str.GetLength(), DCBADCBA_string.GetLength());
+    CHECK_ZERO(StrCmp(str.Ptr(), DCBADCBA_string.Ptr()));
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, char_const_ptr)
