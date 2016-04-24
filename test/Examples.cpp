@@ -1,3 +1,24 @@
+/*
+Copyright 2016 Colin Girling
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+******************************************************************************
+
+Using the macros TEST, TEST_FUNCTION, TEST_MEMBER_FUNCTION
+and TEST_CONST_MEMBER_FUNCTION require the names are unique.
+*/
+
 #include "Test.hpp"
 
 // Example functions for demonstrating how to write unit tests
@@ -128,6 +149,19 @@ TEST_MEMBER_FUNCTION(Example, Inc, NA)
     CHECK_EQUAL(example.GetValue(), 1);
 }
 
+// When testing a combination of function calls,
+// TEST macro can be used for this purpose.
+TEST(ComboTesting)
+{
+    Example example(1);
+    CHECK_EQUAL(example.GetValue(), 1);
+    example.Inc();
+    CHECK_EQUAL(example.GetValue(), 2);
+    example.SetValue(-1);
+    CHECK_EQUAL(example.GetValue(), -1);
+    example.Inc();
+    CHECK_EQUAL(example.GetValue(), 0);
+}
 
 // Enable or disable main, as these tests compile and these tests could
 // be added to a different project for debugging, if desired.
