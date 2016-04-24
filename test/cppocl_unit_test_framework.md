@@ -40,24 +40,25 @@ TEST_CONST_MEMBER_FUNCTION_TIME(class_name, function_name, args, secs, millisecs
 
 These macros are used to perform individual checks for function calls, return types, etc.
 
-CHECK_TRUE
-CHECK_FALSE
-CHECK_EQUAL
-CHECK_NOT_EQUAL
-CHECK_GREATER
-CHECK_GREATER_EQUAL
-CHECK_LESS
-CHECK_LESS_EQUAL
-CHECK_NULL
-CHECK_NOT_NULL
-CHECK_ZERO
-CHECK_NOT_ZERO
-CHECK_COMPARE
-CHECK_NOT_COMPARE
-CHECK_TIME
-CHECK_EXCEPTION
-CHECK_ALL_EXCEPTIONS
-
+CHECK_TRUE(expression)
+CHECK_FALSE(expression)
+CHECK_EQUAL(value1, value2)
+CHECK_NOT_EQUAL(value1, value2)
+CHECK_GREATER(value1, value2)
+CHECK_GREATER_EQUAL(value1, value2)
+CHECK_LESS(value1, value2)
+CHECK_LESS_EQUAL(value1, value2)
+CHECK_NULL(value)
+CHECK_NOT_NULL(value)
+CHECK_ZERO(value)
+CHECK_NOT_ZERO(value)
+CHECK_STRCMP(value1, value2)
+CHECK_COMPARE(value1, value2)
+CHECK_NOT_COMPARE(value1, value2)
+CHECK_TIME(function_call)
+CHECK_PERFORMANCE(function_call, min_iterations)
+CHECK_EXCEPTION(expression)
+CHECK_ALL_EXCEPTIONS(expression)
 
 ## Macros for customizing test
 

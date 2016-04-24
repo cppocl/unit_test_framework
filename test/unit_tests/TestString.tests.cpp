@@ -49,13 +49,13 @@ TEST_MEMBER_FUNCTION(TestString, TestString, char_size_type)
     {
         TestString str('a', 1U);
         CHECK_FALSE(str.IsEmpty());
-        CHECK_ZERO(StrCmp(str.Ptr(), "a"));
+        CHECK_STRCMP(str.Ptr(), "a");
     }
 
     {
         TestString str('b', 2U);
         CHECK_FALSE(str.IsEmpty());
-        CHECK_ZERO(StrCmp(str.Ptr(), "bb"));
+        CHECK_STRCMP(str.Ptr(), "bb");
     }
 }
 
@@ -75,7 +75,7 @@ TEST_MEMBER_FUNCTION(TestString, TestString, TestString_const_ref)
         TestString str_src("Hello");
         TestString str(str_src);
         CHECK_FALSE(str.IsEmpty());
-        CHECK_ZERO(StrCmp(str.Ptr(), str_src.Ptr()));
+        CHECK_STRCMP(str.Ptr(), str_src.Ptr());
     }
 }
 
@@ -93,7 +93,7 @@ TEST_MEMBER_FUNCTION(TestString, operator_assignment, char_const_ptr)
     CHECK_ZERO(str.GetLength());
     str = hello_str;
     CHECK_FALSE(str.IsEmpty());
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_str));
+    CHECK_STRCMP(str.Ptr(), hello_str);
     CHECK_EQUAL(str.GetLength(), StrLen(hello_str));
 }
 
@@ -113,7 +113,7 @@ TEST_MEMBER_FUNCTION(TestString, operator_assignment, TestString_const_ref)
 
     str = hello_string;
     CHECK_FALSE(str.IsEmpty());
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string.Ptr()));
+    CHECK_STRCMP(str.Ptr(), hello_string.Ptr());
     CHECK_EQUAL(str.GetLength(), hello_string.GetLength());
 
     // Ensure assigning to nothing will clear any existing string.
@@ -138,11 +138,11 @@ TEST_MEMBER_FUNCTION(TestString, operator_plus_equal, char_const_ptr)
     CHECK_EQUAL(str.GetLength(), 0U);
 
     str += "H";
-    CHECK_ZERO(StrCmp(str.Ptr(), "H"));
+    CHECK_STRCMP(str.Ptr(), "H");
     CHECK_EQUAL(str.GetLength(), 1U);
 
     str += "ello";
-    CHECK_ZERO(StrCmp(str.Ptr(), "Hello"));
+    CHECK_STRCMP(str.Ptr(), "Hello");
     CHECK_EQUAL(str.GetLength(), 5U);
 }
 
@@ -162,12 +162,12 @@ TEST_MEMBER_FUNCTION(TestString, operator_plus_equal, TestString_const_ref)
 
     TestString h_str("H");
     str += h_str;
-    CHECK_ZERO(StrCmp(str.Ptr(), h_str.Ptr()));
+    CHECK_STRCMP(str.Ptr(), h_str.Ptr());
     CHECK_EQUAL(str.GetLength(), 1U);
 
     TestString ello_str("ello");
     str += ello_str;
-    CHECK_ZERO(StrCmp(str.Ptr(), "Hello"));
+    CHECK_STRCMP(str.Ptr(), "Hello");
     CHECK_EQUAL(str.GetLength(), 5U);
 }
 
@@ -218,7 +218,7 @@ TEST_CONST_MEMBER_FUNCTION(TestString, char_const_ptr, NA)
     str = hello_str;
     ptr = static_cast<char const*>(str);
     CHECK_NOT_NULL(ptr);
-    CHECK_ZERO(StrCmp(ptr, hello_str));
+    CHECK_STRCMP(ptr, hello_str);
     CHECK_EQUAL(StrLen(ptr), 5U);
 }
 
@@ -263,14 +263,14 @@ TEST_CONST_MEMBER_FUNCTION(TestString, Ptr, NA)
 
     TestString str;
     CHECK_NOT_NULL(str.Ptr());
-    CHECK_ZERO(StrCmp(str.Ptr(), ""));
+    CHECK_STRCMP(str.Ptr(), "");
 
     str = hello_string;
 
     // Make sure assignment of hello_string does not just reference the same pointer.
     CHECK_NOT_EQUAL(str.Ptr(), hello_string);
 
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
 }
 
 TEST_CONST_MEMBER_FUNCTION(TestString, GetLength, NA)
@@ -383,81 +383,81 @@ TEST_MEMBER_FUNCTION(TestString, GetSubString, TestString_ref_size_type_size_typ
     CHECK_TRUE(sub_str.IsEmpty());
 
     str.GetSubString(sub_str, 0, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "H"));
+    CHECK_STRCMP(sub_str.Ptr(), "H");
     CHECK_EQUAL(sub_str.GetLength(), 1U);
 
     str.GetSubString(sub_str, 1, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "e"));
+    CHECK_STRCMP(sub_str.Ptr(), "e");
     CHECK_EQUAL(sub_str.GetLength(), 1U);
 
     str.GetSubString(sub_str, 2, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "l"));
+    CHECK_STRCMP(sub_str.Ptr(), "l");
     CHECK_EQUAL(sub_str.GetLength(), 1U);
 
     str.GetSubString(sub_str, 3, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "l"));
+    CHECK_STRCMP(sub_str.Ptr(), "l");
     CHECK_EQUAL(sub_str.GetLength(), 1U);
 
     str.GetSubString(sub_str, 4, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "o"));
+    CHECK_STRCMP(sub_str.Ptr(), "o");
     CHECK_EQUAL(sub_str.GetLength(), 1U);
 
     str.GetSubString(sub_str, 5, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
     CHECK_TRUE(sub_str.IsEmpty());
     CHECK_EQUAL(sub_str.GetLength(), 0U);
 
     str.GetSubString(sub_str, 0, 2, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "He"));
+    CHECK_STRCMP(sub_str.Ptr(), "He");
     CHECK_EQUAL(sub_str.GetLength(), 2U);
 
     str.GetSubString(sub_str, 0, 3, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "Hel"));
+    CHECK_STRCMP(sub_str.Ptr(), "Hel");
     CHECK_EQUAL(sub_str.GetLength(), 3U);
 
     str.GetSubString(sub_str, 0, 4, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "Hell"));
+    CHECK_STRCMP(sub_str.Ptr(), "Hell");
     CHECK_EQUAL(sub_str.GetLength(), 4U);
 
     str.GetSubString(sub_str, 0, 5, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "Hello"));
+    CHECK_STRCMP(sub_str.Ptr(), "Hello");
     CHECK_EQUAL(sub_str.GetLength(), 5U);
 
     str.GetSubString(sub_str, 1, 4, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "ello"));
+    CHECK_STRCMP(sub_str.Ptr(), "ello");
     CHECK_EQUAL(sub_str.GetLength(), 4U);
 
     str.GetSubString(sub_str, 2, 3, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "llo"));
+    CHECK_STRCMP(sub_str.Ptr(), "llo");
     CHECK_EQUAL(sub_str.GetLength(), 3U);
 
     str.GetSubString(sub_str, 3, 2, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "lo"));
+    CHECK_STRCMP(sub_str.Ptr(), "lo");
     CHECK_EQUAL(sub_str.GetLength(), 2U);
 
     remove_sub_string = true;
@@ -471,93 +471,93 @@ TEST_MEMBER_FUNCTION(TestString, GetSubString, TestString_ref_size_type_size_typ
     CHECK_TRUE(sub_str.IsEmpty());
 
     str.GetSubString(sub_str, 0, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "ello"));
+    CHECK_STRCMP(str.Ptr(), "ello");
     CHECK_EQUAL(str.GetLength(), 4U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "H"));
+    CHECK_STRCMP(sub_str.Ptr(), "H");
     CHECK_EQUAL(sub_str.GetLength(), 1U);
 
     str = hello_string;
     str.GetSubString(sub_str, 1, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "Hllo"));
+    CHECK_STRCMP(str.Ptr(), "Hllo");
     CHECK_EQUAL(str.GetLength(), 4U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "e"));
+    CHECK_STRCMP(sub_str.Ptr(), "e");
     CHECK_EQUAL(sub_str.GetLength(), 1U);
 
     str = hello_string;
     str.GetSubString(sub_str, 2, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "Helo"));
+    CHECK_STRCMP(str.Ptr(), "Helo");
     CHECK_EQUAL(str.GetLength(), 4U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "l"));
+    CHECK_STRCMP(sub_str.Ptr(), "l");
     CHECK_EQUAL(sub_str.GetLength(), 1U);
 
     str = hello_string;
     str.GetSubString(sub_str, 3, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "Helo"));
+    CHECK_STRCMP(str.Ptr(), "Helo");
     CHECK_EQUAL(str.GetLength(), 4U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "l"));
+    CHECK_STRCMP(sub_str.Ptr(), "l");
     CHECK_EQUAL(sub_str.GetLength(), 1U);
 
     str = hello_string;
     str.GetSubString(sub_str, 4, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "Hell"));
+    CHECK_STRCMP(str.Ptr(), "Hell");
     CHECK_EQUAL(str.GetLength(), 4U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "o"));
+    CHECK_STRCMP(sub_str.Ptr(), "o");
     CHECK_EQUAL(sub_str.GetLength(), 1U);
 
     str = hello_string;
     str.GetSubString(sub_str, 5, 1, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
     CHECK_TRUE(sub_str.IsEmpty());
     CHECK_EQUAL(sub_str.GetLength(), 0U);
 
     str = hello_string;
     str.GetSubString(sub_str, 0, 2, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "llo"));
+    CHECK_STRCMP(str.Ptr(), "llo");
     CHECK_EQUAL(str.GetLength(), 3U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "He"));
+    CHECK_STRCMP(sub_str.Ptr(), "He");
     CHECK_EQUAL(sub_str.GetLength(), 2U);
 
     str = hello_string;
     str.GetSubString(sub_str, 0, 3, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "lo"));
+    CHECK_STRCMP(str.Ptr(), "lo");
     CHECK_EQUAL(str.GetLength(), 2U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "Hel"));
+    CHECK_STRCMP(sub_str.Ptr(), "Hel");
     CHECK_EQUAL(sub_str.GetLength(), 3U);
 
     str = hello_string;
     str.GetSubString(sub_str, 0, 4, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "o"));
+    CHECK_STRCMP(str.Ptr(), "o");
     CHECK_EQUAL(str.GetLength(), 1U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "Hell"));
+    CHECK_STRCMP(sub_str.Ptr(), "Hell");
     CHECK_EQUAL(sub_str.GetLength(), 4U);
 
     str = hello_string;
     str.GetSubString(sub_str, 0, 5, remove_sub_string);
     CHECK_TRUE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), 0U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "Hello"));
+    CHECK_STRCMP(sub_str.Ptr(), "Hello");
     CHECK_EQUAL(sub_str.GetLength(), 5U);
 
     str = hello_string;
     str.GetSubString(sub_str, 1, 4, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "H"));
+    CHECK_STRCMP(str.Ptr(), "H");
     CHECK_EQUAL(str.GetLength(), 1U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "ello"));
+    CHECK_STRCMP(sub_str.Ptr(), "ello");
     CHECK_EQUAL(sub_str.GetLength(), 4U);
 
     str = hello_string;
     str.GetSubString(sub_str, 2, 3, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "He"));
+    CHECK_STRCMP(str.Ptr(), "He");
     CHECK_EQUAL(str.GetLength(), 2U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "llo"));
+    CHECK_STRCMP(sub_str.Ptr(), "llo");
     CHECK_EQUAL(sub_str.GetLength(), 3U);
 
     str = hello_string;
     str.GetSubString(sub_str, 3, 2, remove_sub_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "Hel"));
+    CHECK_STRCMP(str.Ptr(), "Hel");
     CHECK_EQUAL(str.GetLength(), 3U);
-    CHECK_ZERO(StrCmp(sub_str.Ptr(), "lo"));
+    CHECK_STRCMP(sub_str.Ptr(), "lo");
     CHECK_EQUAL(sub_str.GetLength(), 2U);
 }
 
@@ -585,7 +585,7 @@ TEST_MEMBER_FUNCTION(TestString, Assign, char_const_ptr)
     str.Assign(hello_string);
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
 
     str.Assign("");
     CHECK_NOT_NULL(str.Ptr());
@@ -595,7 +595,7 @@ TEST_MEMBER_FUNCTION(TestString, Assign, char_const_ptr)
     str.Assign(hello_string);
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), hello_string_len);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
 
     str.Assign(NULL);
     CHECK_NOT_NULL(str.Ptr());
@@ -623,7 +623,7 @@ TEST_MEMBER_FUNCTION(TestString, Assign, TestString_const_ref)
     CHECK_NOT_NULL(str.Ptr());
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), 5U);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string.Ptr()));
+    CHECK_STRCMP(str.Ptr(), hello_string.Ptr());
 
     str.Assign(empty_string);
     CHECK_NOT_NULL(str.Ptr());
@@ -650,10 +650,10 @@ TEST_MEMBER_FUNCTION(TestString, Move, TestString_ref)
     CHECK_EQUAL(empty_string.GetLength(), 0U);
 
     str.Move(hello_string);
-    CHECK_ZERO(StrCmp(str.Ptr(), "Hello"));
+    CHECK_STRCMP(str.Ptr(), "Hello");
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), 5U);
-    CHECK_ZERO(StrCmp(hello_string.Ptr(), ""));
+    CHECK_STRCMP(hello_string.Ptr(), "");
     CHECK_TRUE(hello_string.IsEmpty());
     CHECK_EQUAL(hello_string.GetLength(), 0U);
 }
@@ -681,7 +681,7 @@ TEST_MEMBER_FUNCTION(TestString, Move, char_ptr_ref_size_type)
 
     TestStringUtility::SafeAllocateCopy(dest, dest_len, hello_string, hello_string_len);
     str.Move(dest, dest_len);
-    CHECK_ZERO(StrCmp(str.Ptr(), hello_string));
+    CHECK_STRCMP(str.Ptr(), hello_string);
     CHECK_EQUAL(str.GetLength(), hello_string_len);
     CHECK_NULL(dest);
     CHECK_ZERO(dest_len);
@@ -697,27 +697,27 @@ TEST_MEMBER_FUNCTION(TestString, Prepend, char_const_ptr)
     str.Prepend("A");
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), 1U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "A"));
+    CHECK_STRCMP(str.Ptr(), "A");
 
     str.Prepend("B");
     CHECK_EQUAL(str.GetLength(), 2U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "BA"));
+    CHECK_STRCMP(str.Ptr(), "BA");
 
     str.Prepend("");
     CHECK_EQUAL(str.GetLength(), 2U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "BA"));
+    CHECK_STRCMP(str.Ptr(), "BA");
 
     str.Prepend(NULL);
     CHECK_EQUAL(str.GetLength(), 2U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "BA"));
+    CHECK_STRCMP(str.Ptr(), "BA");
 
     str.Prepend("DC");
     CHECK_EQUAL(str.GetLength(), 4U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "DCBA"));
+    CHECK_STRCMP(str.Ptr(), "DCBA");
 
     str.Prepend(str.Ptr());
     CHECK_EQUAL(str.GetLength(), 8U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "DCBADCBA"));
+    CHECK_STRCMP(str.Ptr(), "DCBADCBA");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Prepend, TestString_const_ref)
@@ -738,23 +738,23 @@ TEST_MEMBER_FUNCTION(TestString, Prepend, TestString_const_ref)
     str.Prepend(A_string);
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), A_string.GetLength());
-    CHECK_ZERO(StrCmp(str.Ptr(), A_string.Ptr()));
+    CHECK_STRCMP(str.Ptr(), A_string.Ptr());
 
     str.Prepend(B_string);
     CHECK_EQUAL(str.GetLength(), BA_string.GetLength());
-    CHECK_ZERO(StrCmp(str.Ptr(), BA_string.Ptr()));
+    CHECK_STRCMP(str.Ptr(), BA_string.Ptr());
 
     str.Prepend(empty_string);
     CHECK_EQUAL(str.GetLength(), BA_string.GetLength());
-    CHECK_ZERO(StrCmp(str.Ptr(), BA_string.Ptr()));
+    CHECK_STRCMP(str.Ptr(), BA_string.Ptr());
 
     str.Prepend(DC_string);
     CHECK_EQUAL(str.GetLength(), DCBA_string.GetLength());
-    CHECK_ZERO(StrCmp(str.Ptr(), DCBA_string.Ptr()));
+    CHECK_STRCMP(str.Ptr(), DCBA_string.Ptr());
 
     str.Prepend(str.Ptr());
     CHECK_EQUAL(str.GetLength(), DCBADCBA_string.GetLength());
-    CHECK_ZERO(StrCmp(str.Ptr(), DCBADCBA_string.Ptr()));
+    CHECK_STRCMP(str.Ptr(), DCBADCBA_string.Ptr());
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, char_const_ptr)
@@ -777,12 +777,12 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_const_ptr)
         str.Append("A");
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), 1U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "A"));
+        CHECK_STRCMP(str.Ptr(), "A");
 
         str.Append("B");
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), 2U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+        CHECK_STRCMP(str.Ptr(), "AB");
     }
 
     {
@@ -790,21 +790,21 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_const_ptr)
 
         str.Append(static_cast<char const*>(NULL));
         CHECK_EQUAL(str.GetLength(), 2U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+        CHECK_STRCMP(str.Ptr(), "AB");
 
         str.Append("");
         CHECK_EQUAL(str.GetLength(), 2U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+        CHECK_STRCMP(str.Ptr(), "AB");
 
         str.Append("CD");
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), 4U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "ABCD"));
+        CHECK_STRCMP(str.Ptr(), "ABCD");
 
         str.Append(str.Ptr());
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), 8U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "ABCDABCD"));
+        CHECK_STRCMP(str.Ptr(), "ABCDABCD");
     }
 }
 
@@ -828,12 +828,12 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_const_ptr_size_type)
         str.Append("A", 1U);
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), 1U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "A"));
+        CHECK_STRCMP(str.Ptr(), "A");
 
         str.Append("B", 1U);
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), 2U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+        CHECK_STRCMP(str.Ptr(), "AB");
     }
 
     {
@@ -841,21 +841,21 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_const_ptr_size_type)
 
         str.Append(static_cast<char const*>(NULL), 0U);
         CHECK_EQUAL(str.GetLength(), 2U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+        CHECK_STRCMP(str.Ptr(), "AB");
 
         str.Append("", 0U);
         CHECK_EQUAL(str.GetLength(), 2U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "AB"));
+        CHECK_STRCMP(str.Ptr(), "AB");
 
         str.Append("CD", 2U);
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), 4U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "ABCD"));
+        CHECK_STRCMP(str.Ptr(), "ABCD");
 
         str.Append(str.Ptr(), 4U);
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), 8U);
-        CHECK_ZERO(StrCmp(str.Ptr(), "ABCDABCD"));
+        CHECK_STRCMP(str.Ptr(), "ABCDABCD");
     }
 }
 
@@ -883,12 +883,12 @@ TEST_MEMBER_FUNCTION(TestString, Append, TestString_const_ptr)
         str.Append(A_string);
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), A_string.GetLength());
-        CHECK_ZERO(StrCmp(str.Ptr(), A_string.Ptr()));
+        CHECK_STRCMP(str.Ptr(), A_string.Ptr());
 
         str.Append(B_string);
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), AB_string.GetLength());
-        CHECK_ZERO(StrCmp(str.Ptr(), AB_string.Ptr()));
+        CHECK_STRCMP(str.Ptr(), AB_string.Ptr());
     }
 
     {
@@ -896,21 +896,21 @@ TEST_MEMBER_FUNCTION(TestString, Append, TestString_const_ptr)
 
         str.Append(empty_string);
         CHECK_EQUAL(str.GetLength(), AB_string.GetLength());
-        CHECK_ZERO(StrCmp(str.Ptr(), AB_string.Ptr()));
+        CHECK_STRCMP(str.Ptr(), AB_string.Ptr());
 
         str.Append(empty_string);
         CHECK_EQUAL(str.GetLength(), AB_string.GetLength());
-        CHECK_ZERO(StrCmp(str.Ptr(), AB_string.Ptr()));
+        CHECK_STRCMP(str.Ptr(), AB_string.Ptr());
 
         str.Append(CD_string);
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), ABCD_string.GetLength());
-        CHECK_ZERO(StrCmp(str.Ptr(), ABCD_string.Ptr()));
+        CHECK_STRCMP(str.Ptr(), ABCD_string.Ptr());
 
         str.Append(str.Ptr());
         CHECK_FALSE(str.IsEmpty());
         CHECK_EQUAL(str.GetLength(), ABCDABCD_string.GetLength());
-        CHECK_ZERO(StrCmp(str.Ptr(), ABCDABCD_string.Ptr()));
+        CHECK_STRCMP(str.Ptr(), ABCDABCD_string.Ptr());
     }
 }
 
@@ -921,12 +921,12 @@ TEST_MEMBER_FUNCTION(TestString, Append, bool)
     TestString str;
     str.Append(true);
     CHECK_EQUAL(str.GetLength(), 4U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "true"));
+    CHECK_STRCMP(str.Ptr(), "true");
 
     str.Clear();
     str.Append(false);
     CHECK_EQUAL(str.GetLength(), 5U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "false"));
+    CHECK_STRCMP(str.Ptr(), "false");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, char)
@@ -944,11 +944,11 @@ TEST_MEMBER_FUNCTION(TestString, Append, char)
 
     str.Append(a_char);
     CHECK_EQUAL(str.GetLength(), 1U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "a"));
+    CHECK_STRCMP(str.Ptr(), "a");
 
     str.Append(b_char);
     CHECK_EQUAL(str.GetLength(), 2U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "ab"));
+    CHECK_STRCMP(str.Ptr(), "ab");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, char_size_type)
@@ -978,23 +978,23 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_size_type)
 
     str.Append(a_char, 1U);
     CHECK_EQUAL(str.GetLength(), 1U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "a"));
+    CHECK_STRCMP(str.Ptr(), "a");
 
     str.Append(b_char, 1U);
     CHECK_EQUAL(str.GetLength(), 2U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "ab"));
+    CHECK_STRCMP(str.Ptr(), "ab");
 
     str.Append(c_char, 2U);
     CHECK_EQUAL(str.GetLength(), 4U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "abcc"));
+    CHECK_STRCMP(str.Ptr(), "abcc");
 
     str.Append(a_char, 1U);
     CHECK_EQUAL(str.GetLength(), 5U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "abcca"));
+    CHECK_STRCMP(str.Ptr(), "abcca");
 
     str.Append(c_char, 2U);
     CHECK_EQUAL(str.GetLength(), 7U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "abccacc"));
+    CHECK_STRCMP(str.Ptr(), "abccacc");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, char_size_type_char_const_ptr_size_type)
@@ -1023,31 +1023,37 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_size_type_char_const_ptr_size_type
     str.Append('a', 1U, NULL, 0U);
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), 1U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "a"));
+    CHECK_STRCMP(str.Ptr(), "a");
 
     str.Clear();
     str.Append('\0', 0U, "b", 1U);
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), 1U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "b"));
+    CHECK_STRCMP(str.Ptr(), "b");
 
     str.Clear();
     str.Append('a', 1U, "b", 1U);
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), 2U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "ab"));
+    CHECK_STRCMP(str.Ptr(), "ab");
 
     str.Clear();
     str.Append('a', 2U, "b", 1U);
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), 3U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "aab"));
+    CHECK_STRCMP(str.Ptr(), "aab");
 
     str.Clear();
     str.Append('a', 1U, "bb", 2U);
     CHECK_FALSE(str.IsEmpty());
     CHECK_EQUAL(str.GetLength(), 3U);
-    CHECK_ZERO(StrCmp(str.Ptr(), "abb"));
+    CHECK_STRCMP(str.Ptr(), "abb");
+
+    str.Clear();
+    str.Append('a', 1U, "bcde", 3U);
+    CHECK_FALSE(str.IsEmpty());
+    CHECK_EQUAL(str.GetLength(), 4U);
+    CHECK_STRCMP(str.Ptr(), "abcd");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, signed_char_size_type)
@@ -1061,9 +1067,16 @@ TEST_MEMBER_FUNCTION(TestString, Append, signed_char_size_type)
 TEST_MEMBER_FUNCTION(TestString, Append, unsigned_char_size_type)
 {
     using ocl::TestString;
+    typedef TestString::size_type size_type;
 
     TEST_OVERRIDE_ARGS("unsigned char,size_type");
 
+    size_type pad = 0U;
+    signed char value = 0;
+    TestString str;
+
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, signed_short_size_type)

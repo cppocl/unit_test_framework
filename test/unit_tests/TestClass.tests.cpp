@@ -37,8 +37,8 @@ TEST_MEMBER_FUNCTION(TestClass, StrCmp, char_const_ptr_char_const_ptr)
 {
     TEST_OVERRIDE_ARGS("char const*,char const*");
 
-    CHECK_EQUAL(StrCmp("", ""), 0);
-    CHECK_EQUAL(StrCmp("a", "a"), 0);
+    CHECK_STRCMP("", "");
+    CHECK_STRCMP("a", "a");
 
     CHECK_LESS(StrCmp("", "a"), 0);
     CHECK_LESS(StrCmp("a", "b"), 0);
@@ -53,8 +53,8 @@ TEST_MEMBER_FUNCTION(TestClass, StrCmp, wchar_t_const_ptr_wchar_t_const_ptr)
 {
     TEST_OVERRIDE_ARGS("wchar_t const*,wchar_t const*");
 
-    CHECK_EQUAL(StrCmp(L"", L""), 0);
-    CHECK_EQUAL(StrCmp(L"a", L"a"), 0);
+    CHECK_STRCMP(L"", L"");
+    CHECK_STRCMP(L"a", L"a");
 
     CHECK_LESS(StrCmp(L"", L"a"), 0);
     CHECK_LESS(StrCmp(L"a", L"b"), 0);
@@ -95,7 +95,7 @@ TEST_MEMBER_FUNCTION(TestClass, StrCpy, char_ptr_char_const_ptr)
 
     char str[6];
     StrCpy(str, str_hello);
-    CHECK_ZERO(StrCmp(str, str_hello));
+    CHECK_STRCMP(str, str_hello);
 }
 
 TEST_MEMBER_FUNCTION(TestClass, StrCpy, wchar_t_ptr_wchar_t_const_ptr)
@@ -106,7 +106,7 @@ TEST_MEMBER_FUNCTION(TestClass, StrCpy, wchar_t_ptr_wchar_t_const_ptr)
 
     wchar_t str[6];
     StrCpy(str, str_hello);
-    CHECK_ZERO(StrCmp(str, str_hello));
+    CHECK_STRCMP(str, str_hello);
 }
 
 TEST_MEMBER_FUNCTION(TestClass, CharCount, char_const_ptr_char)

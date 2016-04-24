@@ -260,6 +260,10 @@ TEST_MEMBER_FUNCTION(MyString, operator_plus_equal, char)
 #define CHECK_NOT_ZERO(value) CheckNotZero(#value "!= 0", __FILE__, __LINE__, (value))
 #endif
 
+#ifndef CHECK_STRCMP
+#define CHECK_STRCMP(str1, str2) CheckStrCmp("StrCmp(" #str1 "," #str2 ") == 0", __FILE__, __LINE__, str1, str2)
+#endif
+
 #ifndef CHECK_COMPARE
 #define CHECK_COMPARE(value1, value2) CheckCompare("compare " #value1 " = " #value2, __FILE__, __LINE__, value1, value2)
 #endif
@@ -298,6 +302,10 @@ TEST_MEMBER_FUNCTION(MyString, operator_plus_equal, char)
 
 #ifndef CHECK_TIME
 #define CHECK_TIME(func) for (; !CheckTime(); ) func
+#endif
+
+#ifndef CHECK_PERFORMANCE
+#define CHECK_PERFORMANCE(func, min_iterations) for (TestString filename(__FILE__); !CheckTime(min_iterations, filename, __LINE__); ) func
 #endif
 
 #endif // OCL_GUARD_TEST_TESTMACROS_HPP

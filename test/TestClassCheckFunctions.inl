@@ -56,6 +56,17 @@ limitations under the License.
         LogCheck(expression, filename, line_number, error);
     }
 
+    template<typename CharType>
+    void CheckStrCmp(TestString const& expression,
+                    TestString const& filename,
+                    size_type line_number,
+                    CharType const* str1,
+                    CharType const* str2)
+    {
+        bool error = StrCmp(str1, str2) != 0;
+        LogCheck(expression, filename, line_number, error);
+    }
+
     template<typename T1, typename T2>
     void CheckEqual(TestString const& expression,
                     TestString const& filename,
@@ -142,6 +153,7 @@ limitations under the License.
         LogCheck(expression, filename, line_number, !is_not_equal);
     }
 
+    /// Compare contents of char*, wchar_t* or primitive values.
     template<typename T1, typename T2>
     void CheckCompare(TestString const& expression,
                       TestString const& filename,
@@ -153,6 +165,7 @@ limitations under the License.
         LogCheck(expression, filename, line_number, compare == 0);
     }
 
+    /// Compare contents of char*, wchar_t* or primitive values.
     template<typename T1, typename T2>
     void CheckNotCompare(TestString const& expression,
                          TestString const& filename,
@@ -178,3 +191,34 @@ limitations under the License.
 
         return m_current_time > stop_time;
     }
+
+    /// While the current time has not reached the start time + sample time,
+    /// keep returning false, or return false when the performance has been
+    /// detected as too slow.
+    /// @note This function also refreshes the current time.
+    bool CheckTime(size_type min_iterations, TestString const& filename, size_type line_number)
+    {
+        TestTime stop_time(m_start_time);
+        stop_time += m_sample_time;
+
+        m_current_time.Refresh();
+
+        ++m_timed_function_calls;
+
+        bool time_complete = m_current_time > stop_time;
+
+        if (time_complete && (m_timed_function_calls < min_iterations))
+        {
+            ++m_failure_check_count;
+            TestString error;
+            error.Append(m_timed_function_calls);
+            error.Append(" iterations less than expected ");
+            error.Append(min_iterations);
+            error.Append(" iterations");
+            privateRecordFailed(error, filename, line_number);
+            return true;
+        }
+
+        return time_complete;
+    }
+

@@ -26,16 +26,16 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetMinSignedIntAsString, unsigned_int)
     TEST_OVERRIDE_ARGS("unsigned int");
 
     char const* str = TestStringUtility::GetMinSignedIntAsString(1U);
-    CHECK_ZERO(StrCmp(str, "-128"));
+    CHECK_STRCMP(str, "-128");
 
     str = TestStringUtility::GetMinSignedIntAsString(2U);
-    CHECK_ZERO(StrCmp(str, "-32768"));
+    CHECK_STRCMP(str, "-32768");
 
     str = TestStringUtility::GetMinSignedIntAsString(4U);
-    CHECK_ZERO(StrCmp(str, "-2147483648"));
+    CHECK_STRCMP(str, "-2147483648");
 
     str = TestStringUtility::GetMinSignedIntAsString(8U);
-    CHECK_ZERO(StrCmp(str, "-9223372036854775808"));
+    CHECK_STRCMP(str, "-9223372036854775808");
 }
 
 TEST_MEMBER_FUNCTION(TestStringUtility, GetMaxSignedIntAsString, unsigned_int)
@@ -45,16 +45,16 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetMaxSignedIntAsString, unsigned_int)
     TEST_OVERRIDE_ARGS("unsigned int");
 
     char const* str = TestStringUtility::GetMaxSignedIntAsString(1U);
-    CHECK_ZERO(StrCmp(str, "127"));
+    CHECK_STRCMP(str, "127");
 
     str = TestStringUtility::GetMaxSignedIntAsString(2U);
-    CHECK_ZERO(StrCmp(str, "32767"));
+    CHECK_STRCMP(str, "32767");
 
     str = TestStringUtility::GetMaxSignedIntAsString(4U);
-    CHECK_ZERO(StrCmp(str, "2147483647"));
+    CHECK_STRCMP(str, "2147483647");
 
     str = TestStringUtility::GetMaxSignedIntAsString(8U);
-    CHECK_ZERO(StrCmp(str, "9223372036854775807"));
+    CHECK_STRCMP(str, "9223372036854775807");
 }
 
 TEST_MEMBER_FUNCTION(TestStringUtility, GetMinSignedIntCharCount, unsigned_int)
@@ -100,16 +100,16 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetMaxUnsignedIntAsString, unsigned_int)
     TEST_OVERRIDE_ARGS("unsigned char");
 
     char const* str = TestStringUtility::GetMaxUnsignedIntAsString(1U);
-    CHECK_ZERO(StrCmp(str, "255"));
+    CHECK_STRCMP(str, "255");
 
     str = TestStringUtility::GetMaxUnsignedIntAsString(2U);
-    CHECK_ZERO(StrCmp(str, "65535"));
+    CHECK_STRCMP(str, "65535");
 
     str = TestStringUtility::GetMaxUnsignedIntAsString(4U);
-    CHECK_ZERO(StrCmp(str, "4294967295"));
+    CHECK_STRCMP(str, "4294967295");
 
     str = TestStringUtility::GetMaxUnsignedIntAsString(8U);
-    CHECK_ZERO(StrCmp(str, "18446744073709551615"));
+    CHECK_STRCMP(str, "18446744073709551615");
 }
 
 
@@ -119,12 +119,12 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, bool)
 
     size_t len = 0;
     char* str = TestStringUtility::GetString(true, len);
-    CHECK_ZERO(StrCmp(str, "true"));
+    CHECK_STRCMP(str, "true");
     CHECK_EQUAL(len, 4U);
     TestStringUtility::FastFree(str);
 
     str = TestStringUtility::GetString(false, len);
-    CHECK_ZERO(StrCmp(str, "false"));
+    CHECK_STRCMP(str, "false");
     CHECK_EQUAL(len, 5U);
     TestStringUtility::FastFree(str);
 }
@@ -135,7 +135,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, char)
 
     size_t len = 0;
     char* str = TestStringUtility::GetString('a', len);
-    CHECK_ZERO(StrCmp(str, "a"));
+    CHECK_STRCMP(str, "a");
     CHECK_EQUAL(len, 1U);
     TestStringUtility::FastFree(str);
 }
@@ -150,13 +150,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, signed_char)
 
     type value = CHAR_MIN;
     char* str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMinSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMinSignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMinSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 
     value = CHAR_MAX;
     str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMaxSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -171,13 +171,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, unsigned_char)
 
     type value = 0;
     char* str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, "0"));
+    CHECK_STRCMP(str, "0");
     CHECK_EQUAL(StrLen(str), 1U);
     TestStringUtility::FastFree(str);
 
     value = UCHAR_MAX;
     str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMaxUnsignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -192,13 +192,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, signed_short)
 
     type value = SHRT_MIN;
     char* str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMinSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMinSignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMinSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 
     value = SHRT_MAX;
     str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMaxSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -213,13 +213,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, unsigned_short)
 
     type value = 0;
     char* str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, "0"));
+    CHECK_STRCMP(str, "0");
     CHECK_EQUAL(StrLen(str), 1U);
     TestStringUtility::FastFree(str);
 
     value = USHRT_MAX;
     str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMaxUnsignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -234,13 +234,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, signed_int)
 
     type value = INT_MIN;
     char* str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMinSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMinSignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMinSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 
     value = INT_MAX;
     str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMaxSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -255,13 +255,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, unsigned_int)
 
     type value = 0;
     char* str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, "0"));
+    CHECK_STRCMP(str, "0");
     CHECK_EQUAL(StrLen(str), 1U);
     TestStringUtility::FastFree(str);
 
     value = UINT_MAX;
     str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMaxUnsignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -276,13 +276,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, signed_long)
 
     type value = LONG_MIN;
     char* str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMinSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMinSignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMinSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 
     value = LONG_MAX;
     str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMaxSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -297,13 +297,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, unsigned_long)
 
     type value = 0U;
     char* str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, "0"));
+    CHECK_STRCMP(str, "0");
     CHECK_EQUAL(StrLen(str), 1U);
     TestStringUtility::FastFree(str);
 
     value = ULONG_MAX;
     str = TestStringUtility::GetString(value);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type));
     CHECK_EQUAL(StrLen(str), TestStringUtility::GetMaxUnsignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -319,13 +319,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, signed_char_size_t_ref)
     size_t len = 0;
     type value = CHAR_MIN;
     char* str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMinSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMinSignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMinSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 
     value = CHAR_MAX;
     str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMaxSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -341,13 +341,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, unsigned_char_size_t_ref)
     size_t len = 0;
     type value = 0;
     char* str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, "0"));
+    CHECK_STRCMP(str, "0");
     CHECK_EQUAL(len, 1U);
     TestStringUtility::FastFree(str);
 
     value = UCHAR_MAX;
     str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMaxUnsignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -363,13 +363,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, signed_short_size_t_ref)
     size_t len = 0;
     type value = SHRT_MIN;
     char* str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMinSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMinSignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMinSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 
     value = SHRT_MAX;
     str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMaxSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -385,13 +385,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, unsigned_short_size_t_ref)
     size_t len = 0;
     type value = 0;
     char* str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, "0"));
+    CHECK_STRCMP(str, "0");
     CHECK_EQUAL(len, 1U);
     TestStringUtility::FastFree(str);
 
     value = USHRT_MAX;
     str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMaxUnsignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -407,13 +407,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, signed_int_size_t_ref)
     size_t len = 0;
     type value = INT_MIN;
     char* str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMinSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMinSignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMinSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 
     value = INT_MAX;
     str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMaxSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -429,13 +429,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, unsigned_int_size_t_ref)
     size_t len = 0;
     type value = 0;
     char* str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, "0"));
+    CHECK_STRCMP(str, "0");
     CHECK_EQUAL(len, 1U);
     TestStringUtility::FastFree(str);
 
     value = UINT_MAX;
     str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMaxUnsignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -451,13 +451,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, signed_long_size_t_ref)
     size_t len = 0;
     type value = LONG_MIN;
     char* str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMinSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMinSignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMinSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 
     value = LONG_MAX;
     str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxSignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMaxSignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -473,13 +473,13 @@ TEST_MEMBER_FUNCTION(TestStringUtility, GetString, unsigned_long_size_t_ref)
     size_t len = 0;
     type value = 0U;
     char* str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, "0"));
+    CHECK_STRCMP(str, "0");
     CHECK_EQUAL(len, 1U);
     TestStringUtility::FastFree(str);
 
     value = ULONG_MAX;
     str = TestStringUtility::GetString(value, len);
-    CHECK_ZERO(StrCmp(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type)));
+    CHECK_STRCMP(str, TestStringUtility::GetMaxUnsignedIntAsString(size_of_type));
     CHECK_EQUAL(len, TestStringUtility::GetMaxUnsignedIntCharCount(size_of_type));
     TestStringUtility::FastFree(str);
 }
@@ -584,7 +584,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
     size_type dest_len = 0;
     TestStringUtility::SafeAllocateCopy(dest, dest_len, src, src_len);
     CHECK_NOT_NULL(dest);
-    CHECK_EQUAL(StrCmp(dest, src), 0);
+    CHECK_STRCMP(dest, src);
     CHECK_EQUAL(dest_len, src_len);
     TestStringUtility::FastFree(dest);
 
@@ -594,7 +594,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
     bool is_null_terminated = *(dest + 1) == '\0';
     CHECK_TRUE(is_null_terminated);
     if (is_null_terminated)
-        CHECK_EQUAL(StrCmp(dest, "H"), 0);
+        CHECK_STRCMP(dest, "H");
     CHECK_EQUAL(dest_len, 1U);
     TestStringUtility::FastFree(dest);
 
@@ -626,7 +626,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
     size_type dest_len = 0;
     TestStringUtility::SafeAllocateCopy(dest, dest_len, src);
     CHECK_NOT_NULL(dest);
-    CHECK_EQUAL(StrCmp(dest, src), 0);
+    CHECK_STRCMP(dest, src);
     CHECK_EQUAL(dest_len, src_len);
     TestStringUtility::FastFree(dest);
 
@@ -650,7 +650,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, UnsafeAllocateCopy, char_ptr_ref_size_t_
     size_type dest_len = 0;
     TestStringUtility::UnsafeAllocateCopy(dest, dest_len, src);
     CHECK_NOT_NULL(dest);
-    CHECK_EQUAL(StrCmp(dest, src), 0);
+    CHECK_STRCMP(dest, src);
     CHECK_EQUAL(dest_len, src_len);
     TestStringUtility::FastFree(dest);
 }
@@ -669,7 +669,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocCopy, char_ptr_ref_size_t_cha
     size_type dest_len = 0;
     TestStringUtility::UnsafeAllocateCopy(dest, dest_len, src);
     CHECK_NOT_NULL(dest);
-    CHECK_EQUAL(StrCmp(dest, src), 0);
+    CHECK_STRCMP(dest, src);
     CHECK_EQUAL(dest_len, src_len);
     TestStringUtility::FastFree(dest);
 }
@@ -692,7 +692,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocCopy, char_ptr_ref_size_t_ref
     CHECK_NOT_NULL(dest);
     CHECK_EQUAL(dest_len, src2_len);
     CHECK_EQUAL(StrLen(dest), src2_len);
-    CHECK_ZERO(StrCmp(dest, src2));
+    CHECK_STRCMP(dest, src2);
     TestStringUtility::FastFree(dest);
 }
 
@@ -715,6 +715,6 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocAppend, char_ptr_ref_size_t_r
     CHECK_NOT_NULL(dest);
     CHECK_EQUAL(dest_len, src_len + src2_len);
     CHECK_EQUAL(StrLen(dest), src_len + src2_len);
-    CHECK_ZERO(StrCmp(dest, "HelloGoodbye"));
+    CHECK_STRCMP(dest, "HelloGoodbye");
     TestStringUtility::FastFree(dest);
 }
