@@ -505,7 +505,6 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeLength, char_const_ptr)
 
     TEST_OVERRIDE_ARGS("char const*");
 
-    CHECK_ALL_EXCEPTIONS(TestStringUtility::SafeLength(NULL), false);
     CHECK_ZERO(TestStringUtility::SafeLength(NULL));
 
     CHECK_EQUAL(TestStringUtility::SafeLength("a"), 1U);
