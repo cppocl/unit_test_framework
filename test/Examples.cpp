@@ -14,7 +14,7 @@ bool FuncTwoArgs(int i1, int i2)
 }
 
 // Example class for demonstrating how to write unit tests
-// for member functions and const member functions using 
+// for member functions and const member functions using
 // TEST_MEMBER_FUNCTION and TEST_CONST_MEMBER_FUNCTION.
 //
 // There are two versions for testing member functions,
@@ -63,6 +63,10 @@ private:
     int m_value;
 };
 
+
+// When a test fails, the output is on multiple lines,
+// so this macro can set the number of spaces to indent the failure messages.
+TEST_FAILURE_INDENT(4);
 
 // Implement unit tests for functions and member functions.
 
@@ -123,3 +127,22 @@ TEST_MEMBER_FUNCTION(Example, Inc, NA)
     example.Inc();
     CHECK_EQUAL(example.GetValue(), 1);
 }
+
+
+// Enable or disable main, as these tests compile and these tests could
+// be added to a different project for debugging, if desired.
+#define INCLUDE_MAIN_FUNCTION
+
+#ifdef INCLUDE_MAIN_FUNCTION
+
+int main(int /*argc*/, char * /*argv*/[])
+{
+    // Currently an empty stub that will be used to demonstrate
+    // a command line unit test executable returning error codes.
+
+    bool test_has_failed = TEST_HAS_FAILED;
+
+    return test_has_failed ? 1 : 0;
+}
+
+#endif // INCLUDE_MAIN_FUNCTION
