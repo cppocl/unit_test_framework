@@ -933,6 +933,17 @@ TEST_MEMBER_FUNCTION(TestString, Append, char)
 {
     using ocl::TestString;
 
+    char const a_char = 'a';
+    char const b_char = 'b';
+
+    TestString str;
+    str.Append(a_char);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "a"));
+
+    str.Append(b_char);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "ab"));
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, char_size_type)
@@ -941,6 +952,30 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_size_type)
 
     TEST_OVERRIDE_ARGS("char,size_type");
 
+    char const a_char = 'a';
+    char const b_char = 'b';
+    char const c_char = 'c';
+
+    TestString str;
+    str.Append(a_char, 1U);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "a"));
+
+    str.Append(b_char, 1U);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "ab"));
+
+    str.Append(c_char, 2U);
+    CHECK_EQUAL(str.GetLength(), 4U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "abcc"));
+
+    str.Append(a_char, 1U);
+    CHECK_EQUAL(str.GetLength(), 5U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "abcca"));
+
+    str.Append(c_char, 2U);
+    CHECK_EQUAL(str.GetLength(), 7U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "abccacc"));
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, char_size_type_char_const_ptr_size_type)
