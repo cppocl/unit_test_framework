@@ -341,26 +341,32 @@ public:
     }
 
     /// Append number of characters then a string value.
-    void Append(char ch, size_type count, char const* value, size_type len)
+    void Append(char ch, size_type count, char const* value, size_type value_len)
     {
         if (count > size_type_default)
         {
-            char* str = NULL;
-            TestStringUtility::Allocate(str, count + len);
-            if (str != NULL)
+            if ((value != NULL) && (value_len > 0))
             {
-                char* start = str;
-                for (char* str_end = str + count; str < str_end; ++str)
-                    *str = ch;
-                ::memcpy(str, value, len + 1);
-                Append(start, count + len);
-                TestStringUtility::FastFree(start);
+                char* str = NULL;
+                TestStringUtility::Allocate(str, count + value_len);
+                if (str != NULL)
+                {
+                    char* start = str;
+                    for (char* str_end = str + count; str < str_end; ++str)
+                        *str = ch;
+                    ::memcpy(str, value, value_len);
+                    *(str + value_len) = '\0';
+                    Append(start, count + value_len);
+                    TestStringUtility::FastFree(start);
+                }
+                else
+                    Append(ch);
             }
             else
-                Append(ch);
+                Append(ch, count);
         }
-        else
-            Append(value, len);
+        else if ((value != NULL) && (value_len > 0))
+            Append(value, value_len);
     }
 
     void Append(signed char value, size_type pad = size_type_default)
