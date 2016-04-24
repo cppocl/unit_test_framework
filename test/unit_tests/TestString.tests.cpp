@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "../Test.hpp"
 #include "../TestString.hpp"
+#include "../TestStringUtility.hpp"
+#include <limits.h>
 
 TEST_MEMBER_FUNCTION(TestString, TestString, char_const_ptr)
 {
@@ -690,6 +692,7 @@ TEST_MEMBER_FUNCTION(TestString, Move, char_ptr_ref_size_type)
 TEST_MEMBER_FUNCTION(TestString, Prepend, char_const_ptr)
 {
     using ocl::TestString;
+    using ocl::TestStringUtility;
 
     TEST_OVERRIDE_ARGS("char const*");
 
@@ -1059,70 +1062,251 @@ TEST_MEMBER_FUNCTION(TestString, Append, char_size_type_char_const_ptr_size_type
 TEST_MEMBER_FUNCTION(TestString, Append, signed_char_size_type)
 {
     using ocl::TestString;
+    using ocl::TestStringUtility;
+    typedef TestString::size_type size_type;
+    typedef signed char type;
 
     TEST_OVERRIDE_ARGS("signed char,size_type");
 
+    type value = 0;
+    size_type size_of_type = sizeof(type);
+
+    size_type pad = 0U;
+    TestString str;
+
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "0");
+
+    char const* min_str = TestStringUtility::GetMinSignedIntAsString(size_of_type);
+    char const* max_str = TestStringUtility::GetMaxSignedIntAsString(size_of_type);
+
+    value = CHAR_MIN;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(min_str));
+    CHECK_STRCMP(str.Ptr(), min_str);
+
+    value = CHAR_MAX;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(max_str));
+    CHECK_STRCMP(str.Ptr(), max_str);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, unsigned_char_size_type)
 {
     using ocl::TestString;
+    using ocl::TestStringUtility;
     typedef TestString::size_type size_type;
+    typedef unsigned char type;
 
     TEST_OVERRIDE_ARGS("unsigned char,size_type");
 
+    type value = 0U;
+    size_type size_of_type = sizeof(type);
+
     size_type pad = 0U;
-    signed char value = 0;
     TestString str;
 
     str.Append(value, pad);
     CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "0");
+
+    char const* max_str = TestStringUtility::GetMaxUnsignedIntAsString(size_of_type);
+
+    value = UCHAR_MAX;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(max_str));
+    CHECK_STRCMP(str.Ptr(), max_str);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, signed_short_size_type)
 {
     using ocl::TestString;
+    using ocl::TestStringUtility;
+    typedef TestString::size_type size_type;
+    typedef signed short type;
 
     TEST_OVERRIDE_ARGS("signed short,size_type");
 
+    type value = 0;
+    size_type size_of_type = sizeof(type);
+
+    size_type pad = 0U;
+    TestString str;
+
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "0");
+
+    char const* min_str = TestStringUtility::GetMinSignedIntAsString(size_of_type);
+    char const* max_str = TestStringUtility::GetMaxSignedIntAsString(size_of_type);
+
+    value = SHRT_MIN;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(min_str));
+    CHECK_STRCMP(str.Ptr(), min_str);
+
+    value = SHRT_MAX;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(max_str));
+    CHECK_STRCMP(str.Ptr(), max_str);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, unsigned_short_size_type)
 {
     using ocl::TestString;
+    using ocl::TestStringUtility;
+    typedef TestString::size_type size_type;
+    typedef unsigned short type;
 
     TEST_OVERRIDE_ARGS("unsigned short,size_type");
 
+    type value = 0U;
+    size_type size_of_type = sizeof(type);
+
+    size_type pad = 0U;
+    TestString str;
+
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "0");
+
+    char const* max_str = TestStringUtility::GetMaxUnsignedIntAsString(size_of_type);
+
+    value = USHRT_MAX;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(max_str));
+    CHECK_STRCMP(str.Ptr(), max_str);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, signed_int_size_type)
 {
     using ocl::TestString;
+    using ocl::TestStringUtility;
+    typedef TestString::size_type size_type;
+    typedef signed int type;
 
     TEST_OVERRIDE_ARGS("signed int,size_type");
 
+    type value = 0;
+    size_type size_of_type = sizeof(type);
+
+    size_type pad = 0U;
+    TestString str;
+
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "0");
+
+    char const* min_str = TestStringUtility::GetMinSignedIntAsString(size_of_type);
+    char const* max_str = TestStringUtility::GetMaxSignedIntAsString(size_of_type);
+
+    value = INT_MIN;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(min_str));
+    CHECK_STRCMP(str.Ptr(), min_str);
+
+    value = INT_MAX;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(max_str));
+    CHECK_STRCMP(str.Ptr(), max_str);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, unsigned_int_size_type)
 {
     using ocl::TestString;
+    using ocl::TestStringUtility;
+    typedef TestString::size_type size_type;
+    typedef unsigned int type;
 
     TEST_OVERRIDE_ARGS("unsigned int,size_type");
 
+    type value = 0U;
+    size_type size_of_type = sizeof(type);
+
+    size_type pad = 0U;
+    TestString str;
+
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "0");
+
+    char const* max_str = TestStringUtility::GetMaxUnsignedIntAsString(size_of_type);
+
+    value = UINT_MAX;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(max_str));
+    CHECK_STRCMP(str.Ptr(), max_str);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, signed_long_size_type)
 {
     using ocl::TestString;
+    using ocl::TestStringUtility;
+    typedef TestString::size_type size_type;
+    typedef signed long type;
 
     TEST_OVERRIDE_ARGS("signed long,size_type");
 
+    type value = 0;
+    size_type size_of_type = sizeof(type);
+
+    size_type pad = 0U;
+    TestString str;
+
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "0");
+
+    char const* min_str = TestStringUtility::GetMinSignedIntAsString(size_of_type);
+    char const* max_str = TestStringUtility::GetMaxSignedIntAsString(size_of_type);
+
+    value = LONG_MIN;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(min_str));
+    CHECK_STRCMP(str.Ptr(), min_str);
+
+    value = LONG_MAX;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(max_str));
+    CHECK_STRCMP(str.Ptr(), max_str);
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, unsigned_long_size_type)
 {
     using ocl::TestString;
+    using ocl::TestStringUtility;
+    typedef TestString::size_type size_type;
+    typedef unsigned long type;
 
     TEST_OVERRIDE_ARGS("unsigned long,size_type");
 
+    type value = 0U;
+    size_type size_of_type = sizeof(type);
+
+    size_type pad = 0U;
+    TestString str;
+
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "0");
+
+    char const* max_str = TestStringUtility::GetMaxUnsignedIntAsString(size_of_type);
+
+    value = ULONG_MAX;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), StrLen(max_str));
+    CHECK_STRCMP(str.Ptr(), max_str);
 }
