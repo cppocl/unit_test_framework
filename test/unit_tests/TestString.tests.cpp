@@ -865,12 +865,68 @@ TEST_MEMBER_FUNCTION(TestString, Append, TestString_const_ptr)
 
     TEST_OVERRIDE_ARGS("TestString const&");
 
+    TestString const empty_string;
+    TestString const A_string("A");
+    TestString const B_string("B");
+    TestString const AB_string("AB");
+    TestString const CD_string("CD");
+    TestString const ABCD_string("ABCD");
+    TestString const ABCDABCD_string("ABCDABCD");
+
+    {
+        TestString str;
+
+        str.Append(empty_string);
+        CHECK_TRUE(str.IsEmpty());
+        CHECK_ZERO(str.GetLength());
+
+        str.Append(A_string);
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), A_string.GetLength());
+        CHECK_ZERO(StrCmp(str.Ptr(), A_string.Ptr()));
+
+        str.Append(B_string);
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), AB_string.GetLength());
+        CHECK_ZERO(StrCmp(str.Ptr(), AB_string.Ptr()));
+    }
+
+    {
+        TestString str(AB_string);
+
+        str.Append(empty_string);
+        CHECK_EQUAL(str.GetLength(), AB_string.GetLength());
+        CHECK_ZERO(StrCmp(str.Ptr(), AB_string.Ptr()));
+
+        str.Append(empty_string);
+        CHECK_EQUAL(str.GetLength(), AB_string.GetLength());
+        CHECK_ZERO(StrCmp(str.Ptr(), AB_string.Ptr()));
+
+        str.Append(CD_string);
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), ABCD_string.GetLength());
+        CHECK_ZERO(StrCmp(str.Ptr(), ABCD_string.Ptr()));
+
+        str.Append(str.Ptr());
+        CHECK_FALSE(str.IsEmpty());
+        CHECK_EQUAL(str.GetLength(), ABCDABCD_string.GetLength());
+        CHECK_ZERO(StrCmp(str.Ptr(), ABCDABCD_string.Ptr()));
+    }
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, bool)
 {
     using ocl::TestString;
 
+    TestString str;
+    str.Append(true);
+    CHECK_EQUAL(str.GetLength(), 4U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "true"));
+
+    str.Clear();
+    str.Append(false);
+    CHECK_EQUAL(str.GetLength(), 5U);
+    CHECK_ZERO(StrCmp(str.Ptr(), "false"));
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, char)
