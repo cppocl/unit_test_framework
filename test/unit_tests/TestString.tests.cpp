@@ -1092,6 +1092,27 @@ TEST_MEMBER_FUNCTION(TestString, Append, signed_char_size_type)
     str.Append(value, pad);
     CHECK_EQUAL(str.GetLength(), StrLen(max_str));
     CHECK_STRCMP(str.Ptr(), max_str);
+
+    pad = 1U;
+    value = 1;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "1");
+
+    pad = 2U;
+    value = 1;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_STRCMP(str.Ptr(), "01");
+
+    pad = 3U;
+    value = 11;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 3U);
+    CHECK_STRCMP(str.Ptr(), "011");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, unsigned_char_size_type)
@@ -1120,6 +1141,27 @@ TEST_MEMBER_FUNCTION(TestString, Append, unsigned_char_size_type)
     str.Append(value, pad);
     CHECK_EQUAL(str.GetLength(), StrLen(max_str));
     CHECK_STRCMP(str.Ptr(), max_str);
+
+    pad = 1U;
+    value = 1U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "1");
+
+    pad = 2U;
+    value = 1U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_STRCMP(str.Ptr(), "01");
+
+    pad = 3U;
+    value = 11U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 3U);
+    CHECK_STRCMP(str.Ptr(), "011");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, signed_short_size_type)
@@ -1155,6 +1197,27 @@ TEST_MEMBER_FUNCTION(TestString, Append, signed_short_size_type)
     str.Append(value, pad);
     CHECK_EQUAL(str.GetLength(), StrLen(max_str));
     CHECK_STRCMP(str.Ptr(), max_str);
+
+    pad = 1U;
+    value = 1;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "1");
+
+    pad = 2U;
+    value = 1;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_STRCMP(str.Ptr(), "01");
+
+    pad = 3U;
+    value = 11;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 3U);
+    CHECK_STRCMP(str.Ptr(), "011");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, unsigned_short_size_type)
@@ -1183,6 +1246,27 @@ TEST_MEMBER_FUNCTION(TestString, Append, unsigned_short_size_type)
     str.Append(value, pad);
     CHECK_EQUAL(str.GetLength(), StrLen(max_str));
     CHECK_STRCMP(str.Ptr(), max_str);
+
+    pad = 1U;
+    value = 1U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "1");
+
+    pad = 2U;
+    value = 1U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_STRCMP(str.Ptr(), "01");
+
+    pad = 3U;
+    value = 11U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 3U);
+    CHECK_STRCMP(str.Ptr(), "011");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, signed_int_size_type)
@@ -1218,6 +1302,27 @@ TEST_MEMBER_FUNCTION(TestString, Append, signed_int_size_type)
     str.Append(value, pad);
     CHECK_EQUAL(str.GetLength(), StrLen(max_str));
     CHECK_STRCMP(str.Ptr(), max_str);
+
+    pad = 1U;
+    value = 1;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "1");
+
+    pad = 2U;
+    value = 1;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_STRCMP(str.Ptr(), "01");
+
+    pad = 3U;
+    value = 11;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 3U);
+    CHECK_STRCMP(str.Ptr(), "011");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, unsigned_int_size_type)
@@ -1246,6 +1351,27 @@ TEST_MEMBER_FUNCTION(TestString, Append, unsigned_int_size_type)
     str.Append(value, pad);
     CHECK_EQUAL(str.GetLength(), StrLen(max_str));
     CHECK_STRCMP(str.Ptr(), max_str);
+
+    pad = 1U;
+    value = 1U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "1");
+
+    pad = 2U;
+    value = 1U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_STRCMP(str.Ptr(), "01");
+
+    pad = 3U;
+    value = 11U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 3U);
+    CHECK_STRCMP(str.Ptr(), "011");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, signed_long_size_type)
@@ -1281,6 +1407,27 @@ TEST_MEMBER_FUNCTION(TestString, Append, signed_long_size_type)
     str.Append(value, pad);
     CHECK_EQUAL(str.GetLength(), StrLen(max_str));
     CHECK_STRCMP(str.Ptr(), max_str);
+
+    pad = 1U;
+    value = 1;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "1");
+
+    pad = 2U;
+    value = 1;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_STRCMP(str.Ptr(), "01");
+
+    pad = 3U;
+    value = 11;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 3U);
+    CHECK_STRCMP(str.Ptr(), "011");
 }
 
 TEST_MEMBER_FUNCTION(TestString, Append, unsigned_long_size_type)
@@ -1309,4 +1456,25 @@ TEST_MEMBER_FUNCTION(TestString, Append, unsigned_long_size_type)
     str.Append(value, pad);
     CHECK_EQUAL(str.GetLength(), StrLen(max_str));
     CHECK_STRCMP(str.Ptr(), max_str);
+
+    pad = 1U;
+    value = 1U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 1U);
+    CHECK_STRCMP(str.Ptr(), "1");
+
+    pad = 2U;
+    value = 1U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 2U);
+    CHECK_STRCMP(str.Ptr(), "01");
+
+    pad = 3U;
+    value = 11U;
+    str.Clear();
+    str.Append(value, pad);
+    CHECK_EQUAL(str.GetLength(), 3U);
+    CHECK_STRCMP(str.Ptr(), "011");
 }
