@@ -44,7 +44,7 @@ struct TestConverterUtility<bool, SizeType>
     static char* GetString(type value, SizeType& length)
     {
         char const* str = value ? "true" : "false";
-        length = ::strlen(str);
+        length = static_cast<SizeType>(::strlen(str));
         return TestMemoryUtility<char, SizeType>::UnsafeAllocateCopy(str, length + 1);
     }
 };
