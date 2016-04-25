@@ -183,6 +183,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\TestConverterUtility.tests.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\TestMemoryUtility.tests.cpp"
 				>
 			</File>
