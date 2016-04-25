@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="test_unit_tests" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/test_unit_tests" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-pedantic" />
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/test_unit_tests" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-fexpensive-optimizations" />
+					<Add option="-O3" />
+					<Add option="-pedantic" />
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../../../../StdioTestLog.hpp" />
+		<Unit filename="../../../../Test.hpp" />
+		<Unit filename="../../../../TestClass.hpp" />
+		<Unit filename="../../../../TestClassCheckFunctions.inl" />
+		<Unit filename="../../../../TestClassHelperFunctions.inl" />
+		<Unit filename="../../../../TestClassSharedData.hpp" />
+		<Unit filename="../../../../TestClassSharedFunctions.inl" />
+		<Unit filename="../../../../TestCompare.hpp" />
+		<Unit filename="../../../../TestConverterUtility.hpp" />
+		<Unit filename="../../../../TestLeakDetect.hpp" />
+		<Unit filename="../../../../TestLog.hpp" />
+		<Unit filename="../../../../TestMacros.hpp" />
+		<Unit filename="../../../../TestMemoryUtility.hpp" />
+		<Unit filename="../../../../TestNumericUtility.hpp" />
+		<Unit filename="../../../../TestString.hpp" />
+		<Unit filename="../../../../TestStringUtility.hpp" />
+		<Unit filename="../../../../TestTime.hpp" />
+		<Unit filename="../../../../TestTypeInfo.hpp" />
+		<Unit filename="../../../../TestTypes.hpp" />
+		<Unit filename="../../../TestClass.tests.cpp" />
+		<Unit filename="../../../TestMemoryUtility.tests.cpp" />
+		<Unit filename="../../../TestString.tests.cpp" />
+		<Unit filename="../../../TestString.tests.hpp" />
+		<Unit filename="../../../TestStringUtility.tests.cpp" />
+		<Unit filename="../../../TestTime.tests.cpp" />
+		<Unit filename="../../../test_unit_tests_main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
