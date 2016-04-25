@@ -85,7 +85,109 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_char_size_type)
     typedef unsigned int size_type;
     typedef unsigned char type;
 
-    TEST_OVERRIDE_ARGS("signed char,size_type");
+    TEST_OVERRIDE_ARGS("unsigned char,size_type");
+
+    type value = 0;
+    size_type length = 0U;
+    char* str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, "0");
+    TestMemoryUtility<char>::SafeFree(str);
+}
+
+TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_short_size_type)
+{
+    using ocl::TestConverterUtility;
+    using ocl::TestMemoryUtility;
+    typedef unsigned int size_type;
+    typedef signed short type;
+
+    TEST_OVERRIDE_ARGS("signed short,size_type");
+
+    type value = 0;
+    size_type length = 0;
+    char* str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, "0");
+    TestMemoryUtility<char>::SafeFree(str);
+}
+
+TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_short_size_type)
+{
+    using ocl::TestConverterUtility;
+    using ocl::TestMemoryUtility;
+    typedef unsigned int size_type;
+    typedef unsigned short type;
+
+    TEST_OVERRIDE_ARGS("unsigned short,size_type");
+
+    type value = 0;
+    size_type length = 0U;
+    char* str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, "0");
+    TestMemoryUtility<char>::SafeFree(str);
+}
+
+TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_int_size_type)
+{
+    using ocl::TestConverterUtility;
+    using ocl::TestMemoryUtility;
+    typedef unsigned int size_type;
+    typedef signed int type;
+
+    TEST_OVERRIDE_ARGS("signed int,size_type");
+
+    type value = 0;
+    size_type length = 0;
+    char* str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, "0");
+    TestMemoryUtility<char>::SafeFree(str);
+}
+
+TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_int_size_type)
+{
+    using ocl::TestConverterUtility;
+    using ocl::TestMemoryUtility;
+    typedef unsigned int size_type;
+    typedef unsigned int type;
+
+    TEST_OVERRIDE_ARGS("unsigned int,size_type");
+
+    type value = 0;
+    size_type length = 0U;
+    char* str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, "0");
+    TestMemoryUtility<char>::SafeFree(str);
+}
+
+TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_long_size_type)
+{
+    using ocl::TestConverterUtility;
+    using ocl::TestMemoryUtility;
+    typedef unsigned int size_type;
+    typedef signed long type;
+
+    TEST_OVERRIDE_ARGS("signed long,size_type");
+
+    type value = 0;
+    size_type length = 0;
+    char* str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, "0");
+    TestMemoryUtility<char>::SafeFree(str);
+}
+
+TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_long_size_type)
+{
+    using ocl::TestConverterUtility;
+    using ocl::TestMemoryUtility;
+    typedef unsigned int size_type;
+    typedef unsigned long type;
+
+    TEST_OVERRIDE_ARGS("unsigned long,size_type");
 
     type value = 0;
     size_type length = 0U;
