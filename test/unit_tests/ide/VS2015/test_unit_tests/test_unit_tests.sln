@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Blend for Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{307251B8-8935-4280-BFD7-4966534DB88C}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\StdioTestLog.hpp = ..\..\..\..\StdioTestLog.hpp
+		..\..\..\..\Test.hpp = ..\..\..\..\Test.hpp
+		..\..\..\..\TestClass.hpp = ..\..\..\..\TestClass.hpp
+		..\..\..\..\TestClassHelperFunctions.inl = ..\..\..\..\TestClassHelperFunctions.inl
+		..\..\..\..\TestClassSharedData.hpp = ..\..\..\..\TestClassSharedData.hpp
+		..\..\..\..\TestCompare.hpp = ..\..\..\..\TestCompare.hpp
+		..\..\..\..\TestConverterUtility.hpp = ..\..\..\..\TestConverterUtility.hpp
+		..\..\..\..\TestLeakDetect.hpp = ..\..\..\..\TestLeakDetect.hpp
+		..\..\..\..\TestLog.hpp = ..\..\..\..\TestLog.hpp
+		..\..\..\..\TestMacros.hpp = ..\..\..\..\TestMacros.hpp
+		..\..\..\..\TestMemoryUtility.hpp = ..\..\..\..\TestMemoryUtility.hpp
+		..\..\..\..\TestNumericUtility.hpp = ..\..\..\..\TestNumericUtility.hpp
+		..\..\..\..\TestString.hpp = ..\..\..\..\TestString.hpp
+		..\..\..\..\TestStringUtility.hpp = ..\..\..\..\TestStringUtility.hpp
+		..\..\..\..\TestTime.hpp = ..\..\..\..\TestTime.hpp
+		..\..\..\..\TestTypeInfo.hpp = ..\..\..\..\TestTypeInfo.hpp
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_unit_tests", "test_unit_tests.vcxproj", "{F30EC10E-860E-49DD-A775-B0AB7C6DFE87}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F30EC10E-860E-49DD-A775-B0AB7C6DFE87}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F30EC10E-860E-49DD-A775-B0AB7C6DFE87}.Debug|Win32.Build.0 = Debug|Win32
+		{F30EC10E-860E-49DD-A775-B0AB7C6DFE87}.Debug|x64.ActiveCfg = Debug|x64
+		{F30EC10E-860E-49DD-A775-B0AB7C6DFE87}.Debug|x64.Build.0 = Debug|x64
+		{F30EC10E-860E-49DD-A775-B0AB7C6DFE87}.Release|Win32.ActiveCfg = Release|Win32
+		{F30EC10E-860E-49DD-A775-B0AB7C6DFE87}.Release|Win32.Build.0 = Release|Win32
+		{F30EC10E-860E-49DD-A775-B0AB7C6DFE87}.Release|x64.ActiveCfg = Release|x64
+		{F30EC10E-860E-49DD-A775-B0AB7C6DFE87}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
