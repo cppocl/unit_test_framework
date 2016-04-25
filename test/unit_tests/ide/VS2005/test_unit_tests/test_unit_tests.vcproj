@@ -179,6 +179,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\TestCompare.tests.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\TestMemoryUtility.tests.cpp"
 				>
 			</File>
