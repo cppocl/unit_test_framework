@@ -51,8 +51,8 @@ struct TestCompare<bool, bool>
     static int Compare(type1 value1, type2 value2)
     {
         if (value1)
-            return value2 ? 0 : -1;
-        return value2 ? 1 : -1;
+            return value2 ? 0 : 1;
+        return value2 ? -1 : 0;
     }
 };
 
