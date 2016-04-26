@@ -486,10 +486,9 @@ private:
                              size_type line_number)
     {
         ++GetSharedData().m_total_failed_tests;
+        privateSetFilename(filename);
         m_check_failures.Append("LINE: ");
         m_check_failures.Append(static_cast<unsigned long>(line_number));
-        m_check_failures.Append("\nFILENAME: ");
-        m_check_failures.Append(filename);
         m_check_failures.Append("\nEXPRESSION: ");
         m_check_failures.Append(expression);
         m_check_failures.Append("\n");
