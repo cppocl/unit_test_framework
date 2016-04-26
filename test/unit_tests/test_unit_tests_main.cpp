@@ -18,9 +18,6 @@ limitations under the License.
 
 int main(int /*argc*/, char * /*argv*/[])
 {
-    // Currently an empty stub that will be used to demonstrate
-    // a command line unit test executable returning error codes.
-
     bool test_has_failed = TEST_HAS_FAILED;
 
     return test_has_failed ? 1 : 0;
