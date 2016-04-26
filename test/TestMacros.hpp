@@ -30,6 +30,8 @@ TEST_MEMBER_FUNCTION(MyString, SetSize, size_t)
 #ifndef OCL_GUARD_TEST_TESTMACROS_HPP
 #define OCL_GUARD_TEST_TESTMACROS_HPP
 
+#include "TestString.hpp"
+
 #ifndef TEST
 #define TEST(name) \
 class TestGeneral_##name : public ocl::TestClass \
@@ -305,7 +307,7 @@ TEST_MEMBER_FUNCTION(MyString, operator_plus_equal, char)
 #endif
 
 #ifndef CHECK_PERFORMANCE
-#define CHECK_PERFORMANCE(func, min_iterations) for (TestString filename(__FILE__); !CheckTime(min_iterations, filename, __LINE__); ) func
+#define CHECK_PERFORMANCE(func, min_iterations) for (ocl::TestString filename(__FILE__); !CheckTime(min_iterations, filename, __LINE__); ) func
 #endif
 
 #endif // OCL_GUARD_TEST_TESTMACROS_HPP
