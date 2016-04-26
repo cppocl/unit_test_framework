@@ -191,6 +191,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\TestNumericUtility.tests.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\TestString.tests.cpp"
 				>
 			</File>
