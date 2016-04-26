@@ -30,6 +30,8 @@ TEST_MEMBER_FUNCTION(MyString, SetSize, size_t)
 #ifndef OCL_GUARD_TEST_TESTMACROS_HPP
 #define OCL_GUARD_TEST_TESTMACROS_HPP
 
+/// NOTE: DO NOT include TestClass.hpp, as this is done as part of Test.hpp.
+
 #include "TestString.hpp"
 
 #ifndef TEST
