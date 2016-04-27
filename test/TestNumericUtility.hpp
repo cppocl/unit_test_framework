@@ -57,14 +57,12 @@ struct TestNumericUtility
         if (value < 0)
         {
             static Type const min_value = TestMinMax<Type>::min_value;
-            static Type const max_value = TestMinMax<Type>::max_value;
-
-            ++char_count;
 
             // Make sure value *= -1 doesn't overflow.
             if (value == min_value)
                 ++value;
 
+            ++char_count;
             value *= static_cast<Type>(-1);
         }
 
