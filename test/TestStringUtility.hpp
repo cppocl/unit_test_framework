@@ -82,6 +82,8 @@ struct TestStringUtility
         return "";
     }
 
+    /// Get maximum characters required for a string buffer to
+    /// store a converted minimum signed integer value for a size of the int.
     template<typename IntType>
     static size_type GetMinSignedIntCharCount(IntType size_of_int) throw()
     {
@@ -96,6 +98,8 @@ struct TestStringUtility
         return 0U;
     }
 
+    /// Get maximum characters required for a string buffer to
+    /// store a converted maximum signed integer value for a size of the int.
     template<typename IntType>
     static size_type GetMaxSignedIntCharCount(IntType size_of_int) throw()
     {
@@ -110,6 +114,8 @@ struct TestStringUtility
         return 0U;
     }
 
+    /// Get maximum characters required for a string buffer to
+    /// store a converted maximum unsigned integer value for a size of the int.
     template<typename IntType>
     static size_type GetMaxUnsignedIntCharCount(IntType size_of_int) throw()
     {
@@ -122,6 +128,16 @@ struct TestStringUtility
         }
 
         return 0U;
+    }
+
+    /// Get maximum characters required for a string buffer to
+    /// store a converted signed or unsigned integer value for a size of the int.
+    template<typename IntType>
+    static size_type GetMaxIntCharCount(IntType size_of_int) throw()
+    {
+        // Currently for the integer types the minimum signed int will
+        // produce the maximum number of characters required for a string buffer.
+        return GetMinSignedIntCharCount(size_of_int);
     }
 
     template<typename T>
