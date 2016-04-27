@@ -58,3 +58,34 @@ TEST_MEMBER_FUNCTION(TestNumericUtility, GetMaxNumberOfCharsForInt, NA)
     unsigned int long_count = TestNumericUtility<signed long, unsigned int>::GetMaxNumberOfCharsForInt();
     CHECK_EQUAL(long_count, GetExpectedIntChars(sizeof_long));
 }
+
+TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, signed_char)
+{
+    using ocl::TestNumericUtility;
+    typedef ocl::TestNumericUtility<signed char> test_numeric_utility;
+
+    TEST_OVERRIDE_ARGS("unsigned int");
+
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(1), 1U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(8), 1U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(9), 1U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(10), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(11), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(98), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(99), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(100), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(101), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(126), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(127), 3U);
+
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-1), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-8), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-9), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-10), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-11), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-99), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-100), 4U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-101), 4U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-127), 4U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-128), 4U);
+}

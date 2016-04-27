@@ -18,6 +18,7 @@ limitations under the License.
 #define OCL_GUARD_TEST_TESTNUMERICUTILITY_HPP
 
 #include "TestMemoryUtility.hpp"
+#include "TestMinMax.hpp"
 #include <cstddef>
 #include <cstring>
 #include <cstdio>
@@ -50,11 +51,20 @@ struct TestNumericUtility
 
     static SizeType GetNumberOfCharsForInt(Type value)
     {
+        static bool const is_signed = static_cast<Type>(-1) < 0;
+
         SizeType char_count = 1;
         if (value < 0)
         {
+            static Type const min_value = TestMinMax<Type>::min_value;
+            static Type const max_value = TestMinMax<Type>::max_value;
+
             ++char_count;
-            ++value;
+
+            // Make sure value *= -1 doesn't overflow.
+            if (value == min_value)
+                ++value;
+
             value *= static_cast<Type>(-1);
         }
 
@@ -86,7 +96,7 @@ struct TestNumericUtility
     }
 };
 
-}
+} // namespace ocl
 
 #ifdef _MSC_VER
 #pragma warning(pop)
