@@ -18,6 +18,7 @@ limitations under the License.
 #define OCL_GUARD_TEST_TESTNUMERICUTILITY_HPP
 
 #include "TestMemoryUtility.hpp"
+#include "TestStringUtility.hpp"
 #include "TestMinMax.hpp"
 #include <cstddef>
 #include <cstring>
@@ -34,21 +35,6 @@ namespace ocl
 template<typename Type, typename SizeType = unsigned int>
 struct TestNumericUtility
 {
-    /// Get the number of characters required to store the largest int
-    /// (or smallest if signed), based on size of type.
-    static SizeType GetMaxNumberOfCharsForInt()
-    {
-        // Get number of characters to store full numeric to string conversion.
-        switch (sizeof(Type))
-        {
-            case 1:  return 4;
-            case 2:  return 6;
-            case 4:  return 11;
-            case 8:  return 20;
-            default: return 0;
-        }
-    }
-
     static SizeType GetNumberOfCharsForInt(Type value)
     {
         static bool const is_signed = static_cast<Type>(-1) < 0;
@@ -79,7 +65,13 @@ struct TestNumericUtility
     /// with a '\0' terminating character.
     static char* GetString(Type value, const char* fmt, SizeType& length)
     {
-        SizeType max_chars = GetMaxNumberOfCharsForInt();
+        typedef TestStringUtility::size_type size_type;
+        static size_type const size_of_type = static_cast<unsigned int>(sizeof(Type));
+
+        // Get maximum number of characters required to convert Type into a string buffer.
+        SizeType max_chars = TestStringUtility::GetMaxIntCharCount<Type>(size_of_type);
+
+        // Convert the integer type into a string.
         char* str = NULL;
         if (max_chars > 0)
         {

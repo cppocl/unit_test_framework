@@ -18,48 +18,6 @@ limitations under the License.
 #include "../TestNumericUtility.hpp"
 #include <limits.h>
 
-namespace
-{
-
-unsigned int GetExpectedIntChars(unsigned int size_of_type)
-{
-    switch (size_of_type)
-    {
-        case 1: return 4U;
-        case 2: return 6U;
-        case 4: return 11U;
-        case 8: return 20U;
-        default:
-            return 0U;
-    }
-}
-
-}
-
-TEST_MEMBER_FUNCTION(TestNumericUtility, GetMaxNumberOfCharsForInt, NA)
-{
-    using ocl::TestNumericUtility;
-
-    // expected characters in a converted signed integer type.
-
-    static unsigned int const sizeof_char  = sizeof(signed char);
-    static unsigned int const sizeof_short = sizeof(signed short);
-    static unsigned int const sizeof_int   = sizeof(signed int);
-    static unsigned int const sizeof_long  = sizeof(signed long);
-
-    unsigned int char_count = TestNumericUtility<signed char, unsigned int>::GetMaxNumberOfCharsForInt();
-    CHECK_EQUAL(char_count, GetExpectedIntChars(sizeof_char));
-
-    unsigned int short_count = TestNumericUtility<signed short, unsigned int>::GetMaxNumberOfCharsForInt();
-    CHECK_EQUAL(short_count, GetExpectedIntChars(sizeof_short));
-
-    unsigned int int_count = TestNumericUtility<signed int, unsigned int>::GetMaxNumberOfCharsForInt();
-    CHECK_EQUAL(int_count, GetExpectedIntChars(sizeof_int));
-
-    unsigned int long_count = TestNumericUtility<signed long, unsigned int>::GetMaxNumberOfCharsForInt();
-    CHECK_EQUAL(long_count, GetExpectedIntChars(sizeof_long));
-}
-
 TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, signed_char)
 {
     using ocl::TestNumericUtility;
@@ -110,4 +68,56 @@ TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, unsigned_char)
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(101), 3U);
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(UCHAR_MAX - 1), 3U);
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(UCHAR_MAX), 3U);
+}
+
+TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, signed_short)
+{
+    using ocl::TestNumericUtility;
+    typedef ocl::TestNumericUtility<signed short> test_numeric_utility;
+
+    TEST_OVERRIDE_ARGS("signed short");
+
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(0), 1U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(1), 1U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(8), 1U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(9), 1U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(10), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(11), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(98), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(99), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(100), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(101), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MAX - 1), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MAX), 3U);
+
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-1), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-8), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-9), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-10), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-11), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-99), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-100), 4U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-101), 4U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MIN + 1), 4U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MIN), 4U);
+}
+
+TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, unsigned_short)
+{
+    using ocl::TestNumericUtility;
+    typedef ocl::TestNumericUtility<unsigned short> test_numeric_utility;
+
+    TEST_OVERRIDE_ARGS("unsigned short");
+
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(1), 1U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(8), 1U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(9), 1U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(10), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(11), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(98), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(99), 2U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(100), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(101), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(USHRT_MAX - 1), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(USHRT_MAX), 3U);
 }
