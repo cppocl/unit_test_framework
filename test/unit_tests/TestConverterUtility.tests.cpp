@@ -17,6 +17,8 @@ limitations under the License.
 #include "../Test.hpp"
 #include "../TestConverterUtility.hpp"
 #include "../TestMemoryUtility.hpp"
+#include "../TestStringUtility.hpp"
+#include "../TestMinMax.hpp"
 
 TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, bool_size_type)
 {
@@ -65,6 +67,8 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_char_size_type)
 {
     using ocl::TestConverterUtility;
     using ocl::TestMemoryUtility;
+    using ocl::TestStringUtility;
+    using ocl::TestMinMax;
     typedef unsigned int size_type;
     typedef signed char type;
 
@@ -76,12 +80,30 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_char_size_type)
     CHECK_NOT_NULL(str);
     CHECK_STRCMP(str, "0");
     TestMemoryUtility<char>::SafeFree(str);
+
+    char const* min_str = TestStringUtility::GetMinSignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::min_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, min_str);
+    TestMemoryUtility<char>::SafeFree(str);
+
+    char const* max_str = TestStringUtility::GetMaxSignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::max_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, max_str);
+    TestMemoryUtility<char>::SafeFree(str);
 }
 
 TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_char_size_type)
 {
     using ocl::TestConverterUtility;
     using ocl::TestMemoryUtility;
+    using ocl::TestStringUtility;
+    using ocl::TestMinMax;
     typedef unsigned int size_type;
     typedef unsigned char type;
 
@@ -93,12 +115,22 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_char_size_type)
     CHECK_NOT_NULL(str);
     CHECK_STRCMP(str, "0");
     TestMemoryUtility<char>::SafeFree(str);
+
+    char const* max_str = TestStringUtility::GetMaxUnsignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::max_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, max_str);
+    TestMemoryUtility<char>::SafeFree(str);
 }
 
 TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_short_size_type)
 {
     using ocl::TestConverterUtility;
     using ocl::TestMemoryUtility;
+    using ocl::TestStringUtility;
+    using ocl::TestMinMax;
     typedef unsigned int size_type;
     typedef signed short type;
 
@@ -110,12 +142,30 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_short_size_type)
     CHECK_NOT_NULL(str);
     CHECK_STRCMP(str, "0");
     TestMemoryUtility<char>::SafeFree(str);
+
+    char const* min_str = TestStringUtility::GetMinSignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::min_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, min_str);
+    TestMemoryUtility<char>::SafeFree(str);
+
+    char const* max_str = TestStringUtility::GetMaxSignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::max_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, max_str);
+    TestMemoryUtility<char>::SafeFree(str);
 }
 
 TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_short_size_type)
 {
     using ocl::TestConverterUtility;
     using ocl::TestMemoryUtility;
+    using ocl::TestStringUtility;
+    using ocl::TestMinMax;
     typedef unsigned int size_type;
     typedef unsigned short type;
 
@@ -127,12 +177,22 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_short_size_type)
     CHECK_NOT_NULL(str);
     CHECK_STRCMP(str, "0");
     TestMemoryUtility<char>::SafeFree(str);
+
+    char const* max_str = TestStringUtility::GetMaxUnsignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::max_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, max_str);
+    TestMemoryUtility<char>::SafeFree(str);
 }
 
 TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_int_size_type)
 {
     using ocl::TestConverterUtility;
     using ocl::TestMemoryUtility;
+    using ocl::TestStringUtility;
+    using ocl::TestMinMax;
     typedef unsigned int size_type;
     typedef signed int type;
 
@@ -144,12 +204,30 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_int_size_type)
     CHECK_NOT_NULL(str);
     CHECK_STRCMP(str, "0");
     TestMemoryUtility<char>::SafeFree(str);
+
+    char const* min_str = TestStringUtility::GetMinSignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::min_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, min_str);
+    TestMemoryUtility<char>::SafeFree(str);
+
+    char const* max_str = TestStringUtility::GetMaxSignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::max_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, max_str);
+    TestMemoryUtility<char>::SafeFree(str);
 }
 
 TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_int_size_type)
 {
     using ocl::TestConverterUtility;
     using ocl::TestMemoryUtility;
+    using ocl::TestStringUtility;
+    using ocl::TestMinMax;
     typedef unsigned int size_type;
     typedef unsigned int type;
 
@@ -161,12 +239,22 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_int_size_type)
     CHECK_NOT_NULL(str);
     CHECK_STRCMP(str, "0");
     TestMemoryUtility<char>::SafeFree(str);
+
+    char const* max_str = TestStringUtility::GetMaxUnsignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::max_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, max_str);
+    TestMemoryUtility<char>::SafeFree(str);
 }
 
 TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_long_size_type)
 {
     using ocl::TestConverterUtility;
     using ocl::TestMemoryUtility;
+    using ocl::TestStringUtility;
+    using ocl::TestMinMax;
     typedef unsigned int size_type;
     typedef signed long type;
 
@@ -178,12 +266,30 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, signed_long_size_type)
     CHECK_NOT_NULL(str);
     CHECK_STRCMP(str, "0");
     TestMemoryUtility<char>::SafeFree(str);
+
+    char const* min_str = TestStringUtility::GetMinSignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::min_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, min_str);
+    TestMemoryUtility<char>::SafeFree(str);
+
+    char const* max_str = TestStringUtility::GetMaxSignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::max_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, max_str);
+    TestMemoryUtility<char>::SafeFree(str);
 }
 
 TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_long_size_type)
 {
     using ocl::TestConverterUtility;
     using ocl::TestMemoryUtility;
+    using ocl::TestStringUtility;
+    using ocl::TestMinMax;
     typedef unsigned int size_type;
     typedef unsigned long type;
 
@@ -194,5 +300,13 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_long_size_type)
     char* str = TestConverterUtility<type>::GetString(value, length);
     CHECK_NOT_NULL(str);
     CHECK_STRCMP(str, "0");
+    TestMemoryUtility<char>::SafeFree(str);
+
+    char const* max_str = TestStringUtility::GetMaxUnsignedIntAsString(sizeof(type));
+    value = TestMinMax<type>::max_value;
+    length = 0;
+    str = TestConverterUtility<type>::GetString(value, length);
+    CHECK_NOT_NULL(str);
+    CHECK_STRCMP(str, max_str);
     TestMemoryUtility<char>::SafeFree(str);
 }
