@@ -20,7 +20,6 @@ limitations under the License.
 
 TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, signed_char)
 {
-    using ocl::TestNumericUtility;
     typedef ocl::TestNumericUtility<signed char> test_numeric_utility;
 
     TEST_OVERRIDE_ARGS("signed char");
@@ -52,7 +51,6 @@ TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, signed_char)
 
 TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, unsigned_char)
 {
-    using ocl::TestNumericUtility;
     typedef ocl::TestNumericUtility<unsigned char> test_numeric_utility;
 
     TEST_OVERRIDE_ARGS("unsigned char");
@@ -72,7 +70,6 @@ TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, unsigned_char)
 
 TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, signed_short)
 {
-    using ocl::TestNumericUtility;
     typedef ocl::TestNumericUtility<signed short> test_numeric_utility;
 
     TEST_OVERRIDE_ARGS("signed short");
@@ -87,8 +84,8 @@ TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, signed_short)
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(99), 2U);
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(100), 3U);
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(101), 3U);
-    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MAX - 1), 3U);
-    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MAX), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MAX - 1), 5U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MAX), 5U);
 
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-1), 2U);
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-8), 2U);
@@ -98,13 +95,12 @@ TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, signed_short)
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-99), 3U);
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-100), 4U);
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(-101), 4U);
-    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MIN + 1), 4U);
-    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MIN), 4U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MIN + 1), 6U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(SHRT_MIN), 6U);
 }
 
 TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, unsigned_short)
 {
-    using ocl::TestNumericUtility;
     typedef ocl::TestNumericUtility<unsigned short> test_numeric_utility;
 
     TEST_OVERRIDE_ARGS("unsigned short");
@@ -118,6 +114,6 @@ TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, unsigned_short)
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(99), 2U);
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(100), 3U);
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(101), 3U);
-    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(USHRT_MAX - 1), 3U);
-    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(USHRT_MAX), 3U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(USHRT_MAX - 1), 5U);
+    CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(USHRT_MAX), 5U);
 }
