@@ -40,7 +40,7 @@ struct TestMinMax<unsigned char>
     typedef unsigned char type;
 
     static type const min_value = static_cast<type>(0);
-    static type const max_value = static_cast<type>(CHAR_MAX);
+    static type const max_value = static_cast<type>(UCHAR_MAX);
 };
 
 template<>
