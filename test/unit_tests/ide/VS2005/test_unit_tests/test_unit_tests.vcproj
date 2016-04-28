@@ -191,6 +191,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\TestMinMax.tests.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\TestNumericUtility.tests.cpp"
 				>
 			</File>
