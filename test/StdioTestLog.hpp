@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef OCL_GUARD_TEST_TDIOTESTLOG_HPP
-#define OCL_GUARD_TEST_TDIOTESTLOG_HPP
+#ifndef OCL_GUARD_TEST_STDIOTESTLOG_HPP
+#define OCL_GUARD_TEST_STDIOTESTLOG_HPP
 
 #include "TestLog.hpp"
 #include <iostream>
@@ -39,4 +39,4 @@ public:
 
 }
 
-#endif // OCL_GUARD_TEST_TDIOTESTLOG_HPP
+#endif // OCL_GUARD_TEST_STDIOTESTLOG_HPP
