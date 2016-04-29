@@ -427,8 +427,8 @@ private:
     // which sets up the initial logger and keeps track of number of tests.
     void privateConstruct()
     {
-        if (GetSharedData().m_stdio_logger != NULL)
-            m_logger = GetSharedData().m_stdio_logger;
+        if (GetSharedData().m_logger != NULL)
+            m_logger = GetSharedData().m_logger;
         else
             LogWriteLine("Error setting logger!");
 

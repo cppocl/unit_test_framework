@@ -29,7 +29,7 @@ friend class TestClass;
 
 public:
     TestClassSharedData()
-        : m_stdio_logger(new StdioTestLog)
+        : m_logger(new StdioTestLog)
         , m_max_member_function_length(0)
         , m_failure_indent(0)
         , m_constructions(0)
@@ -51,7 +51,7 @@ public:
 
     ~TestClassSharedData()
     {
-        delete m_stdio_logger;
+        delete m_logger;
     }
 
 private:
@@ -61,7 +61,7 @@ private:
 // Data only available to TestClass.
 private:
     // Default logger when one is not provided.
-    StdioTestLog* m_stdio_logger;
+    TestLog* m_logger;
 
     // Track longest member function for cleaner output.
     SizeType m_max_member_function_length;
@@ -69,7 +69,7 @@ private:
     // Number of spaces to indent error information.
     SizeType m_failure_indent;
 
-    // Count all constructions and delete m_stdio_logger of last destructor.
+    // Count all constructions and delete m_logger of last destructor.
     SizeType m_constructions;
 
     // Currently logged line number.
