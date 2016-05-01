@@ -22,6 +22,10 @@ limitations under the License.
 namespace ocl
 {
 
+/**
+ * All shared data for every test which is derived from TestClass
+ * is in TestClassSharedData class.
+ */
 template<typename SizeType>
 class TestClassSharedData
 {
@@ -54,6 +58,12 @@ public:
         delete m_logger;
     }
 
+    void SetLogger(TestLog* logger)
+    {
+        delete m_logger;
+        m_logger = logger;
+    }
+
 private:
     TestClassSharedData(TestClassSharedData const&);
     TestClassSharedData& operator=(TestClassSharedData const&);
@@ -72,7 +82,7 @@ private:
     // Count all constructions and delete m_logger of last destructor.
     SizeType m_constructions;
 
-    // Currently logged line number.
+    // Currently logged line number for the run test.
     SizeType m_logged_line;
 
     // Counts for all tests.
