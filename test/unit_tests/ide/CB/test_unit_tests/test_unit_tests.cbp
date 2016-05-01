@@ -38,6 +38,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="../../../../FunctorTestLog.hpp" />
 		<Unit filename="../../../../StdioTestLog.hpp" />
 		<Unit filename="../../../../Test.hpp" />
 		<Unit filename="../../../../TestClass.hpp" />
@@ -47,22 +48,30 @@
 		<Unit filename="../../../../TestClassSharedFunctions.inl" />
 		<Unit filename="../../../../TestCompare.hpp" />
 		<Unit filename="../../../../TestConverterUtility.hpp" />
+		<Unit filename="../../../../TestFileFunctor.hpp" />
 		<Unit filename="../../../../TestLeakDetect.hpp" />
 		<Unit filename="../../../../TestLog.hpp" />
 		<Unit filename="../../../../TestMacros.hpp" />
+		<Unit filename="../../../../TestMemoryOverflowUtility.hpp" />
 		<Unit filename="../../../../TestMemoryUtility.hpp" />
+		<Unit filename="../../../../TestMinMax.hpp" />
 		<Unit filename="../../../../TestNumericUtility.hpp" />
+		<Unit filename="../../../../TestStdioFileFunctor.hpp" />
 		<Unit filename="../../../../TestString.hpp" />
 		<Unit filename="../../../../TestStringUtility.hpp" />
 		<Unit filename="../../../../TestTime.hpp" />
 		<Unit filename="../../../../TestTypeInfo.hpp" />
 		<Unit filename="../../../../TestTypes.hpp" />
 		<Unit filename="../../../TestClass.tests.cpp" />
+		<Unit filename="../../../TestCompare.tests.cpp" />
+		<Unit filename="../../../TestConverterUtility.tests.cpp" />
 		<Unit filename="../../../TestMemoryUtility.tests.cpp" />
+		<Unit filename="../../../TestMinMax.tests.cpp" />
+		<Unit filename="../../../TestNumericUtility.tests.cpp" />
 		<Unit filename="../../../TestString.tests.cpp" />
-		<Unit filename="../../../TestString.tests.hpp" />
 		<Unit filename="../../../TestStringUtility.tests.cpp" />
 		<Unit filename="../../../TestTime.tests.cpp" />
+		<Unit filename="../../../TestTypes.tests.cpp" />
 		<Unit filename="../../../test_unit_tests_main.cpp" />
 		<Extensions>
 			<code_completion />

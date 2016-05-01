@@ -1,11 +1,61 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
-	<ActiveTarget name="Release" />
+	<ActiveTarget name="Debug" />
+	<File name="..\..\..\..\TestNumericUtility.hpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1084" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\TestString.hpp" open="1" top="1" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="12448" topLine="390" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\TestStringUtility.hpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="784" topLine="138" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\TestStringUtility.tests.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3787" topLine="106" />
+		</Cursor>
+	</File>
 	<File name="..\..\..\test_unit_tests_main.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="646" topLine="0" />
 		</Cursor>
 	</File>
-	<EditorTabsLayout layout="@layout2|name=dummy;caption=;state=2098174;dir=3;layer=0;row=0;pos=0;prop=100000;bestw=1093;besth=489;minw=1093;minh=489;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|" />
+	<File name="..\..\..\TestMinMax.tests.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1835" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\Test.hpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="690" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\TestClass.hpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7731" topLine="261" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\TestConverterUtility.hpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="709" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\TestMacros.hpp" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8318" topLine="216" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\TestMemoryUtility.hpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2259" topLine="35" />
+		</Cursor>
+	</File>
+	<EditorTabsLayout layout="09d712405726610b0004166900000002=0;test_unit_tests:..\..\..\..\TestNumericUtility.hpp,1;test_unit_tests:..\..\..\..\TestStringUtility.hpp,2;test_unit_tests:..\..\..\..\TestConverterUtility.hpp,3;test_unit_tests:..\..\..\..\TestMemoryUtility.hpp,*4;test_unit_tests:..\..\..\..\TestString.hpp,5;test_unit_tests:..\..\..\TestStringUtility.tests.cpp,6;test_unit_tests:..\..\..\..\TestClass.hpp,7;test_unit_tests:..\..\..\TestMinMax.tests.cpp,8;test_unit_tests:..\..\..\..\Test.hpp,9;test_unit_tests:..\..\..\..\TestMacros.hpp@layout2|name=dummy;caption=;state=2098174;dir=3;layer=0;row=0;pos=0;prop=100000;bestw=1093;besth=489;minw=1093;minh=489;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=09d712405726610b0004166900000002;caption=;state=2098172;dir=5;layer=0;row=0;pos=0;prop=100000;bestw=200;besth=200;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|dock_size(5,0,0)=202|" />
 </CodeBlocks_layout_file>
