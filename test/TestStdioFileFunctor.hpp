@@ -26,8 +26,8 @@ namespace ocl
 struct TestStdioFileFunctor
 {
     TestStdioFileFunctor(char const* file_name)
+        : m_ostream(file_name, std::ofstream::out | std::ofstream::app)
     {
-        m_ostream.open(file_name, std::ofstream::out | std::ofstream::app);
     }
 
     ~TestStdioFileFunctor()
