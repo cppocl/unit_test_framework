@@ -46,7 +46,10 @@ public:
         , m_string(NULL)
     {
         if (str != NULL)
-            TestMemoryUtility<char, size_type>::UnsafeAllocateCopy(m_string, str, m_length);
+        {
+            m_length = static_cast<size_type>(TestStringUtility::UnsafeLength(str));
+            TestMemoryUtility<char, size_type>::UnsafeAllocateCopy(m_string, str, m_length + 1);
+        }
     }
 
     TestString(char ch, size_type len)
