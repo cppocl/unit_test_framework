@@ -22,27 +22,62 @@ TEST(TestMinMax_class_constants)
 {
     using ocl::TestMinMax;
 
-    CHECK_EQUAL(TestMinMax<signed char>::min_value, CHAR_MIN);
-    CHECK_EQUAL(TestMinMax<signed char>::max_value, CHAR_MAX);
+    // Need to define constants before testing,
+    // otherwise gcc produced undefined reference compiler error.
 
-    CHECK_EQUAL(TestMinMax<unsigned char>::min_value, 0U);
-    CHECK_EQUAL(TestMinMax<unsigned char>::max_value, UCHAR_MAX);
+    {
+        signed char const min_value = TestMinMax<signed char>::min_value;
+        signed char const max_value = TestMinMax<signed char>::max_value;
+        CHECK_EQUAL(min_value, CHAR_MIN);
+        CHECK_EQUAL(max_value, CHAR_MAX);
+    }
 
-    CHECK_EQUAL(TestMinMax<signed short>::min_value, SHRT_MIN);
-    CHECK_EQUAL(TestMinMax<signed short>::max_value, SHRT_MAX);
+    {
+        unsigned char const min_value = TestMinMax<unsigned char>::min_value;
+        unsigned char const max_value = TestMinMax<unsigned char>::max_value;
+        CHECK_EQUAL(min_value, 0U);
+        CHECK_EQUAL(max_value, UCHAR_MAX);
+    }
 
-    CHECK_EQUAL(TestMinMax<unsigned short>::min_value, 0U);
-    CHECK_EQUAL(TestMinMax<unsigned short>::max_value, USHRT_MAX);
+    {
+        signed short min_value = TestMinMax<signed short>::min_value;
+        signed short max_value = TestMinMax<signed short>::max_value;
+        CHECK_EQUAL(min_value, SHRT_MIN);
+        CHECK_EQUAL(max_value, SHRT_MAX);
+    }
 
-    CHECK_EQUAL(TestMinMax<signed int>::min_value, INT_MIN);
-    CHECK_EQUAL(TestMinMax<signed int>::max_value, INT_MAX);
+    {
+        unsigned short min_value = TestMinMax<unsigned short>::min_value;
+        unsigned short max_value = TestMinMax<unsigned short>::max_value;
+        CHECK_EQUAL(min_value, 0U);
+        CHECK_EQUAL(max_value, USHRT_MAX);
+    }
 
-    CHECK_EQUAL(TestMinMax<unsigned int>::min_value, 0U);
-    CHECK_EQUAL(TestMinMax<unsigned int>::max_value, UINT_MAX);
+    {
+        signed int min_value = TestMinMax<signed int>::min_value;
+        signed int max_value = TestMinMax<signed int>::max_value;
+        CHECK_EQUAL(min_value, INT_MIN);
+        CHECK_EQUAL(max_value, INT_MAX);
+    }
 
-    CHECK_EQUAL(TestMinMax<signed long>::min_value, LONG_MIN);
-    CHECK_EQUAL(TestMinMax<signed long>::max_value, LONG_MAX);
+    {
+        unsigned int min_value = TestMinMax<unsigned int>::min_value;
+        unsigned int max_value = TestMinMax<unsigned int>::max_value;
+        CHECK_EQUAL(min_value, 0U);
+        CHECK_EQUAL(max_value, UINT_MAX);
+    }
 
-    CHECK_EQUAL(TestMinMax<unsigned long>::min_value, 0U);
-    CHECK_EQUAL(TestMinMax<unsigned long>::max_value, ULONG_MAX);
+    {
+        signed long min_value = TestMinMax<signed long>::min_value;
+        signed long max_value = TestMinMax<signed long>::max_value;
+        CHECK_EQUAL(min_value, LONG_MIN);
+        CHECK_EQUAL(max_value, LONG_MAX);
+    }
+
+    {
+        unsigned long min_value = TestMinMax<unsigned long>::min_value;
+        unsigned long max_value = TestMinMax<unsigned long>::max_value;
+        CHECK_EQUAL(min_value, 0U);
+        CHECK_EQUAL(max_value, ULONG_MAX);
+    }
 }

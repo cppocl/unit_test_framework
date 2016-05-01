@@ -16,8 +16,14 @@ limitations under the License.
 
 #include "../Test.hpp"
 
+TEST_FAILURE_INDENT(4);
+
 int main(int /*argc*/, char * /*argv*/[])
 {
+    TEST_OVERRIDE_LOG(ocl::TestStdioFileFunctor, new ocl::TestStdioFileFunctor("unit_test_log.txt"));
+    TEST_OVERRIDE_FILE_LOG("unit_test_log.txt");
+    TEST_OVERRIDE_STDIO_FILE_LOG("unit_test_log.txt");
+
     bool test_has_failed = TEST_HAS_FAILED;
 
     return test_has_failed ? 1 : 0;

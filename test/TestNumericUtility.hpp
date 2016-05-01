@@ -37,8 +37,6 @@ struct TestNumericUtility
 {
     static SizeType GetNumberOfCharsForInt(Type value)
     {
-        static bool const is_signed = static_cast<Type>(-1) < 0;
-
         SizeType char_count = 1;
         if (value < 0)
         {
@@ -65,8 +63,7 @@ struct TestNumericUtility
     /// with a '\0' terminating character.
     static char* GetString(Type value, const char* fmt, SizeType& length)
     {
-        typedef TestStringUtility::size_type size_type;
-        static size_type const size_of_type = static_cast<unsigned int>(sizeof(Type));
+        static SizeType const size_of_type = static_cast<SizeType>(sizeof(Type));
 
         // Get maximum number of characters required to convert Type into a string buffer.
         SizeType max_chars = TestStringUtility::GetMaxIntCharCount<Type>(size_of_type);

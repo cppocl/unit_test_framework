@@ -33,6 +33,9 @@ TEST_MEMBER_FUNCTION(MyString, SetSize, size_t)
 /// NOTE: DO NOT include TestClass.hpp, as this is done as part of Test.hpp.
 
 #include "TestString.hpp"
+#include "FunctorTestLog.hpp"
+#include "TestFileFunctor.hpp"
+#include "TestStdioFileFunctor.hpp"
 
 #ifndef TEST
 #define TEST(name) \
@@ -191,6 +194,32 @@ TEST_MEMBER_FUNCTION(MyString, operator_plus_equal, char)
 #error Unit test conflict with other macro!
 #endif
 
+
+/*
+Override default logger with a custom logger.
+Functor class requires following following implementation:
+struct MyFunctor
+{
+    void operator ()(char const* str) { my_log_code(str); }
+};
+
+Macros is used with this example like this:
+TEST_OVERRIDE_LOG(MyFunctor, new MyFunctor());
+*/
+
+#ifndef TEST_OVERRIDE_LOG
+#define TEST_OVERRIDE_LOG(functor_type, functor_ptr) ocl::TestClass::SetLogger(new ocl::FunctorTestLog<functor_type>(functor_ptr))
+#endif
+
+#ifndef TEST_OVERRIDE_STDIO_FILE_LOG
+#define TEST_OVERRIDE_STDIO_FILE_LOG(file_name) \
+    ocl::TestClass::SetLogger(new ocl::FunctorTestLog<ocl::TestStdioFileFunctor>(new ocl::TestStdioFileFunctor(file_name)))
+#endif
+
+#ifndef TEST_OVERRIDE_FILE_LOG
+#define TEST_OVERRIDE_FILE_LOG(file_name) \
+    ocl::TestClass::SetLogger(new ocl::FunctorTestLog<ocl::TestFileFunctor>(new ocl::TestFileFunctor(file_name)))
+#endif
 
 /**
     CHECK_* macros

@@ -32,12 +32,15 @@ namespace ocl
 template<typename ValueType, typename SizeType = unsigned int>
 struct TestConverterUtility
 {
+    typedef SizeType size_type;
+
     static char* GetString(ValueType, SizeType& length) { length = 0; return NULL; }
 };
 
 template<typename SizeType>
 struct TestConverterUtility<bool, SizeType>
 {
+    typedef SizeType size_type;
     typedef bool type;
 
     /// bool will be returned as a string of "true" or "false".
@@ -52,6 +55,7 @@ struct TestConverterUtility<bool, SizeType>
 template<typename SizeType>
 struct TestConverterUtility<char, SizeType>
 {
+    typedef SizeType size_type;
     typedef char type;
 
     static char* GetString(type value, SizeType& length)
@@ -65,6 +69,7 @@ struct TestConverterUtility<char, SizeType>
 template<typename SizeType>
 struct TestConverterUtility<signed char, SizeType>
 {
+    typedef SizeType size_type;
     typedef signed char type;
 
     static char* GetString(type value, SizeType& length)
@@ -76,6 +81,7 @@ struct TestConverterUtility<signed char, SizeType>
 template<typename SizeType>
 struct TestConverterUtility<unsigned char, SizeType>
 {
+    typedef SizeType size_type;
     typedef unsigned short type;
 
     static char* GetString(type value, SizeType& length)
@@ -87,6 +93,7 @@ struct TestConverterUtility<unsigned char, SizeType>
 template<typename SizeType>
 struct TestConverterUtility<signed short, SizeType>
 {
+    typedef SizeType size_type;
     typedef signed short type;
 
     static char* GetString(type value, SizeType& length)
@@ -98,6 +105,7 @@ struct TestConverterUtility<signed short, SizeType>
 template<typename SizeType>
 struct TestConverterUtility<unsigned short, SizeType>
 {
+    typedef SizeType size_type;
     typedef unsigned short type;
 
     static char* GetString(type value, SizeType& length)
@@ -109,6 +117,7 @@ struct TestConverterUtility<unsigned short, SizeType>
 template<typename SizeType>
 struct TestConverterUtility<signed int, SizeType>
 {
+    typedef SizeType size_type;
     typedef signed int type;
 
     static char* GetString(type value, SizeType& length)
@@ -120,6 +129,7 @@ struct TestConverterUtility<signed int, SizeType>
 template<typename SizeType>
 struct TestConverterUtility<unsigned int, SizeType>
 {
+    typedef SizeType size_type;
     typedef unsigned int type;
 
     static char* GetString(type value, SizeType& length)
@@ -131,6 +141,7 @@ struct TestConverterUtility<unsigned int, SizeType>
 template<typename SizeType>
 struct TestConverterUtility<signed long, SizeType>
 {
+    typedef SizeType size_type;
     typedef signed long type;
 
     static char* GetString(type value, SizeType& length)
@@ -142,6 +153,7 @@ struct TestConverterUtility<signed long, SizeType>
 template<typename SizeType>
 struct TestConverterUtility<unsigned long, SizeType>
 {
+    typedef SizeType size_type;
     typedef unsigned long type;
 
     static char* GetString(type value, SizeType& length)

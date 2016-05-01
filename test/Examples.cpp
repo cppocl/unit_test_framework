@@ -20,6 +20,7 @@ and TEST_CONST_MEMBER_FUNCTION require the names are unique.
 */
 
 #include "Test.hpp"
+#include <fstream> // Required for custom logger.
 
 // Example functions for demonstrating how to write unit tests
 // for functions using TEST_FUNCTION.
@@ -169,11 +170,38 @@ TEST(ComboTesting)
 
 #ifdef INCLUDE_MAIN_FUNCTION
 
+struct CustomLogger
+{
+    CustomLogger(char const* file_name)
+        : m_ostream(file_name, std::ofstream::out | std::ofstream::app)
+    {
+    }
+
+    // Custom functor for outputting strings to a custom destination.
+    ~CustomLogger() { m_ostream.close(); }
+
+    void operator()(char const* str) { m_ostream << str; }
+
+private:
+    std::ofstream m_ostream;
+};
+
 int main(int /*argc*/, char * /*argv*/[])
 {
-    // Currently an empty stub that will be used to demonstrate
-    // a command line unit test executable returning error codes.
+// Various overrides for changing how to output the logging.
+#if 0
+    TEST_OVERRIDE_LOG(CustomLogger, new CustomLogger("unit_test_log.txt"));
+#endif
 
+#if 0 // Enable when logging only to file
+    TEST_OVERRIDE_FILE_LOG("unit_test_log.txt");
+#endif
+
+#if 0 // Enable when logging to file and stdout
+    TEST_OVERRIDE_STDIO_FILE_LOG("unit_test_log.txt");
+#endif
+
+    // Return from main success or failure.
     bool test_has_failed = TEST_HAS_FAILED;
 
     return test_has_failed ? 1 : 0;

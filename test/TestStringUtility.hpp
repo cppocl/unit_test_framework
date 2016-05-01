@@ -22,7 +22,6 @@ limitations under the License.
 #include <cstring>
 #include <cstdio>
 #include "TestMemoryUtility.hpp"
-#include "TestConverterUtility.hpp"
 
 namespace ocl
 {
@@ -138,19 +137,6 @@ struct TestStringUtility
         // Currently for the integer types the minimum signed int will
         // produce the maximum number of characters required for a string buffer.
         return GetMinSignedIntCharCount(size_of_int);
-    }
-
-    template<typename T>
-    static char* GetString(T value)
-    {
-        size_type len = 0U;
-        return TestConverterUtility<T>::GetString(value, len);
-    }
-
-    template<typename Type, typename SizeType>
-    static char* GetString(Type value, SizeType& length)
-    {
-        return TestConverterUtility<Type, SizeType>::GetString(value, length);
     }
 
     static void UnsafeFill(char* str, char ch, size_type len)

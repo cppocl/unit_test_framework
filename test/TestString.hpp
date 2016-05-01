@@ -19,6 +19,7 @@ limitations under the License.
 
 #include "TestMemoryUtility.hpp"
 #include "TestStringUtility.hpp"
+#include "TestConverterUtility.hpp"
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
@@ -45,7 +46,7 @@ public:
         , m_string(NULL)
     {
         if (str != NULL)
-            TestStringUtility::UnsafeAllocateCopy(m_string, m_length, str);
+            TestMemoryUtility<char, size_type>::UnsafeAllocateCopy(m_string, str, m_length);
     }
 
     TestString(char ch, size_type len)
@@ -414,7 +415,7 @@ private:
     void privateAppendValue(T value, size_type pad)
     {
         size_type length = size_type_default;
-        char* str = TestStringUtility::GetString(value, length);
+        char* str = TestConverterUtility<T, size_type>::GetString(value, length);
         if (str != NULL)
         {
             if (IsEmpty() && (pad == size_type_default))

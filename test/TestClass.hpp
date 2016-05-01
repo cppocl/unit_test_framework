@@ -22,7 +22,9 @@ limitations under the License.
 #include "TestString.hpp"
 #include "TestCompare.hpp"
 #include "TestTypeInfo.hpp"
+#include "TestStringUtility.hpp"
 #include "TestClassSharedData.hpp"
+#include "TestStdioFileFunctor.hpp"
 
 #include <cstring>
 #include <climits>
@@ -43,8 +45,7 @@ public:
               bool is_timed = false,
               unsigned long secs = 0,
               unsigned long nanosecs = 0)
-        : m_logger(NULL)
-        , m_class_name(class_name)
+        : m_class_name(class_name)
         , m_function_name(function_name)
         , m_args(args == "NA" ? "" : args)
         , m_is_const(is_const)
@@ -173,16 +174,26 @@ public:
         return GetSharedData().m_constructions == 0;
     }
 
-    void LogWrite(TestString const& msg)
+    static void LogWrite(TestString const& msg)
     {
-        if (m_logger != NULL)
-            m_logger->Write(msg);
+        if (GetLogger() != NULL)
+            GetLogger()->Write(msg);
     }
 
-    void LogWriteLine(TestString const& msg)
+    static void LogWriteLine(TestString const& msg)
     {
-        if (m_logger != NULL)
-            m_logger->WriteLine(msg);
+        if (GetLogger() != NULL)
+            GetLogger()->WriteLine(msg);
+    }
+
+    static TestLog* GetLogger()
+    {
+        return GetSharedData().m_logger;
+    }
+
+    static void SetLogger(TestLog* logger)
+    {
+        GetSharedData().SetLogger(logger);
     }
 
     TestTime const& GetStartTime() const throw()
@@ -214,8 +225,7 @@ protected:
     // TEST_FUNCTION and TEST_MEMBER_FUNCTION create their own constructor,
     // so access to the TestClass constructor does not require direct access.
     TestClass()
-        : m_logger(NULL)
-        , m_is_const(false)
+        : m_is_const(false)
         , m_is_timed(false)
         , m_start_time(false)
         , m_current_time(false)
@@ -396,21 +406,21 @@ private:
     }
 
     // Log the number of checks for a tested function, e.g. 5 TESTS or 1 TEST.
-    void privateLogCount(TestString const& msg, size_type count)
+    static void privateLogCount(TestString const& msg, size_type count)
     {
         TestString count_msg(msg);
         count_msg += " = ";
         count_msg.Append(static_cast<unsigned long>(count));
-        if (m_logger != NULL)
-            m_logger->WriteLine(count_msg);
+        if (GetLogger() != NULL)
+            GetLogger()->WriteLine(count_msg);
     }
 
     // Output the final summary report.
-    void privateLogSummary()
+    static void privateLogSummary()
     {
-        if (m_logger != NULL)
+        if (GetLogger() != NULL)
         {
-            m_logger->WriteLine("");
+            GetLogger()->WriteLine("");
             privateLogCount("Total checks", GetSharedData().m_total_checks);
             if (GetSharedData().m_total_not_tested > 0)
                 privateLogCount("Total not tested", GetSharedData().m_total_not_tested);
@@ -427,9 +437,7 @@ private:
     // which sets up the initial logger and keeps track of number of tests.
     void privateConstruct()
     {
-        if (GetSharedData().m_logger != NULL)
-            m_logger = GetSharedData().m_logger;
-        else
+        if (GetSharedData().m_logger == NULL)
             LogWriteLine("Error setting logger!");
 
         // NOTE: SetFailureIndent will decrement m_constructions and m_total_tests later.
@@ -504,7 +512,6 @@ private:
 
 // Data for this test.
 private:
-    TestLog* m_logger;
     TestString m_filename;
     TestString m_class_name;
     TestString m_function_name;
