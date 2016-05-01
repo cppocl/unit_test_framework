@@ -48,6 +48,6 @@ private:
     Functor* m_functor_logger;
 };
 
-}
+} // namespace ocl
 
 #endif // OCL_GUARD_TEST_FUNCTORTESTLOG_HPP
