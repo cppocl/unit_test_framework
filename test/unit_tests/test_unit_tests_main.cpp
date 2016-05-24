@@ -16,10 +16,10 @@ limitations under the License.
 
 #include "../Test.hpp"
 
-TEST_FAILURE_INDENT(4);
-
 int main(int /*argc*/, char * /*argv*/[])
 {
+    TEST_FAILURE_INDENT(4);
+
     bool test_has_failed = TEST_HAS_FAILED;
 
     return test_has_failed ? 1 : 0;

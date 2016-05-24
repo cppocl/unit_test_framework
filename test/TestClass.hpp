@@ -142,15 +142,9 @@ public:
 // General helper functions.
 public:
     /// Underlying function for TEST_FAILURE_INDENT macro.
-    void SetFailureIndent(size_type indent)
+    static void SetFailureIndent(size_type indent)
     {
-        m_recorded = false;
         GetSharedData().m_failure_indent = indent;
-
-        // Don't want to count constructors for the indentation object,
-        // as this is not needed in the unit test statistics.
-        --GetSharedData().m_constructions;
-        --GetSharedData().m_total_tests;
     }
 
     /// Get status for tests and failures.

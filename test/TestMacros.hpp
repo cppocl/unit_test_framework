@@ -123,10 +123,8 @@ TimedTest_##class_name##_##function_name##_##args##_const::TimedTest_##class_nam
 
 // NOTE: This must only be used once in any .cpp file.
 #ifndef TEST_FAILURE_INDENT
-#define TEST_FAILURE_INDENT(num_spaces) class Test_SetFailureIndent : public ocl::TestClass \
-{ \
-    public: Test_SetFailureIndent() { ocl::TestClass::SetFailureIndent(num_spaces); } \
-} g_Test_SetFailureIndent
+#define TEST_FAILURE_INDENT(num_spaces) \
+    ocl::TestClass::SetFailureIndent(static_cast<ocl::TestClass::size_type>(num_spaces))
 #else
 #error Unit test conflict with other macro!
 #endif
