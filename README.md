@@ -1,7 +1,7 @@
 cppocl
 ======
 
-C++ open source library
+C++ Open Class Library
 
 ======
 
