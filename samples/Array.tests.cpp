@@ -377,4 +377,5 @@ TEST_MEMBER_FUNCTION(Array, InsertAt, size_t_Array_const_ref)
 
 int main(int /*argv*/, char* /*argv*/[])
 {
+    return 0;
 }
