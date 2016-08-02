@@ -67,6 +67,17 @@ limitations under the License.
         LogCheck(expression, filename, line_number, error);
     }
 
+    template<typename CharType>
+    void CheckNotStrCmp(TestString const& expression,
+                    TestString const& filename,
+                    size_type line_number,
+                    CharType const* str1,
+                    CharType const* str2)
+    {
+        bool error = StrCmp(str1, str2) == 0;
+        LogCheck(expression, filename, line_number, error);
+    }
+
     template<typename T1, typename T2>
     void CheckEqual(TestString const& expression,
                     TestString const& filename,

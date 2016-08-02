@@ -295,6 +295,10 @@ TEST_OVERRIDE_LOG(MyFunctor, new MyFunctor());
 #define CHECK_STRCMP(str1, str2) CheckStrCmp("StrCmp(" #str1 "," #str2 ") == 0", __FILE__, __LINE__, str1, str2)
 #endif
 
+#ifndef CHECK_NOT_STRCMP
+#define CHECK_NOT_STRCMP(str1, str2) CheckNotStrCmp("StrCmp(" #str1 "," #str2 ") != 0", __FILE__, __LINE__, str1, str2)
+#endif
+
 #ifndef CHECK_COMPARE
 #define CHECK_COMPARE(value1, value2) CheckCompare("compare " #value1 " = " #value2, __FILE__, __LINE__, value1, value2)
 #endif
