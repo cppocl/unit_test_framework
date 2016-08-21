@@ -215,6 +215,7 @@ public:
         }
     }
 
+    /// Return a sub string as a TestString object.
     TestString GetSubString(size_type start, size_type count) const
     {
         TestString sub_str;
