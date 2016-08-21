@@ -17,7 +17,6 @@ limitations under the License.
 #ifndef OCL_GUARD_TEST_TESTSTRING_HPP
 #define OCL_GUARD_TEST_TESTSTRING_HPP
 
-#include "TestMemoryUtility.hpp"
 #include "TestStringUtility.hpp"
 #include "TestConverterUtility.hpp"
 #include <cstddef>
@@ -46,10 +45,7 @@ public:
         , m_string(NULL)
     {
         if (str != NULL)
-        {
-            m_length = static_cast<size_type>(TestStringUtility::UnsafeLength(str));
-            TestMemoryUtility<char, size_type>::UnsafeAllocateCopy(m_string, str, m_length + 1);
-        }
+            TestStringUtility::UnsafeAllocateCopy(m_string, m_length, str);
     }
 
     TestString(char ch, size_type len)
@@ -159,7 +155,7 @@ public:
 
     bool IsEmpty() const throw()
     {
-        return m_string == NULL;
+        return (m_length == 0) || (m_string == NULL);
     }
 
     void Clear()
@@ -176,13 +172,12 @@ public:
         return false;
     }
 
-    /// Extract a partial string, and optionally remove the partial string
-    /// from this string.
+    /// Extract a partial string from this string.
     /// If count is 0 then get the sub string from start to the end.
-    void GetSubString(TestString& sub_str,
-                      size_type start,
-                      size_type count,
-                      bool remove = false)
+    /// Return number of characters copied.
+    size_type GetSubString(TestString& sub_str,
+                           size_type start,
+                           size_type count) const
     {
         sub_str.Clear();
         if (start + count <= m_length)
@@ -194,16 +189,37 @@ public:
                                                sub_str.m_length,
                                                m_string + start,
                                                count);
-            if (remove)
-            {
-                size_type chars_remaining = m_length - sub_str.m_length - start;
-                ::memmove(m_string + start, m_string + start + count, chars_remaining);
-                *(m_string + start + chars_remaining) = '\0';
-                m_length -= count;
-                if (m_length == 0)
-                    TestStringUtility::SafeFree(m_string);
-            }
+            return count;
         }
+        return 0;
+    }
+
+    /// Extract a partial string, and optionally remove the partial string
+    /// from this string.
+    /// If count is 0 then get the sub string from start to the end.
+    void GetSubString(TestString& sub_str,
+                      size_type start,
+                      size_type count,
+                      bool remove)
+    {
+        sub_str.Clear();
+        count = GetSubString(sub_str, start, count);
+        if ((count > 0) && remove)
+        {
+            size_type chars_remaining = m_length - sub_str.m_length - start;
+            ::memmove(m_string + start, m_string + start + count, chars_remaining);
+            *(m_string + start + chars_remaining) = '\0';
+            m_length -= count;
+            if (m_length == 0)
+                TestStringUtility::SafeFree(m_string);
+        }
+    }
+
+    TestString GetSubString(size_type start, size_type count) const
+    {
+        TestString sub_str;
+        static_cast<void>(GetSubString(sub_str, start, count));
+        return sub_str;
     }
 
     /// Replace the current sting with str.
@@ -413,12 +429,27 @@ public:
         privateAppendValue(value, pad);
     }
 
-private:
-    template<typename T>
-    void privateAppendValue(T value, size_type pad)
+    void Append(ocl_int64 value, size_type pad = size_type_default)
     {
-        size_type length = size_type_default;
-        char* str = TestConverterUtility<T, size_type>::GetString(value, length);
+        privateAppendValue(value, pad);
+    }
+
+    void Append(ocl_uint64 value, size_type pad = size_type_default)
+    {
+        privateAppendValue(value, pad);
+    }
+
+    static void EnableMemoryCounting(bool enabled)
+    {
+        TestStringUtility::EnableMemoryCounting(enabled);
+    }
+
+private:
+    template<typename T, typename SizeType>
+    void privateAppendValue(T value, SizeType pad)
+    {
+        SizeType length = static_cast<SizeType>(size_type_default);
+        char* str = TestConverterUtility<T>::GetString<SizeType>(value, length);
         if (str != NULL)
         {
             if (IsEmpty() && (pad == size_type_default))
