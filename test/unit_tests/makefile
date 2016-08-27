@@ -1,7 +1,12 @@
+# compiler and flags.
 CC=g++
 CFLAGS=-Wall
+
+# folders.
 OBJDIR=obj
 EXEDIR=bin
+
+# target executable.
 EXENAME=test_unit_tests_main
 
 OBJECTS=$(OBJDIR)/test_unit_tests_main.o \
@@ -17,16 +22,20 @@ OBJECTS=$(OBJDIR)/test_unit_tests_main.o \
         $(OBJDIR)/TestTime.tests.o \
         $(OBJDIR)/TestTypes.tests.o
 
+# object files and executable targets.
 all : $(OBJECTS) $(EXEDIR)/$(EXENAME)
 
+# pre-requisite for targets.
 $(OBJECTS) : | $(OBJDIR)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR) $(EXEDIR)
 
+# build target.
 $(EXEDIR)/$(EXENAME) : $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(EXEDIR)/$(EXENAME) $(OBJECTS)
 
+# build objects.
 $(OBJDIR)/$(EXENAME).o : $(EXENAME).cpp
 	$(CC) $(CFLAGS) -c $(EXENAME).cpp -o $(OBJDIR)/$(EXENAME).o
 $(OBJDIR)/TestClass.tests.o : TestClass.tests.cpp
@@ -52,6 +61,7 @@ $(OBJDIR)/TestTime.tests.o : TestTime.tests.cpp
 $(OBJDIR)/TestTypes.tests.o : TestTypes.tests.cpp
 	$(CC) $(CFLAGS) -c TestTypes.tests.cpp -o $(OBJDIR)/TestTypes.tests.o
 
+# clean files. (delete object files and executable)
 .PHONY : clean
 clean :
 	rm $(EXEDIR)/$(EXENAME) $(OBJECTS)
