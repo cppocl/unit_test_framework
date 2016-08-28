@@ -23,9 +23,6 @@ limitations under the License.
 
 TEST(TestTypes_64_bit)
 {
-    int* p = new int;
-    *p = 0;
-
     CHECK_EQUAL(sizeof(ocl::ocl_int64), 8U);
     CHECK_EQUAL(sizeof(ocl::ocl_uint64), 8U);
 }
