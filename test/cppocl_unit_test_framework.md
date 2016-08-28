@@ -86,6 +86,11 @@ IsDigit     /* Return true when character is in '0'..'9' */
 ToInt       /* Convert character or string to integer type */
 Sleep       /* Sleep in milliseconds */
 
+## Pre-processor define for memory leak detection
+
+To enable memory leak detection in unit test builds, add the pre-processor define TEST_LEAK_DETECT to your project.
+Current support is for Visual C++ on Windows only.
+
 
 ## Examples for unit tests
 
