@@ -18,6 +18,7 @@ limitations under the License.
 #define OCL_GUARD_TEST_TESTCLASSSHAREDDATA_HPP
 
 #include "StdioTestLog.hpp"
+#include <cstddef>
 
 namespace ocl
 {
@@ -33,7 +34,7 @@ friend class TestClass;
 
 public:
     TestClassSharedData()
-        : m_logger(new StdioTestLog)
+        : m_logger(NULL)
         , m_max_member_function_length(0)
         , m_failure_indent(0)
         , m_constructions(0)
@@ -58,10 +59,27 @@ public:
         delete m_logger;
     }
 
+    TestLog* GetLogger()
+    {
+        if (m_logger == NULL)
+            m_logger = new StdioTestLog;
+        return m_logger;
+    }
+
     void SetLogger(TestLog* logger)
     {
         delete m_logger;
         m_logger = logger;
+    }
+
+    void Clear()
+    {
+        SetLogger(NULL);
+    }
+
+    bool IsLast() const
+    {
+        return m_destructions >= m_constructions;
     }
 
 private:
@@ -79,8 +97,11 @@ private:
     // Number of spaces to indent error information.
     SizeType m_failure_indent;
 
-    // Count all constructions and delete m_logger of last destructor.
+    // Count all constructions.
     SizeType m_constructions;
+
+    // Count all the destructions, and check constructions match destructions.
+    SizeType m_destructions;
 
     // Currently logged line number for the run test.
     SizeType m_logged_line;

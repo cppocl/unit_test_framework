@@ -20,6 +20,10 @@ limitations under the License.
 #include "../TestStringUtility.hpp"
 #include "../TestMinMax.hpp"
 
+#include "EnabledTests.h"
+
+#if defined(TESTCONVERTERUTILITY_TESTS_ENABLED) && (TESTCONVERTERUTILITY_TESTS_ENABLED != 0)
+
 TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, bool_size_type)
 {
     using ocl::TestConverterUtility;
@@ -310,3 +314,5 @@ TEST_MEMBER_FUNCTION(TestConverterUtility, GetString, unsigned_long_size_type)
     CHECK_STRCMP(str, max_str);
     TestMemoryUtility<char>::SafeFree(str);
 }
+
+#endif // #if defined(TESTCONVERTERUTILITY_TESTS_ENABLED) && (TESTCONVERTERUTILITY_TESTS_ENABLED != 0)

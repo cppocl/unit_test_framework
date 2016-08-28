@@ -13,8 +13,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-    static bool HasSharedFailure() throw()
-    {
-        return GetSharedData().m_total_failed_tests > 0;
-    }

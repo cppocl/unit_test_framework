@@ -17,6 +17,10 @@ limitations under the License.
 #include "../Test.hpp"
 #include "../TestTime.hpp"
 
+#include "EnabledTests.h"
+
+#if defined(TESTTIME_TESTS_ENABLED) && (TESTTIME_TESTS_ENABLED != 0)
+
 TEST_MEMBER_FUNCTION(TestTime, TestTime, bool)
 {
     using ocl::TestTime;
@@ -897,3 +901,5 @@ TEST_MEMBER_FUNCTION(TestTime, NanosecondsToMicroseconds64, ocl_uint64)
     ms = TestTime::NanosecondsToMicroseconds64(999U);
     CHECK_EQUAL(ms, 0U);
 }
+
+#endif // #if defined(TESTTIME_TESTS_ENABLED) && (TESTTIME_TESTS_ENABLED != 0)

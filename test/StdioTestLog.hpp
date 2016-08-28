@@ -28,7 +28,19 @@ class StdioTestLog : public TestLog
 public:
     virtual void Write(TestString const& str)
     {
-        std::cout << str.Ptr();
+        TestString::size_type len = str.GetLength();
+        bool eol = (len > 0) && (str[len-1] == '\n');
+        if (eol)
+        {
+            if (len > 1)
+            {
+                TestString sub_str = str.GetSubString(0, len - 1);
+                std::cout << sub_str.Ptr();
+            }
+            WriteEOL();
+        }
+        else
+            std::cout << str.Ptr();
     }
 
     virtual void WriteEOL()

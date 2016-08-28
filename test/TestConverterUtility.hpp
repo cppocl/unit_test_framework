@@ -19,6 +19,7 @@ limitations under the License.
 
 #include "TestMemoryUtility.hpp"
 #include "TestNumericUtility.hpp"
+#include "TestTypes.hpp"
 #include <cstring>
 #include <cstddef>
 
@@ -29,21 +30,22 @@ namespace ocl
  * Helper class for converting primitive types to char* which can then be output.
  */
 
-template<typename ValueType, typename SizeType = unsigned int>
+template<typename ValueType>
 struct TestConverterUtility
 {
-    typedef SizeType size_type;
+    typedef ValueType type;
 
-    static char* GetString(ValueType, SizeType& length) { length = 0; return NULL; }
+    template<typename SizeType>
+    static char* GetString(type, SizeType& length) { length = 0; return NULL; }
 };
 
-template<typename SizeType>
-struct TestConverterUtility<bool, SizeType>
+template<>
+struct TestConverterUtility<bool>
 {
-    typedef SizeType size_type;
     typedef bool type;
 
     /// bool will be returned as a string of "true" or "false".
+    template<typename SizeType>
     static char* GetString(type value, SizeType& length)
     {
         char const* str = value ? "true" : "false";
@@ -52,12 +54,12 @@ struct TestConverterUtility<bool, SizeType>
     }
 };
 
-template<typename SizeType>
-struct TestConverterUtility<char, SizeType>
+template<>
+struct TestConverterUtility<char>
 {
-    typedef SizeType size_type;
     typedef char type;
 
+    template<typename SizeType>
     static char* GetString(type value, SizeType& length)
     {
         char str[2] = {value, '\0'};
@@ -66,101 +68,157 @@ struct TestConverterUtility<char, SizeType>
     }
 };
 
-template<typename SizeType>
-struct TestConverterUtility<signed char, SizeType>
+template<>
+struct TestConverterUtility<signed char>
 {
-    typedef SizeType size_type;
     typedef signed char type;
 
+    template<typename SizeType>
     static char* GetString(type value, SizeType& length)
     {
         return TestNumericUtility<signed int, SizeType>::GetString(value, "%d", length);
     }
 };
 
-template<typename SizeType>
-struct TestConverterUtility<unsigned char, SizeType>
+template<>
+struct TestConverterUtility<unsigned char>
 {
-    typedef SizeType size_type;
     typedef unsigned short type;
 
+    template<typename SizeType>
     static char* GetString(type value, SizeType& length)
     {
         return TestNumericUtility<unsigned int, SizeType>::GetString(value, "%u", length);
     }
 };
 
-template<typename SizeType>
-struct TestConverterUtility<signed short, SizeType>
+template<>
+struct TestConverterUtility<signed short>
 {
-    typedef SizeType size_type;
     typedef signed short type;
 
+    template<typename SizeType>
     static char* GetString(type value, SizeType& length)
     {
         return TestNumericUtility<signed int, SizeType>::GetString(value, "%d", length);
     }
 };
 
-template<typename SizeType>
-struct TestConverterUtility<unsigned short, SizeType>
+template<>
+struct TestConverterUtility<unsigned short>
 {
-    typedef SizeType size_type;
     typedef unsigned short type;
 
+    template<typename SizeType>
     static char* GetString(type value, SizeType& length)
     {
         return TestNumericUtility<unsigned int, SizeType>::GetString(value, "%u", length);
     }
 };
 
-template<typename SizeType>
-struct TestConverterUtility<signed int, SizeType>
+template<>
+struct TestConverterUtility<signed int>
 {
-    typedef SizeType size_type;
     typedef signed int type;
 
+    template<typename SizeType>
     static char* GetString(type value, SizeType& length)
     {
         return TestNumericUtility<type, SizeType>::GetString(value, "%d", length);
     }
 };
 
-template<typename SizeType>
-struct TestConverterUtility<unsigned int, SizeType>
+template<>
+struct TestConverterUtility<unsigned int>
 {
-    typedef SizeType size_type;
     typedef unsigned int type;
 
+    template<typename SizeType>
     static char* GetString(type value, SizeType& length)
     {
         return TestNumericUtility<type, SizeType>::GetString(value, "%u", length);
     }
 };
 
-template<typename SizeType>
-struct TestConverterUtility<signed long, SizeType>
+template<>
+struct TestConverterUtility<signed long>
 {
-    typedef SizeType size_type;
     typedef signed long type;
 
+    template<typename SizeType>
     static char* GetString(type value, SizeType& length)
     {
         return TestNumericUtility<type, SizeType>::GetString(value, "%ld", length);
     }
 };
 
-template<typename SizeType>
-struct TestConverterUtility<unsigned long, SizeType>
+template<>
+struct TestConverterUtility<unsigned long>
 {
-    typedef SizeType size_type;
     typedef unsigned long type;
 
+    template<typename SizeType>
     static char* GetString(type value, SizeType& length)
     {
         return TestNumericUtility<type, SizeType>::GetString(value, "%lu", length);
     }
 };
+
+// Due to problems with overloading long, long long and int64 types,
+// handle Microsoft C++ differently from compilers supporting long long.
+#ifdef _MSC_VER
+
+template<>
+struct TestConverterUtility<ocl_int64>
+{
+    typedef ocl_int64 type;
+
+    template<typename SizeType>
+    static char* GetString(type value, SizeType& length)
+    {
+        return TestNumericUtility<type, SizeType>::GetString(value, "%I64d", length);
+    }
+};
+
+template<>
+struct TestConverterUtility<ocl_uint64>
+{
+    typedef ocl_uint64 type;
+
+    template<typename SizeType>
+    static char* GetString(type value, SizeType& length)
+    {
+        return TestNumericUtility<type, SizeType>::GetString(value, "%I64u", length);
+    }
+};
+
+#else
+
+template<>
+struct TestConverterUtility<signed long long>
+{
+    typedef signed long type;
+
+    template<typename SizeType>
+    static char* GetString(type value, SizeType& length)
+    {
+        return TestNumericUtility<type, SizeType>::GetString(value, "%lld", length);
+    }
+};
+
+template<>
+struct TestConverterUtility<unsigned long long>
+{
+    typedef unsigned long type;
+
+    template<typename SizeType>
+    static char* GetString(type value, SizeType& length)
+    {
+        return TestNumericUtility<type, SizeType>::GetString(value, "%llu", length);
+    }
+};
+
+#endif // _MSC_VER
 
 } // namespace ocl
 

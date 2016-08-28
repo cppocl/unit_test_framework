@@ -21,6 +21,12 @@ limitations under the License.
 #include <cstdlib>
 #include <cstring>
 
+// temp includes
+#include <iostream>
+#include <cstdio>
+
+#include "TestMemoryLeakCheck.hpp"
+
 namespace ocl
 {
 
@@ -29,8 +35,14 @@ struct TestMemoryUtility
 {
     static SizeType const SIZE_IN_BYTES = static_cast<SizeType>(sizeof(Type));
 
+    static TestMemoryCounter& GetCounter()
+    {
+        return TestMemoryLeakCheck::GetCounter();
+    }
+
     static Type* Allocate(SizeType elements)
     {
+        GetCounter().Inc();
         SizeType const alloc_size_in_bytes = elements * sizeof(Type);
         Type* ptr = static_cast<Type*>(::malloc(alloc_size_in_bytes));
         return ptr;
@@ -42,9 +54,11 @@ struct TestMemoryUtility
     }
 
     /// Free the memory but does not set ptr to NULL or return the pointer.
-    /// Useful in destructors or other out of scope situations.
+    /// Useful in destructor(s) or other out of scope situations.
     static void FastFree(Type* ptr)
     {
+        if (ptr != NULL)
+            GetCounter().Dec();
         ::free(ptr);
     }
 

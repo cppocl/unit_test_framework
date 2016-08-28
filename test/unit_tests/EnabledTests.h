@@ -14,20 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "../Test.hpp"
-#include "../TestTypes.hpp"
+#ifndef OCL_ENABLEDTESTS_HPP
+#define OCL_ENABLEDTESTS_HPP
 
-#include "EnabledTests.h"
+#define TESTCLASS_TESTS_ENABLED 1
+#define TESTCOMPARE_TESTS_ENABLED 1
+#define TESTCONVERTERUTILITY_TESTS_ENABLED 1
+#define TESTINTEGERUTILITY_TESTS_ENABLED 1
+#define TESTMEMORYUTILITY_TESTS_ENABLED 1
+#define TESTMINMAX_TESTS_ENABLED 1
+#define TESTNUMERICUTILITY_TESTS_ENABLED 1
+#define TESTSTRING_TESTS_ENABLED 1
+#define TESTSTRINGUTILITY_TESTS_ENABLED 1
+#define TESTTIME_TESTS_ENABLED 1
+#define TESTTYPES_TESTS_ENABLED 1
 
-#if defined(TESTTYPES_TESTS_ENABLED) && (TESTTYPES_TESTS_ENABLED != 0)
-
-TEST(TestTypes_64_bit)
-{
-    int* p = new int;
-    *p = 0;
-
-    CHECK_EQUAL(sizeof(ocl::ocl_int64), 8U);
-    CHECK_EQUAL(sizeof(ocl::ocl_uint64), 8U);
-}
-
-#endif // #if defined(TESTTYPES_TESTS_ENABLED) && (TESTTYPES_TESTS_ENABLED != 0)
+#endif // OCL_ENABLEDTESTS_HPP

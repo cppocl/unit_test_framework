@@ -19,6 +19,10 @@ limitations under the License.
 #include <cstddef>
 #include <limits.h>
 
+#include "EnabledTests.h"
+
+#if defined(TESTSTRINGUTILITY_TESTS_ENABLED) && (TESTSTRINGUTILITY_TESTS_ENABLED != 0)
+
 TEST_MEMBER_FUNCTION(TestStringUtility, GetMinSignedIntAsString, unsigned_int)
 {
     using ocl::TestStringUtility;
@@ -134,7 +138,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeLength, char_const_ptr)
 
     TEST_OVERRIDE_ARGS("char const*");
 
-    CHECK_ZERO(TestStringUtility::SafeLength(NULL));
+    CHECK_ZERO(TestStringUtility::SafeLength(static_cast<char const*>(NULL)));
 
     CHECK_EQUAL(TestStringUtility::SafeLength("a"), 1U);
 }
@@ -227,7 +231,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
     TestStringUtility::FastFree(dest);
 
     // Test fail conditions return a NULL pointer and zero length.
-    TestStringUtility::SafeAllocateCopy(dest, dest_len, NULL, 1U);
+    TestStringUtility::SafeAllocateCopy(dest, dest_len, static_cast<char*>(NULL), 1U);
     CHECK_NULL(dest);
     CHECK_ZERO(dest_len);
 
@@ -235,7 +239,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
     CHECK_NULL(dest);
     CHECK_ZERO(dest_len);
 
-    TestStringUtility::SafeAllocateCopy(dest, dest_len, NULL, 0U);
+    TestStringUtility::SafeAllocateCopy(dest, dest_len, static_cast<char*>(NULL), 0U);
     CHECK_NULL(dest);
     CHECK_ZERO(dest_len);
 }
@@ -259,7 +263,7 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeAllocateCopy, char_ptr_ref_size_t_re
     TestStringUtility::FastFree(dest);
 
     // Test fail conditions return a NULL pointer and zero length.
-    TestStringUtility::SafeAllocateCopy(dest, dest_len, NULL);
+    TestStringUtility::SafeAllocateCopy(dest, dest_len, static_cast<char*>(NULL));
     CHECK_NULL(dest);
     CHECK_ZERO(dest_len);
 }
@@ -346,3 +350,5 @@ TEST_MEMBER_FUNCTION(TestStringUtility, SafeReallocAppend, char_ptr_ref_size_t_r
     CHECK_STRCMP(dest, "HelloGoodbye");
     TestStringUtility::FastFree(dest);
 }
+
+#endif // #if defined(TESTSTRINGUTILITY_TESTS_ENABLED) && (TESTSTRINGUTILITY_TESTS_ENABLED != 0)

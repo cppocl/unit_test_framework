@@ -124,12 +124,16 @@ TimedTest_##class_name##_##function_name##_##args##_const::TimedTest_##class_nam
 // NOTE: This must only be used once in any .cpp file.
 #ifndef TEST_FAILURE_INDENT
 #define TEST_FAILURE_INDENT(num_spaces) \
-    ocl::TestClass::SetFailureIndent(static_cast<ocl::TestClass::size_type>(num_spaces))
+    ocl::TestClass::SetFailureIndent(static_cast<ocl::ocl_size_type>(num_spaces))
 #else
 #error Unit test conflict with other macro!
 #endif
 
+// Get true or false for any failed tests.
 #define TEST_HAS_FAILED ocl::TestClass::HasSharedFailure()
+
+// Cause debugger to break on a value (unique count for visual studio)
+#define TEST_BREAK_ON_LEAK(value) ocl::TestClass::BreakOn(value)
 
 /*
 Override the function name passed into TEST_FUNCTION or TEST_MEMBER_FUNCTION.

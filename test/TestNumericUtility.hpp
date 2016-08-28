@@ -32,7 +32,7 @@ limitations under the License.
 namespace ocl
 {
 
-template<typename Type, typename SizeType = unsigned int>
+template<typename Type, typename SizeType = size_t>
 struct TestNumericUtility
 {
     static SizeType GetNumberOfCharsForInt(Type value)
@@ -63,10 +63,12 @@ struct TestNumericUtility
     /// with a '\0' terminating character.
     static char* GetString(Type value, const char* fmt, SizeType& length)
     {
+        typedef TestStringUtility::size_type size_type;
         static SizeType const size_of_type = static_cast<SizeType>(sizeof(Type));
 
         // Get maximum number of characters required to convert Type into a string buffer.
-        SizeType max_chars = TestStringUtility::GetMaxIntCharCount<Type>(size_of_type);
+        size_type max_chrs = TestStringUtility::GetMaxIntCharCount<Type>(size_of_type);
+        SizeType max_chars = static_cast<SizeType>(max_chrs);
 
         // Convert the integer type into a string.
         char* str = NULL;

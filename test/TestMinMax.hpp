@@ -18,6 +18,7 @@ limitations under the License.
 #define OCL_GUARD_TEST_TESTMINMAX_HPP
 
 #include <limits.h>
+#include "TestTypes.hpp"
 
 namespace ocl
 {
@@ -96,6 +97,59 @@ struct TestMinMax<unsigned long>
     static type const min_value = static_cast<type>(0);
     static type const max_value = static_cast<type>(ULONG_MAX);
 };
+
+// Due to problems with overloading long, long long and int64 types,
+// handle Microsoft C++ differently from compilers supporting long long.
+#ifdef _MSC_VER
+
+template<>
+struct TestMinMax<ocl_int64>
+{
+    typedef ocl_int64 type;
+
+#if defined(LLONG_MIN) && defined(LLONG_MAX)
+    static type const min_value = static_cast<type>(LLONG_MIN);
+    static type const max_value = static_cast<type>(LLONG_MAX);
+#else
+    static type const min_value = static_cast<type>(_I64_MIN);
+    static type const max_value = static_cast<type>(_I64_MAX);
+#endif
+};
+
+template<>
+struct TestMinMax<ocl_uint64>
+{
+    typedef ocl_uint64 type;
+
+    static type const min_value = static_cast<type>(0);
+#if defined(LLONG_MIN) && defined(LLONG_MAX)
+    static type const max_value = static_cast<type>(ULLONG_MAX);
+#else
+    static type const max_value = static_cast<type>(_UI64_MAX);
+#endif
+};
+
+#else
+
+template<>
+struct TestMinMax<signed long long>
+{
+    typedef signed long long type;
+
+    static type const min_value = static_cast<type>(LLONG_MIN);
+    static type const max_value = static_cast<type>(LLONG_MAX);
+};
+
+template<>
+struct TestMinMax<unsigned long long>
+{
+    typedef unsigned long long type;
+
+    static type const min_value = static_cast<type>(0);
+    static type const max_value = static_cast<type>(ULLONG_MAX);
+};
+
+#endif // _MSC_VER
 
 } // namespace ocl
 

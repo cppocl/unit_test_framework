@@ -19,6 +19,10 @@ limitations under the License.
 #include "../TestStringUtility.hpp"
 #include <limits.h>
 
+#include "EnabledTests.h"
+
+#if defined(TESTSTRING_TESTS_ENABLED) && (TESTSTRING_TESTS_ENABLED != 0)
+
 TEST_MEMBER_FUNCTION(TestString, TestString, char_const_ptr)
 {
     using ocl::TestString;
@@ -1478,3 +1482,5 @@ TEST_MEMBER_FUNCTION(TestString, Append, unsigned_long_size_type)
     CHECK_EQUAL(str.GetLength(), 3U);
     CHECK_STRCMP(str.Ptr(), "011");
 }
+
+#endif // #if defined(TESTSTRING_TESTS_ENABLED) && (TESTSTRING_TESTS_ENABLED != 0)

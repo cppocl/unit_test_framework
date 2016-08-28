@@ -17,6 +17,10 @@ limitations under the License.
 #include "../Test.hpp"
 #include "../TestMemoryUtility.hpp"
 
+#include "EnabledTests.h"
+
+#if defined(TESTMEMORYUTILITY_TESTS_ENABLED) && (TESTMEMORYUTILITY_TESTS_ENABLED != 0)
+
 TEST_MEMBER_FUNCTION(TestMemoryUtility, Allocate, size_t)
 {
     using ocl::TestMemoryUtility;
@@ -94,3 +98,5 @@ TEST_MEMBER_FUNCTION(TestMemoryUtility, UnsafeAllocateCopy, char_ptr_ref_char_co
 
     TestMemoryUtility<char>::FastFree(ptr);
 }
+
+#endif // #if defined(TESTMEMORYUTILITY_TESTS_ENABLED) && (TESTMEMORYUTILITY_TESTS_ENABLED != 0)

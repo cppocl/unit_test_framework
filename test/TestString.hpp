@@ -430,6 +430,10 @@ public:
         privateAppendValue(value, pad);
     }
 
+// Due to problems with overloading long, long long and int64 types,
+// handle Microsoft C++ differently from compilers supporting long long.
+#ifdef _MSC_VER
+
     void Append(ocl_int64 value, size_type pad = size_type_default)
     {
         privateAppendValue(value, pad);
@@ -440,9 +444,37 @@ public:
         privateAppendValue(value, pad);
     }
 
+#else
+
+    void Append(signed long long value, size_type pad = size_type_default)
+    {
+        privateAppendValue(value, pad);
+    }
+
+    void Append(unsigned long long value, size_type pad = size_type_default)
+    {
+        privateAppendValue(value, pad);
+    }
+
+#endif // _MSC_VER
+
     static void EnableMemoryCounting(bool enabled)
     {
         TestStringUtility::EnableMemoryCounting(enabled);
+    }
+
+    void PadLeft(char ch, size_type count)
+    {
+        size_type len = GetLength();
+        if (count > len)
+            Prepend(TestString(ch, count - len));
+    }
+
+    void PadRight(char ch, size_type count)
+    {
+        size_type len = GetLength();
+        if (count > len)
+            Append(TestString(ch, count - len));
     }
 
 private:
@@ -450,7 +482,7 @@ private:
     void privateAppendValue(T value, SizeType pad)
     {
         SizeType length = static_cast<SizeType>(size_type_default);
-        char* str = TestConverterUtility<T>::GetString<SizeType>(value, length);
+        char* str = TestConverterUtility<T>::GetString(value, length);
         if (str != NULL)
         {
             if (IsEmpty() && (pad == size_type_default))

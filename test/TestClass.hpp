@@ -19,36 +19,46 @@ limitations under the License.
 
 #include "TestLog.hpp"
 #include "TestTime.hpp"
+#include "TestTypes.hpp"
 #include "TestString.hpp"
 #include "TestCompare.hpp"
 #include "TestTypeInfo.hpp"
+#include "TestIntegerUtility.hpp"
 #include "TestStringUtility.hpp"
 #include "TestClassSharedData.hpp"
 #include "TestStdioFileFunctor.hpp"
+#include "TestMemoryLeakCheck.hpp"
+#include "TestMemoryCounter.hpp"
 
 #include <cstring>
 #include <climits>
+#include <cstddef>
 
 namespace ocl
 {
 
+/// Record and report on a unit test,
+/// as well as updating all shared unit test results.
 class TestClass
 {
 public:
-    typedef TestString::size_type size_type;
+    // max padded digits for number of tests.
+    static TestString::size_type const max_digits = 6;
 
-public:
-    TestClass(TestString const& class_name,
-              TestString const& function_name,
-              TestString const& args,
+    // Construct the base class for a unit test,
+    // optionally tracking the start and end of any leaks.
+    //
+    // NOTE: Do not pass objects that allocate memory into the constructor,
+    //       as these would not get tracked on allocation, but cause leak detector
+    //       to detect the free of the memory when exiting constructor.
+    TestClass(char const* class_name,
+              char const* function_name,
+              char const* args,
               bool is_const = false,
               bool is_timed = false,
               unsigned long secs = 0,
               unsigned long nanosecs = 0)
-        : m_class_name(class_name)
-        , m_function_name(function_name)
-        , m_args(args == "NA" ? "" : args)
-        , m_is_const(is_const)
+        : m_is_const(is_const)
         , m_is_timed(is_timed)
         , m_start_time(is_timed)
         , m_current_time(m_start_time)
@@ -58,27 +68,61 @@ public:
         , m_failure_check_count(0)
         , m_previous_member_function_length(0)
         , m_test_number(0)
-        , m_recorded(true)
+        , m_logged(false)
     {
+        // Ensure that the next constructor can complete
+        // the snapshot memory leak checking.
+        TestClass*& prev_test = GetPreviousTest();
+        if (prev_test != NULL)
+        {
+            // This is not the first test, so log results from previous test.
+            prev_test->LogTests();
+        }
+        else if (GetSharedData().GetLogger() == NULL)
+        {
+            // Force logger to be created before memory leak checking starts.
+            LogWriteLine("Unable to create logging\n");
+        }
+
+        prev_test = this;
+
         if (is_timed && !m_sample_time.IsSet())
             m_sample_time.SetSeconds(1);
 
-        privateConstruct();
+        // Start leak checking before any members are dynamically allocated,
+        // but after the previous test has the memory leak checking stopped.
+        StartLeakChecking();
+
+        privateIncConstruction();
+
+        SetClassName(class_name);
+        SetFunctionName(function_name);
+        SetArgs(args);
     }
 
     virtual ~TestClass()
     {
-        if (m_recorded)
+        LogTests();
+
+        ++GetSharedData().m_destructions;
+        if (GetSharedData().m_destructions > GetSharedData().m_constructions)
+            LogWriteLine("Error matching start and end of tests!\n");
+
+        // All tests are complete so dump out the summary and
+        // the full memory leak report.
+        if (IsLast())
         {
-            if (GetSharedData().m_constructions > 0)
-                --GetSharedData().m_constructions;
-            else if (GetSharedData().m_constructions == 0)
-                LogWriteLine("*** Error with destruction ***");
+            // Output the global data for all tests.
+            privateLogSharedData();
 
-            privateLogFunction();
+            // Clear the logger to ensure the allocation
+            // for the first test is freed.
+            privateClearSharedData();
 
-            if (IsLast())
-                privateLogSummary();
+            // Any memory leaks will get reported by dumping
+            // all information supported for the platform,
+            // which might include filename and line number.
+            m_leak_check.DumpAll();
         }
     }
 
@@ -113,17 +157,20 @@ public:
 
     void SetArgs(TestString const& args)
     {
-        m_args = args;
+        if (args == "NA")
+            m_args = args;
+        else
+            m_args.Clear();
         privateUpdateMaxFunctionLength();
     }
 
     /// return string as class name::function name([args]) [const]
     /// , function name([args]) or general test name.
-    void GetTestName(TestString& str) const
+    TestString GetTestName() const
     {
         TestString const& function_name = GetFunctionName();
 
-        str = GetClassName();
+        TestString str = GetClassName();
 
         // If function_name is empty then this is a general test.
         if (!function_name.IsEmpty())
@@ -137,12 +184,34 @@ public:
             if (m_is_const)
                 str += " const";
         }
+
+        return str;
     }
 
 // General helper functions.
 public:
+    void StartLeakChecking()
+    {
+        // Need to make sure all dynamically allocated memory within this test class
+        // is freed before the leak checking starts.
+        Clear();
+
+        m_leak_check.Start();
+    }
+
+    void StopLeakChecking()
+    {
+        // Clear any dynamically allocated memory within this test before
+        // identifying any leaks in unit tests.
+        Clear();
+
+        m_leak_check.Stop();
+        if (m_leak_check.IsLeaking())
+            privateLeakCheckFailed();
+    }
+
     /// Underlying function for TEST_FAILURE_INDENT macro.
-    static void SetFailureIndent(size_type indent)
+    static void SetFailureIndent(ocl_size_type indent)
     {
         GetSharedData().m_failure_indent = indent;
     }
@@ -165,7 +234,7 @@ public:
 
     bool IsLast() const throw()
     {
-        return GetSharedData().m_constructions == 0;
+        return GetSharedData().IsLast();
     }
 
     static void LogWrite(TestString const& msg)
@@ -182,7 +251,7 @@ public:
 
     static TestLog* GetLogger()
     {
-        return GetSharedData().m_logger;
+        return GetSharedData().GetLogger();
     }
 
     static void SetLogger(TestLog* logger)
@@ -205,40 +274,372 @@ public:
         return m_current_time;
     }
 
+    void LogTests()
+    {
+        if (m_logged)
+            return;
+
+        m_logged = true;
+
+        privateLogFunction();
+
+        LogLeaks();
+    }
+
+    void LogLeaks()
+    {
+        StopLeakChecking();
+        if (IsLast())
+            m_leak_check.DumpAll();
+    }
+
+    template<typename T>
+    static void BreakOn(T value)
+    {
+        TestMemoryLeakCheck::BreakOn<T>(value);
+    }
+
 // Check functions
-#include "TestClassCheckFunctions.inl"
+    void CheckTrue(TestString const& expression,
+                   TestString const& filename,
+                   ocl_size_type line_number,
+                   bool value)
+    {
+        LogCheck(expression, filename, line_number, !value);
+    }
+
+    void CheckFalse(TestString const& expression,
+                    TestString const& filename,
+                    ocl_size_type line_number,
+                    bool value)
+    {
+        LogCheck(expression, filename, line_number, value);
+    }
+
+    void CheckNull(TestString const& expression,
+                   TestString const& filename,
+                   ocl_size_type line_number,
+                   void const* ptr)
+    {
+        LogCheck(expression, filename, line_number, ptr != NULL);
+    }
+
+    void CheckNotNull(TestString const& expression,
+                      TestString const& filename,
+                      ocl_size_type line_number,
+                      void const* ptr)
+    {
+        LogCheck(expression, filename, line_number, ptr == NULL);
+    }
+
+    void CheckException(TestString const& expression,
+                        TestString const& filename,
+                        ocl_size_type line_number,
+                        bool found_exception,
+                        bool expect_exception)
+    {
+        bool error = (expect_exception && !found_exception) || (!expect_exception && found_exception);
+        LogCheck(expression, filename, line_number, error);
+    }
+
+    template<typename CharType>
+    void CheckStrCmp(TestString const& expression,
+                    TestString const& filename,
+                    ocl_size_type line_number,
+                    CharType const* str1,
+                    CharType const* str2)
+    {
+        bool error = StrCmp(str1, str2) != 0;
+        LogCheck(expression, filename, line_number, error);
+    }
+
+    template<typename CharType>
+    void CheckNotStrCmp(TestString const& expression,
+                    TestString const& filename,
+                    ocl_size_type line_number,
+                    CharType const* str1,
+                    CharType const* str2)
+    {
+        bool error = StrCmp(str1, str2) == 0;
+        LogCheck(expression, filename, line_number, error);
+    }
+
+    template<typename T1, typename T2>
+    void CheckEqual(TestString const& expression,
+                    TestString const& filename,
+                    ocl_size_type line_number,
+                    T1 const& value1,
+                    T2 const& value2)
+    {
+        bool is_equal = value1 == value2;
+        LogCheck(expression, filename, line_number, !is_equal);
+    }
+
+    template<typename T1, typename T2>
+    void CheckNotEqual(TestString const& expression,
+                       TestString const& filename,
+                       ocl_size_type line_number,
+                       T1 const& value1,
+                       T2 const& value2)
+    {
+        bool is_not_equal = value1 != value2;
+        LogCheck(expression, filename, line_number, !is_not_equal);
+    }
+
+    template<typename T1, typename T2>
+    void CheckGreater(TestString const& expression,
+                      TestString const& filename,
+                      ocl_size_type line_number,
+                      T1 const& value1,
+                      T2 const& value2)
+    {
+        bool is_greater = value1 > value2;
+        LogCheck(expression, filename, line_number, !is_greater);
+    }
+
+    template<typename T1, typename T2>
+    void CheckGreaterEqual(TestString const& expression,
+                           TestString const& filename,
+                           ocl_size_type line_number,
+                           T1 const& value1,
+                           T2 const& value2)
+    {
+        bool is_greater_equal = value1>= value2;
+        LogCheck(expression, filename, line_number, !is_greater_equal);
+    }
+
+    template<typename T1, typename T2>
+    void CheckLess(TestString const& expression,
+                   TestString const& filename,
+                   ocl_size_type line_number,
+                   T1 const& value1,
+                   T2 const& value2)
+    {
+        bool is_less = value1 < value2;
+        LogCheck(expression, filename, line_number, !is_less);
+    }
+
+    template<typename T1, typename T2>
+    void CheckLessEqual(TestString const& expression,
+                        TestString const& filename,
+                        ocl_size_type line_number,
+                        T1 const& value1,
+                        T2 const& value2)
+    {
+        bool is_less_equal = value1 <= value2;
+        LogCheck(expression, filename, line_number, !is_less_equal);
+    }
+
+    template<typename T>
+    void CheckZero(TestString const& expression,
+                   TestString const& filename,
+                   ocl_size_type line_number,
+                   T value)
+    {
+        bool is_equal = value == static_cast<T>(0);
+        LogCheck(expression, filename, line_number, !is_equal);
+    }
+
+    template<typename T>
+    void CheckNotZero(TestString const& expression,
+                      TestString const& filename,
+                      ocl_size_type line_number,
+                      T value)
+    {
+        bool is_not_equal = value != static_cast<T>(0);
+        LogCheck(expression, filename, line_number, !is_not_equal);
+    }
+
+    /// Compare contents of char*, wchar_t* or primitive values.
+    template<typename T1, typename T2>
+    void CheckCompare(TestString const& expression,
+                      TestString const& filename,
+                      ocl_size_type line_number,
+                      T1 const& value1,
+                      T2 const& value2)
+    {
+        int compare = TestCompare<T1, T2>::Compare(value1, value2);
+        LogCheck(expression, filename, line_number, compare == 0);
+    }
+
+    /// Compare contents of char*, wchar_t* or primitive values.
+    template<typename T1, typename T2>
+    void CheckNotCompare(TestString const& expression,
+                         TestString const& filename,
+                         ocl_size_type line_number,
+                         T1 const& value1,
+                         T2 const& value2)
+    {
+        int compare = TestCompare<T1, T2>::Compare(value1, value2);
+        LogCheck(expression, filename, line_number, compare != 0);
+    }
+
+    /// While the current time has not reached the start time + sample time,
+    /// keep returning false.
+    /// @note This function also refreshes the current time.
+    bool CheckTime()
+    {
+        TestTime stop_time(m_start_time);
+        stop_time += m_sample_time;
+
+        m_current_time.Refresh();
+
+        ++m_timed_function_calls;
+
+        return m_current_time > stop_time;
+    }
+
+    /// While the current time has not reached the start time + sample time,
+    /// keep returning false, or return false when the performance has been
+    /// detected as too slow.
+    /// @note This function also refreshes the current time.
+    bool CheckTime(ocl_size_type min_iterations, TestString const& filename, ocl_size_type line_number)
+    {
+        TestTime stop_time(m_start_time);
+        stop_time += m_sample_time;
+
+        m_current_time.Refresh();
+
+        ++m_timed_function_calls;
+
+        bool time_complete = m_current_time > stop_time;
+
+        if (time_complete && (m_timed_function_calls < min_iterations))
+        {
+            ++m_failure_check_count;
+            TestString error;
+            error.Append(m_timed_function_calls);
+            error.Append(" iterations less than expected ");
+            error.Append(min_iterations);
+            error.Append(" iterations");
+            privateSetFilename(filename);
+            privateCheckFailed(error, line_number);
+            return true;
+        }
+
+        return time_complete;
+    }
 
 // Shared data helper functions
-#include "TestClassSharedFunctions.inl"
+    static bool HasSharedFailure() throw()
+    {
+        return GetSharedData().m_total_failed_tests > 0;
+    }
 
 // Unit test helper functions.
 // NOTE: These are protected.
-#include "TestClassHelperFunctions.inl"
-
+#ifndef OCL_TEST_HELPERS_DISABLED
 protected:
-    // TEST_FUNCTION and TEST_MEMBER_FUNCTION create their own constructor,
-    // so access to the TestClass constructor does not require direct access.
-    TestClass()
-        : m_is_const(false)
-        , m_is_timed(false)
-        , m_start_time(false)
-        , m_current_time(false)
-        , m_timed_function_calls(0)
-        , m_sample_time(false)
-        , m_check_count(0)
-        , m_failure_check_count(0)
-        , m_previous_member_function_length(0)
-        , m_test_number(0)
-        , m_recorded(true)
+    template<typename CharType>
+    static ocl_size_type StrLen(CharType const* str)
     {
-        // NOTE: This is only called for setting up indent for failure messages.
-        privateConstruct();
+        return TestStringUtility::UnsafeLength(str);
     }
 
+    template<typename CharType>
+    static CharType const* StrEnd(CharType const* str)
+    {
+        return TestStringUtility::StrEnd(str);
+    }
+
+    template<typename CharType>
+    static CharType* StrCpy(CharType* dest, CharType const* src)
+    {
+        return TestStringUtility::UnsafeCopy(dest, src);
+    }
+
+    template<typename CharType>
+    static int StrCmp(CharType const* str1, CharType const* str2)
+    {
+        return TestStringUtility::UnsafeCompare(str1, str2);
+    }
+
+    template<typename CharType>
+    static ocl_size_type CharCount(CharType const* str, CharType char_to_find)
+    {
+        return TestStringUtility::UnsafeCharCount(str, char_to_find);
+    }
+
+    template<typename CharType>
+    static ocl_size_type CharCount(CharType const* str, CharType const* chars_to_find)
+    {
+        return TestStringUtility::UnsafeCharCount(str, chars_to_find);
+    }
+
+    template<typename SizeType>
+    static int MemCmp(void const* ptr1, void const* ptr2, SizeType size)
+    {
+        return ::memcmp(ptr1, ptr2, static_cast<ocl_size_type>(size));
+    }
+
+    template<typename Type, typename SizeType>
+    static void MemSet(Type* ptr, SizeType count, Type value)
+    {
+        for (Type* ptr_end = ptr + count; ptr < ptr_end; ++ptr)
+            *ptr = value;
+    }
+
+    template<typename CharType>
+    static bool IsDigit(CharType ch)
+    {
+        return TestIntegerUtility::IsDigit(ch);
+    }
+
+    template<typename CharType>
+    static bool IsMinus(CharType ch)
+    {
+        return TestIntegerUtility::IsMinus(ch);
+    }
+
+    template<typename IntType>
+    static IntType GetMinusSign(bool want_negative)
+    {
+        return TestIntegerUtility::GetMinusSign<IntType>(want_negative);
+    }
+
+    /// @note The first template type is int as this cannot be deduced for the return,
+    /// but the char type can be deduced so can be omitted.
+    template<typename IntType, typename CharType>
+    static IntType ToInt(CharType ch)
+    {
+        return TestIntegerUtility::ToInt<IntType>(ch);
+    }
+
+    template<typename CharType, typename IntType, typename SizeType>
+    static bool ToInt(CharType const* str, IntType& value, SizeType& error_pos)
+    {
+        return TestIntegerUtility::ToInt<CharType, IntType, SizeType>(str, value, error_pos);
+    }
+
+    template<typename CharType, typename IntType>
+    static bool ToInt(CharType const* str, IntType& value)
+    {
+        return TestIntegerUtility::ToInt<CharType, IntType>(str, value);
+    }
+
+    template<typename CharType, typename IntType>
+    static IntType ToInt(CharType const* str)
+    {
+        return TestIntegerUtility::ToInt<CharType, IntType>(str);
+    }
+
+    static void Sleep(unsigned long milliseconds)
+    {
+        ocl::TestTime::Sleep(milliseconds);
+    }
+#endif // ifmdef OCL_TEST_HELPERS_DISABLED
+
+    template<typename T>
+    static T Max(T value1, T value2)
+    {
+        return value1 > value2 ? value1 : value2;
+    }
+
+protected:
     // Log check function used by all check macros.
     void LogCheck(TestString const& expression,
                   TestString const& filename,
-                  size_type line_number,
+                  ocl_size_type line_number,
                   bool failed)
     {
         privateSetFilename(filename);
@@ -246,11 +647,22 @@ protected:
         if (failed)
         {
             ++m_failure_check_count;
-            privateRecordFailed(expression, filename, line_number);
+            privateCheckFailed(expression, line_number);
         }
 
         ++m_check_count;
         ++GetSharedData().m_total_checks;
+    }
+
+    void Clear()
+    {
+        // Clear any data that is dynamically allocated so the leak detection
+        // does not consider this as a memory leak within the test.
+        m_filename.Clear();
+        m_class_name.Clear();
+        m_function_name.Clear();
+        m_args.Clear();
+        m_check_failures.Clear();
     }
 
 private:
@@ -261,31 +673,34 @@ private:
 
         privateLogTestStatus();
 
-        // Output function ot memeber function name.
-        LogWrite(m_member_function);
-
         // Output summary after function name.
         if (m_is_timed)
             privateLogTime();
         else
             privateLogNumberOfRunTests();
 
+        // Output function or member function name.
+        LogWriteLine(GetTestName());
+
         // Output any error lines and expressions.
-        if (HasFailed())
+        if (HasFailed() || m_leak_check.IsLeaking())
             privateLogFailures();
     }
 
     // Log the current tested function with a line number.
     void privateLogFunctionLineNumber()
     {
-        TestString line_number_str;
-        size_type total_tests = static_cast<size_type>(GetSharedData().m_total_tests);
-        size_type pad_size = TestNumericUtility<size_type, size_type>::GetNumberOfCharsForInt(total_tests);
-        line_number_str.Append("(");
+        TestString str, line_number_str;
+
         ++GetSharedData().m_logged_line;
-        line_number_str.Append(static_cast<size_type>(GetSharedData().m_logged_line), pad_size);
-        line_number_str.Append(") ");
-        LogWrite(line_number_str);
+        line_number_str.Append(static_cast<ocl_size_type>(GetSharedData().m_logged_line));
+        if (line_number_str.GetLength() < max_digits)
+            str = TestString(' ', max_digits - line_number_str.GetLength());
+        str += "(";
+        str += line_number_str;
+        str += ") ";
+
+        LogWrite(str);
     }
 
     // Output SUCCESS, FAILED, NOT RUN or TIMED message.
@@ -296,7 +711,7 @@ private:
         {
             if (!IsGeneralTest())
                 ++GetSharedData().m_total_functions_tested;
-            if (HasFailed())
+            if (HasFailed() || m_leak_check.IsLeaking())
                 LogWrite(GetSharedData().m_failed_message);
             else
                 LogWrite(GetSharedData().m_success_message);
@@ -313,77 +728,112 @@ private:
         }
     }
 
+    // Appends a time to a string in seconds and milliseconds or nanoseconds.
+    static void privateAppendTime(TestString& str, TestTime const& ttm, bool milliseconds)
+    {
+        str.Append(ttm.GetSeconds());
+        str.Append(".");
+        if (milliseconds)
+            str.Append(ttm.GetMilliseconds(), TestTime::MILLISECONDS_CHARS);
+        else
+            str.Append(ttm.GetNanoseconds(), TestTime::NANOSECONDS_CHARS);
+    }
+
+    // Extra helper function for more timing info.
+    void privateAppendExtraTimings(TestString& str, TestTime& diff_time)
+    {
+        str.Append("elapsed ");
+        privateAppendTime(str, diff_time, true);
+        str.Append(". calls ");
+        str.Append(static_cast<unsigned long>(m_timed_function_calls));
+        str.Append(". ");
+    }
+
     // The three variations that can be logged for a test.
     void privateLogTime()
     {
         TestTime diff_time;
         m_current_time.GetDiffTime(m_start_time, diff_time);
 
-        TestString msg(" ");
-        msg.Append(privateGetMemberFunctionPadding());
+        TestString msg;
 
-        msg.Append(" (elapsed) ");
-        msg.Append(diff_time.GetSeconds());
-        msg.Append(".");
-        msg.Append(diff_time.GetMilliseconds(), TestTime::MILLISECONDS_CHARS);
+        // Enable if more statistics is required.
+        // privateAppendExtraTimings(msg, diff_time);
 
-        msg.Append(". calls ");
-        msg.Append(static_cast<unsigned long>(m_timed_function_calls));
-
+        msg.Append("time ");
         if (m_timed_function_calls > 0)
         {
             diff_time /= m_timed_function_calls;
-            msg.Append(". call time ");
-            msg.Append(diff_time.GetSeconds());
-            msg.Append(".");
-            msg.Append(diff_time.GetNanoseconds(), TestTime::NANOSECONDS_CHARS);
+            privateAppendTime(msg, diff_time, false);
         }
         else
-            msg.Append(". cannot calculate call time!");
+            msg.Append("?"); // Too fast too get accurate timing.
 
-        LogWriteLine(msg);
+        LogWrite(msg);
     }
 
     // Log the part that follows the function name.
     void privateLogNumberOfRunTests()
     {
-        TestString msg(" ");
-        msg.Append(privateGetMemberFunctionPadding());
+        char const* str_test     = "TEST  ";
+        char const* str_tests    = "TESTS ";
+        char const* str_failed   = "FAILED";
+        char const* str_no_tests = "* NO TESTS *";
+
+        TestString::size_type const max_chars = 
+            Max(max_digits + TestStringUtility::UnsafeLength(str_test) + 1,
+                TestStringUtility::UnsafeLength(str_test)) + 1;
+
+        TestString whole_str, msg_str, num_str, pad_str;
 
         if (m_check_count > 0)
         {
-            msg.Append(static_cast<unsigned long>(m_check_count));
-            if (m_check_count > 1)
-                msg.Append(" TESTS");
-            else
-                msg.Append(" TEST");
             if (m_failure_check_count > 0)
             {
-                msg.Append(" (");
-                msg.Append(static_cast<unsigned long>(m_failure_check_count));
-                msg.Append(" FAILED)");
+                num_str.Append(static_cast<unsigned long>(m_failure_check_count));
+                msg_str.Append(str_failed);
             }
+            else
+            {
+                num_str.Append(static_cast<unsigned long>(m_check_count));
+                msg_str.Append((m_check_count > 1) ? str_tests : str_test);
+            }
+            num_str.PadLeft(' ', max_digits);
         }
         else
-            msg.Append("** NO TESTS **");
-        LogWriteLine(msg);
+            msg_str.Append(str_no_tests);
+
+        if (!num_str.IsEmpty())
+        {
+            whole_str.Append(num_str);
+            whole_str.Append(" ");
+        }
+        whole_str.Append(msg_str);
+        whole_str.PadRight(' ', max_chars);
+
+        LogWrite(whole_str);
     }
 
     // Log the output for a failed check macro.
     void privateLogFailures()
     {
-        static TestString const indent(' ', GetSharedData().m_failure_indent);
+        TestString const indent(' ', GetSharedData().m_failure_indent);
 
-        TestString msg(indent);
-        msg.Append("FILE: ");
-        msg.Append(m_filename);
-        LogWriteLine(msg);
-        msg.Clear();
+        TestString msg;
+
+        if (!m_filename.IsEmpty())
+        {
+            msg.Append(indent);
+            msg.Append("FILE: ");
+            msg.Append(m_filename);
+            LogWriteLine(msg);
+            msg.Clear();
+        }
 
         // Extract each line from the string until there are no more failed checks.
         while (!m_check_failures.IsEmpty())
         {
-            size_type pos = 0;
+            ocl_size_type pos = 0;
             if (m_check_failures.Find('\n', pos))
             {
                 m_check_failures.GetSubString(msg, 0, pos + 1, true);
@@ -400,7 +850,7 @@ private:
     }
 
     // Log the number of checks for a tested function, e.g. 5 TESTS or 1 TEST.
-    static void privateLogCount(TestString const& msg, size_type count)
+    static void privateLogCount(TestString const& msg, ocl_size_type count)
     {
         TestString count_msg(msg);
         count_msg += " = ";
@@ -410,7 +860,7 @@ private:
     }
 
     // Output the final summary report.
-    static void privateLogSummary()
+    static void privateLogSharedData()
     {
         if (GetLogger() != NULL)
         {
@@ -429,26 +879,33 @@ private:
 
     // Every function or member function test calls this construct function,
     // which sets up the initial logger and keeps track of number of tests.
-    void privateConstruct()
+    void privateIncConstruction()
     {
-        if (GetSharedData().m_logger == NULL)
+        if (GetSharedData().GetLogger() == NULL)
             LogWriteLine("Error setting logger!");
 
-        // NOTE: SetFailureIndent will decrement m_constructions and m_total_tests later.
         ++GetSharedData().m_constructions;
         ++GetSharedData().m_total_tests;
 
         m_test_number = GetSharedData().m_constructions;
 
-        // Calculate longest function output so results can be padded to create aligned columns.
+        // Calculate longest function output so results can be
+        // padded to create aligned columns.
         privateUpdateMaxFunctionLength();
+    }
+
+    static void privateClearSharedData()
+    {
+        // Free shared pointers to prevent false positives
+        // for memory leak detection.
+        GetSharedData().Clear();
     }
 
     // Pad the member function with spaces to line up right column.
     TestString privateGetMemberFunctionPadding()
     {
         TestString padding;
-        size_type len = m_member_function.GetLength();
+        ocl_size_type len = GetTestName().GetLength();
         if (len < GetSharedData().m_max_member_function_length)
             padding.Append(TestString(' ', GetSharedData().m_max_member_function_length - len));
         return padding;
@@ -456,10 +913,10 @@ private:
 
     void privateUpdateMaxFunctionLength()
     {
-        GetTestName(m_member_function);
+        TestString member_function = GetTestName();
         if (m_previous_member_function_length > 0)
         {
-            size_type new_len = m_member_function.GetLength();
+            ocl_size_type new_len = member_function.GetLength();
 
             // a call to SetFunctionName or SetArgs has changed the length,
             // so re-calculate the max length.
@@ -472,40 +929,60 @@ private:
         {
             // first time to be set, so update the static max length.
             m_previous_member_function_length = GetSharedData().m_max_member_function_length;
-            if (m_member_function.GetLength() > GetSharedData().m_max_member_function_length)
-                GetSharedData().m_max_member_function_length = m_member_function.GetLength();
+            if (member_function.GetLength() > GetSharedData().m_max_member_function_length)
+                GetSharedData().m_max_member_function_length = member_function.GetLength();
         }
     }
 
     void privateSetFilename(TestString const& filename)
     {
-        if (m_filename.IsEmpty())
-            m_filename = filename;
+        m_filename = filename;
     }
 
-    void privateRecordFailed(TestString const& expression,
-                             TestString const& filename,
-                             size_type line_number)
+    void privateCheckFailed(TestString const& expression,
+                            ocl_size_type line_number)
     {
-        ++GetSharedData().m_total_failed_tests;
-        privateSetFilename(filename);
-        m_check_failures.Append("LINE: ");
-        m_check_failures.Append(static_cast<unsigned long>(line_number));
-        m_check_failures.Append("\nEXPRESSION: ");
-        m_check_failures.Append(expression);
-        m_check_failures.Append("\n");
+        if (line_number > 0)
+        {
+            ++GetSharedData().m_total_failed_tests;
+            m_check_failures.Append("LINE: ");
+            m_check_failures.Append(static_cast<unsigned long>(line_number));
+            m_check_failures.Append("\n");
+        }
+        if ((expression != NULL) && (*expression != '\0'))
+        {
+            m_check_failures.Append("EXPRESSION: ");
+            m_check_failures.Append(expression);
+            m_check_failures.Append("\n");
+        }
+    }
+
+    void privateLeakCheckFailed()
+    {
+        m_check_failures.Append("Memory leak detected!\n");
     }
 
 private:
-    static TestClassSharedData<size_type>& GetSharedData()
+    static TestClassSharedData<ocl_size_type>& GetSharedData()
     {
         // Ensure shared data is available for first use.
-        static TestClassSharedData<size_type> shared_data;
+        static TestClassSharedData<ocl_size_type> shared_data;
         return shared_data;
+    }
+
+    // Because all constructors are called first before main,
+    // then all destructor(s) get called after main,
+    // the snapshot needs to be completed for the previous constructor.
+    TestClass*& GetPreviousTest()
+    {
+        static TestClass* prev_test = NULL;
+        return prev_test;
     }
 
 // Data for this test.
 private:
+    TestMemoryLeakCheck m_leak_check;
+
     TestString m_filename;
     TestString m_class_name;
     TestString m_function_name;
@@ -518,32 +995,27 @@ private:
 
     // Timer used to check progress in the sample time period.
     TestTime m_current_time;
-    size_type m_timed_function_calls;
+    ocl_size_type m_timed_function_calls;
 
     // The amount of time to run the performance test.
     TestTime m_sample_time;
 
-    // Store class name, function name, args and const in single string.
-    // This can be used to calculate the longest string.
-    TestString m_member_function;
-
     // total checks for this function.
-    size_type m_check_count;
+    ocl_size_type m_check_count;
 
     // test failures for this function.
-    size_type m_failure_check_count;
+    ocl_size_type m_failure_check_count;
     TestString m_check_failures;
 
     // Store m_max_member_function_length before update in this class.
     // This can change as SetFunctionName or SetArgs is called.
-    size_type m_previous_member_function_length;
+    ocl_size_type m_previous_member_function_length;
 
     // Debug test number helper for identifying when a test crashes.
-    size_type m_test_number;
+    ocl_size_type m_test_number;
 
-    // When this test is used to set the indentation for failure messages,
-    // then this test does not need to be recorded.
-    bool m_recorded;
+    // Only log test results once.
+    bool m_logged;
 
 private:
     TestClass(TestClass const&);

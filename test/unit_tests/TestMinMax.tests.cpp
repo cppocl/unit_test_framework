@@ -18,6 +18,10 @@ limitations under the License.
 #include "../TestMinMax.hpp"
 #include <limits.h>
 
+#include "EnabledTests.h"
+
+#if defined(TESTMINMAX_TESTS_ENABLED) && (TESTMINMAX_TESTS_ENABLED != 0)
+
 TEST(TestMinMax_class_constants)
 {
     using ocl::TestMinMax;
@@ -81,3 +85,5 @@ TEST(TestMinMax_class_constants)
         CHECK_EQUAL(max_value, ULONG_MAX);
     }
 }
+
+#endif // #if defined(TESTMINMAX_TESTS_ENABLED) && (TESTMINMAX_TESTS_ENABLED != 0)

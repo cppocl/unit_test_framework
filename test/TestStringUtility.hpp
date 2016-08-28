@@ -21,6 +21,7 @@ limitations under the License.
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
+#include "TestTypes.hpp"
 #include "TestMemoryUtility.hpp"
 
 namespace ocl
@@ -37,7 +38,12 @@ struct TestStringUtility
 {
     // NOTE: size_type is not used as it causes
     // possible loss of data warnings for some compilers.
-    typedef unsigned int size_type;
+    typedef ocl_size_type size_type;
+
+    static void EnableMemoryCounting(bool enabled)
+    {
+        TestMemoryUtility<char>::GetCounter().Enable(enabled);
+    }
 
     template<typename IntType>
     static char const* GetMinSignedIntAsString(IntType size_of_int) throw()
@@ -139,67 +145,144 @@ struct TestStringUtility
         return GetMinSignedIntCharCount(size_of_int);
     }
 
-    static void UnsafeFill(char* str, char ch, size_type len)
+    static bool IsNullChar(char ch)
+    {
+        return ch == '\0';
+    }
+
+    static bool IsNullChar(wchar_t ch)
+    {
+        return ch == L'\0';
+    }
+
+    static void SetNullChar(char& ch)
+    {
+        ch = '\0';
+    }
+
+    static void SetNullChar(wchar_t& ch)
+    {
+        ch = L'\0';
+    }
+
+    template<typename CharType>
+    static void UnsafeFill(CharType* str, CharType ch, size_type len)
     {
         char* end = str + len;
         for (; str < end; ++str)
             *str = ch;
-        *str = '\0';
+        SetNullChar(*str);
     }
 
-    static size_type UnsafeLength(char const* str)
+    template<typename CharType>
+    static CharType const* StrEnd(CharType const* str)
     {
-        size_type len = static_cast<size_type>(::strlen(str));
+        while (!IsNullChar(*str))
+            ++str;
+        return str;
+    }
+
+    template<typename CharType>
+    static size_type UnsafeLength(CharType const* str)
+    {
+        return static_cast<ocl_size_type>(StrEnd(str) - str);
+    }
+
+    template<typename CharType>
+    static size_type SafeLength(CharType const* str)
+    {
+        size_type len = str != NULL ? UnsafeLength(str) : 0U;
         return len;
     }
 
-    static size_type SafeLength(char const* str)
+    template<typename CharType>
+    static CharType* UnsafeCopy(CharType* dest, CharType const* src)
     {
-        size_type len = str != NULL ? static_cast<size_type>(::strlen(str)) : 0U;
-        return len;
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4996)
+#endif
+        return static_cast<CharType*>(::memcpy(dest, src,
+                                      (UnsafeLength(src) + 1) * sizeof(CharType)));
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
     }
 
-    static bool UnsafeFind(char const* str, char ch, size_type& pos, size_type start = 0)
+    template<typename CharType>
+    static int UnsafeCompare(CharType const* str1, CharType const* str2)
     {
-        char const* pch = str + start;
-        for (; (*pch != '\0') && (*pch != ch); ++pch)
+        return ::memcmp(str1, str2, (UnsafeLength(str1) + 1) * sizeof(CharType));
+    }
+
+    template<typename CharType>
+    static size_type UnsafeCharCount(CharType const* str, CharType char_to_find)
+    {
+        size_type count = 0;
+        for (; !IsNullChar(*str); ++str)
+            if (*str == char_to_find)
+                ++count;
+        return count;
+    }
+
+    template<typename CharType>
+    static ocl_size_type CharCount(CharType const* str, CharType const* chars_to_find)
+    {
+        CharType const* char_to_find;
+        ocl_size_type count = 0;
+        for (; !IsNullChar(*str); ++str)
+            for (char_to_find = chars_to_find; !IsNullChar(*char_to_find); ++char_to_find)
+                if (*str == *char_to_find)
+                    ++count;
+        return count;
+    }
+
+    template<typename CharType>
+    static bool UnsafeFind(CharType const* str, CharType ch, size_type& pos, size_type start = 0)
+    {
+        CharType const* pch = str + start;
+        for (; (!IsNullChar(*pch)) && (*pch != ch); ++pch)
             ;
-        if ((ch != '\0') && (*pch == '\0'))
+        if (!IsNullChar(ch) && IsNullChar(*pch))
             return false;
         pos = static_cast<size_type>(pch - str);
         return true;
     }
 
-    static void Allocate(char*& dest, size_type dest_len)
+    template<typename CharType>
+    static void Allocate(CharType*& dest, size_type dest_len)
     {
-        dest = TestMemoryUtility<char>::Allocate(dest_len + 1);
+        dest = TestMemoryUtility<CharType>::Allocate(dest_len + 1);
     }
 
-    static void FastFree(char* str)
+    template<typename CharType>
+    static void FastFree(CharType* str)
     {
-        TestMemoryUtility<char>::FastFree(str);
+        TestMemoryUtility<CharType>::FastFree(str);
     }
 
-    static void SafeFree(char*& str)
+    template<typename CharType>
+    static void SafeFree(CharType*& str)
     {
-        TestMemoryUtility<char>::SafeFree(str);
+        TestMemoryUtility<CharType>::SafeFree(str);
     }
 
-    static void SafeAllocateCopy(char*& dest,
+    template<typename CharType>
+    static void SafeAllocateCopy(CharType*& dest,
                                  size_type& dest_len,
-                                 char const* src,
+                                 CharType const* src,
                                  size_type src_len)
     {
         if ((src != NULL) && (src_len > 0))
         {
-            dest = TestMemoryUtility<char>::UnsafeAllocateCopy(src, src_len + 1);
+            dest = TestMemoryUtility<CharType>::UnsafeAllocateCopy(src, src_len + 1);
             if (dest != NULL)
             {
                 dest_len = src_len;
 
                 // If src is longer than src_len, add the terminating '\0'.
-                if (*(src + src_len) != '\0')
-                    *(dest + dest_len) = '\0';
+                if (!IsNullChar(*(src + src_len)))
+                    SetNullChar(*(dest + dest_len));
             }
             else
                 dest_len = static_cast<size_type>(0);
@@ -207,96 +290,139 @@ struct TestStringUtility
         else
         {
             dest = NULL;
-            dest_len = 0;
+            dest_len = static_cast<size_type>(0);
         }
     }
 
-    static void SafeAllocateCopy(char*& dest, size_type& dest_len, char const* src)
+    template<typename CharType>
+    static void SafeAllocateCopy(CharType*& dest,
+                                 size_type& dest_len,
+                                 CharType const* src)
     {
         if (src == NULL)
         {
             dest = NULL;
-            dest_len = 0;
+            dest_len = static_cast<size_type>(0);
         }
         else
             UnsafeAllocateCopy(dest, dest_len, src);
     }
 
-    static void UnsafeAllocateCopy(char*& dest, size_type& dest_len, char const* src)
+    template<typename CharType>
+    static void UnsafeAllocateCopy(CharType*& dest,
+                                   size_type& dest_len,
+                                   CharType const* src,
+                                   size_type src_len)
     {
-        size_type src_len = static_cast<size_type>(::strlen(src));
-        dest = TestMemoryUtility<char>::UnsafeAllocateCopy(src, src_len + 1);
+        dest = TestMemoryUtility<CharType>::UnsafeAllocateCopy(src, src_len + 1);
         dest_len = (dest != NULL) ? src_len : static_cast<size_type>(0);
     }
 
-    static void SafeReallocCopy(char*& dest,
+    template<typename CharType>
+    static void UnsafeAllocateCopy(CharType*& dest, size_type& dest_len, CharType const* src)
+    {
+        UnsafeAllocateCopy(dest, dest_len, src, UnsafeLength(src));
+    }
+
+    template<typename CharType>
+    static void SafeReallocCopy(CharType*& dest,
                                 size_type& dest_len,
-                                char const* src,
+                                CharType const* src,
                                 size_type src_len)
     {
         FastFree(dest);
         SafeAllocateCopy(dest, dest_len, src, src_len);
     }
 
-    static void SafeReallocCopy(char*& dest, size_type& dest_len, char const* src)
+    template<typename CharType>
+    static void SafeReallocCopy(CharType*& dest,
+                                size_type& dest_len,
+                                CharType const* src)
     {
-        FastFree(dest);
-        SafeAllocateCopy(dest, dest_len, src);
+        if (src != NULL)
+        {
+            size_type len = UnsafeLength(src);
+            if (len > static_cast<size_type>(0))
+            {
+                if (len > dest_len)
+                {
+                    FastFree(dest);
+                    UnsafeAllocateCopy(dest, dest_len, src);
+                }
+                else
+                {
+                    ::memcpy(dest, src, dest_len + 1);
+                    dest_len = len;
+                }
+            }
+            else
+            {
+                SafeFree(dest);
+                dest_len = static_cast<size_type>(0);
+            }
+        }
+        else
+        {
+            SafeFree(dest);
+            dest_len = static_cast<size_type>(0);
+        }
     }
 
     /// Allocate enough space in dest to copy str1 and append str2.
     /// @note It is safe for dest and str1 or str2 to be the same string.
     /// Also str1 or str2 can be NULL.
-    static void SafeAllocAppend(char*& dest,
+    template<typename CharType>
+    static void SafeAllocAppend(CharType*& dest,
                                 size_type& dest_len,
-                                char const* str1,
+                                CharType const* str1,
                                 size_type str1_len,
-                                char const* str2,
+                                CharType const* str2,
                                 size_type str2_len)
     {
         size_type new_len = str1_len + str2_len;
-        if (new_len > 0)
+        if (new_len > static_cast<size_type>(0))
         {
             char* new_dest = NULL;
             Allocate(new_dest, new_len);
             if (new_dest != NULL)
             {
-                if ((str1 != NULL) && (str1_len > 0))
+                if ((str1 != NULL) && (str1_len > static_cast<size_type>(0)))
                     ::memcpy(new_dest, str1, str1_len);
                 else
                 {
                     new_len -= str1_len;
-                    str1_len = 0;
+                    str1_len = static_cast<size_type>(0);
                 }
-                if ((str2 != NULL) && (str2_len > 0))
+                if ((str2 != NULL) && (str2_len > static_cast<size_type>(0)))
                     ::memcpy(new_dest + str1_len, str2, str2_len);
                 else
                     new_len -= str2_len;
-                *(new_dest + new_len) = '\0';
+                SetNullChar(*(new_dest + new_len));
                 dest_len = new_len;
             }
             else
-                dest_len = 0;
+                dest_len = static_cast<size_type>(0);
             FastFree(dest);
             dest = new_dest;
         }
         else
         {
             SafeFree(dest);
-            dest_len = 0;
+            dest_len = static_cast<size_type>(0);
         }
     }
 
     /// Same as AllocAppend, except dest is first freed
     /// before being set with str1 and str2.
-    static void SafeReallocAppend(char*& dest,
+    template<typename CharType>
+    static void SafeReallocAppend(CharType*& dest,
                                   size_type& dest_len,
-                                  char const* str1,
+                                  CharType const* str1,
                                   size_type str1_len,
-                                  char const* str2,
+                                  CharType const* str2,
                                   size_type str2_len)
     {
-        char* new_dest = NULL;
+        CharType* new_dest = NULL;
         size_type new_dest_len = 0;
         SafeAllocAppend(new_dest, new_dest_len, str1, str1_len, str2, str2_len);
         FastFree(dest);

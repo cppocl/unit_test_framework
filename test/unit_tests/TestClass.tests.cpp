@@ -15,7 +15,9 @@ limitations under the License.
 */
 
 #include "../Test.hpp"
-#include "../TestClass.hpp"
+#include "EnabledTests.h"
+
+#if defined(TESTCLASS_TESTS_ENABLED) && (TESTCLASS_TESTS_ENABLED != 0)
 
 TEST_MEMBER_FUNCTION(TestClass, StrLen, char_const_ptr)
 {
@@ -255,7 +257,7 @@ TEST_MEMBER_FUNCTION(TestClass, ToInt, char)
 
 TEST_MEMBER_FUNCTION(TestClass, ToInt, char_const_ptr_int_ref)
 {
-    TEST_OVERRIDE_ARGS("char const, int&");
+    TEST_OVERRIDE_ARGS("char const*, int&");
 
     char const* str = "0";
 
@@ -388,3 +390,5 @@ TEST_MEMBER_FUNCTION(TestClass, ToInt, wchar_t_const_ptr_int_ref)
     value = 0;
     CHECK_FALSE(ToInt(str, value));
 }
+
+#endif // #if defined(TESTCLASS_TESTS_ENABLED) && (TESTCLASS_TESTS_ENABLED != 0)

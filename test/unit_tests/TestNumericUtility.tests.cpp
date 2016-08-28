@@ -18,6 +18,10 @@ limitations under the License.
 #include "../TestNumericUtility.hpp"
 #include <limits.h>
 
+#include "EnabledTests.h"
+
+#if defined(TESTNUMERICUTILITY_TESTS_ENABLED) && (TESTNUMERICUTILITY_TESTS_ENABLED != 0)
+
 TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, signed_char)
 {
     typedef ocl::TestNumericUtility<signed char> test_numeric_utility;
@@ -117,3 +121,5 @@ TEST_MEMBER_FUNCTION(TestNumericUtility, GetNumberOfCharsForInt, unsigned_short)
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(USHRT_MAX - 1), 5U);
     CHECK_EQUAL(test_numeric_utility::GetNumberOfCharsForInt(USHRT_MAX), 5U);
 }
+
+#endif // #if defined(TESTNUMERICUTILITY_TESTS_ENABLED) && (TESTNUMERICUTILITY_TESTS_ENABLED != 0)

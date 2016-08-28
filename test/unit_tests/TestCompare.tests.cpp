@@ -16,6 +16,9 @@ limitations under the License.
 
 #include "../Test.hpp"
 #include "../TestCompare.hpp"
+#include "EnabledTests.h"
+
+#if defined(TESTCOMPARE_TESTS_ENABLED) && (TESTCOMPARE_TESTS_ENABLED != 0)
 
 TEST_MEMBER_FUNCTION(TestCompare, Compare, bool_bool)
 {
@@ -79,3 +82,5 @@ TEST_MEMBER_FUNCTION(TestCompare, Compare, unsigned_int_unsigned_int)
     CHECK_LESS(compare_type::Compare(1U, 2U), 0);
     CHECK_GREATER(compare_type::Compare(2U, 1U), 0);
 }
+
+#endif // #if defined(TESTCOMPARE_TESTS_ENABLED) && (TESTCOMPARE_TESTS_ENABLED != 0)
