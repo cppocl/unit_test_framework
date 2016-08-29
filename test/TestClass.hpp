@@ -42,8 +42,11 @@ namespace ocl
 class TestClass
 {
 public:
-    // max padded digits for number of tests.
+    // Maximum padded digits for number of tests.
     static TestString::size_type const max_digits = 6;
+
+    // Pad characters for error lines, which should like up with test counter.
+    static TestString::size_type const error_padding = max_digits + 2;
 
     // Construct the base class for a unit test,
     // optionally tracking the start and end of any leaks.
@@ -81,7 +84,7 @@ public:
         else if (GetSharedData().GetLogger() == NULL)
         {
             // Force logger to be created before memory leak checking starts.
-            LogWriteLine("Unable to create logging\n");
+            LogWriteLine("Unable to create logging!");
         }
 
         prev_test = this;
@@ -106,7 +109,7 @@ public:
 
         ++GetSharedData().m_destructions;
         if (GetSharedData().m_destructions > GetSharedData().m_constructions)
-            LogWriteLine("Error matching start and end of tests!\n");
+            LogWriteLine("Error matching start and end of tests!");
 
         // All tests are complete so dump out the summary and
         // the full memory leak report.
@@ -207,13 +210,11 @@ public:
 
         m_leak_check.Stop();
         if (m_leak_check.IsLeaking())
-            privateLeakCheckFailed();
-    }
-
-    /// Underlying function for TEST_FAILURE_INDENT macro.
-    static void SetFailureIndent(ocl_size_type indent)
-    {
-        GetSharedData().m_failure_indent = indent;
+        {
+            TestString msg(' ', error_padding);
+            msg.Append("Memory leak detected!");
+            LogWriteLine(msg);
+        }
     }
 
     /// Get status for tests and failures.
@@ -242,6 +243,13 @@ public:
         if (GetLogger() != NULL)
             GetLogger()->Write(msg);
     }
+
+    static void LogWriteLine()
+    {
+        if (GetLogger() != NULL)
+            GetLogger()->WriteLine("");
+    }
+
 
     static void LogWriteLine(TestString const& msg)
     {
@@ -683,7 +691,7 @@ private:
         LogWriteLine(GetTestName());
 
         // Output any error lines and expressions.
-        if (HasFailed() || m_leak_check.IsLeaking())
+        if (HasFailed())
             privateLogFailures();
     }
 
@@ -817,7 +825,7 @@ private:
     // Log the output for a failed check macro.
     void privateLogFailures()
     {
-        TestString const indent(' ', GetSharedData().m_failure_indent);
+        TestString const indent(' ', error_padding);
 
         TestString msg;
 
@@ -955,11 +963,6 @@ private:
             m_check_failures.Append(expression);
             m_check_failures.Append("\n");
         }
-    }
-
-    void privateLeakCheckFailed()
-    {
-        m_check_failures.Append("Memory leak detected!\n");
     }
 
 private:

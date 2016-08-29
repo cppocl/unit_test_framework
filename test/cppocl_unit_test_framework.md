@@ -64,7 +64,6 @@ CHECK_ALL_EXCEPTIONS(expression)
 
 These macros provide further control over the output produced for each test
 
-TEST_FAILURE_INDENT              /* Set number of spaces to indent error information */
 TEST_OVERRIDE_FUNCTION_NAME      /* Set the function name for output, e.g. “operator=” */
 TEST_OVERRIDE_ARGS               /* Set the argument names for output, e.g. “int, int” */
 TEST_OVERRIDE_FUNCTION_NAME_ARGS /* Set the function name and arguments for output */

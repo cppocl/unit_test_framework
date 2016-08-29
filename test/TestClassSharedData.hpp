@@ -36,7 +36,6 @@ public:
     TestClassSharedData()
         : m_logger(NULL)
         , m_max_member_function_length(0)
-        , m_failure_indent(0)
         , m_constructions(0)
         , m_logged_line(0)
         , m_total_checks(0)
@@ -93,9 +92,6 @@ private:
 
     // Track longest member function for cleaner output.
     SizeType m_max_member_function_length;
-
-    // Number of spaces to indent error information.
-    SizeType m_failure_indent;
 
     // Count all constructions.
     SizeType m_constructions;

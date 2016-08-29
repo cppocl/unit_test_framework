@@ -18,10 +18,6 @@ limitations under the License.
 
 int main(int /*argc*/, char * /*argv*/[])
 {
-    TEST_FAILURE_INDENT(4);
-
-    //TEST_BREAK_ON_LEAK(4453);
-
     bool test_has_failed = TEST_HAS_FAILED;
 
     return test_has_failed ? 1 : 0;
