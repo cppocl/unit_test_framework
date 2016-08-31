@@ -30,8 +30,6 @@ namespace ocl
 template<typename SizeType>
 class TestClassSharedData
 {
-friend class TestClass;
-
 public:
     TestClassSharedData()
         : m_logger(NULL)
@@ -78,6 +76,161 @@ public:
     bool IsLast() const
     {
         return m_destructions >= m_constructions;
+    }
+
+    SizeType GetConstructions() const throw()
+    {
+        return m_constructions;
+    }
+
+    void SetConstructions(SizeType constructions) throw()
+    {
+        m_constructions = constructions;
+    }
+
+    void IncConstructions()
+    {
+        ++m_constructions;
+    }
+
+    SizeType GetDestructions() const throw()
+    {
+        return m_destructions;
+    }
+
+    void SetDestructions(SizeType destructions) throw()
+    {
+        m_destructions = destructions;
+    }
+
+    void IncDestructions()
+    {
+        ++m_destructions;
+    }
+
+    SizeType GetLoggedLine() const throw()
+    {
+        return m_logged_line;
+    }
+
+    void SetLoggedLine(SizeType logged_line) throw()
+    {
+        m_logged_line = logged_line;
+    }
+
+    void IncLoggedLine()
+    {
+        ++m_logged_line;
+    }
+
+    SizeType GetTotalChecks() const throw()
+    {
+        return m_total_checks;
+    }
+
+    void SetTotalChecks(SizeType total_checks) throw()
+    {
+        m_total_checks = total_checks;
+    }
+
+    void IncTotalChecks()
+    {
+        ++m_total_checks;
+    }
+
+    SizeType GetTotalNotTested() const throw()
+    {
+        return m_total_not_tested;
+    }
+
+    void SetTotalNotTested(SizeType total_not_tested) throw()
+    {
+        m_total_not_tested = total_not_tested;
+    }
+
+    void IncTotalNotTested()
+    {
+        ++m_total_not_tested;
+    }
+
+    SizeType GetTotalFailedTests() const throw()
+    {
+        return m_total_failed_tests;
+    }
+
+    void SetTotalFailedTests(SizeType total_failed_tests) throw()
+    {
+        m_total_failed_tests = total_failed_tests;
+    }
+
+    void IncTotalFailedTests()
+    {
+        ++m_total_failed_tests;
+    }
+
+    SizeType GetTotalFunctionsTested() const throw()
+    {
+        return m_total_functions_tested;
+    }
+
+    void SetTotalFunctionsTested(SizeType total_functions_tested) throw()
+    {
+        m_total_functions_tested = total_functions_tested;
+    }
+
+    void IncTotalFunctionsTested()
+    {
+        ++m_total_functions_tested;
+    }
+
+    SizeType GetTotalTimedFunctions() const throw()
+    {
+        return m_total_timed_functions;
+    }
+
+    void SetTotalTimedFunctions(SizeType total_timed_functions) throw()
+    {
+        m_total_timed_functions = total_timed_functions;
+    }
+
+    void IncTotalTimedFunctions()
+    {
+        ++m_total_timed_functions;
+    }
+
+    SizeType GetTotalTests() const throw()
+    {
+        return m_total_tests;
+    }
+
+    void SetTotalTests(SizeType total_tests) throw()
+    {
+        m_total_tests = total_tests;
+    }
+
+    void IncTotalTests()
+    {
+        ++m_total_tests;
+    }
+
+    const char* GetSuccessMessage() const throw()
+    {
+        return m_success_message;
+    }
+
+    const char* GetFailedMessage() const throw()
+    {
+        return m_failed_message;
+    }
+
+    const char* GetNotRunMessage() const throw()
+    {
+        return m_not_run_message;
+    }
+
+    const char* GetTimedMessage() const throw()
+    {
+        return m_timed_message;
     }
 
 private:

@@ -106,8 +106,8 @@ public:
     {
         LogTests();
 
-        ++GetSharedData().m_destructions;
-        if (GetSharedData().m_destructions > GetSharedData().m_constructions)
+        GetSharedData().IncDestructions();
+        if (GetSharedData().GetDestructions() > GetSharedData().GetConstructions())
             LogWriteLine("Error matching start and end of tests!");
 
         // All tests are complete so dump out the summary and
@@ -527,7 +527,7 @@ public:
 // Shared data helper functions
     static bool HasSharedFailure() throw()
     {
-        return GetSharedData().m_total_failed_tests > 0;
+        return GetSharedData().GetTotalFailedTests() > 0;
     }
 
 // Unit test helper functions.
@@ -655,7 +655,7 @@ protected:
         }
 
         ++m_check_count;
-        ++GetSharedData().m_total_checks;
+        GetSharedData().IncTotalChecks();
     }
 
     void Clear()
@@ -696,8 +696,8 @@ private:
     {
         TestString str, line_number_str;
 
-        ++GetSharedData().m_logged_line;
-        line_number_str.Append(static_cast<ocl_size_type>(GetSharedData().m_logged_line));
+        GetSharedData().IncLoggedLine();
+        line_number_str.Append(static_cast<ocl_size_type>(GetSharedData().GetLoggedLine()));
         if (line_number_str.GetLength() < max_digits)
             str = TestString(' ', max_digits - line_number_str.GetLength());
         str += "(";
@@ -714,21 +714,21 @@ private:
         if (HasTests())
         {
             if (!IsGeneralTest())
-                ++GetSharedData().m_total_functions_tested;
+                GetSharedData().IncTotalFunctionsTested();
             if (HasFailed() || m_leak_check.IsLeaking())
-                LogWrite(GetSharedData().m_failed_message);
+                LogWrite(GetSharedData().GetFailedMessage());
             else
-                LogWrite(GetSharedData().m_success_message);
+                LogWrite(GetSharedData().GetSuccessMessage());
         }
         else if (m_is_timed)
         {
-            ++GetSharedData().m_total_timed_functions;
-            LogWrite(GetSharedData().m_timed_message);
+            GetSharedData().IncTotalTimedFunctions();
+            LogWrite(GetSharedData().GetTimedMessage());
         }
         else
         {
-            ++GetSharedData().m_total_not_tested;
-            LogWrite(GetSharedData().m_not_run_message);
+            GetSharedData().IncTotalNotTested();
+            LogWrite(GetSharedData().GetNotRunMessage());
         }
     }
 
@@ -869,15 +869,15 @@ private:
         if (GetLogger() != NULL)
         {
             GetLogger()->WriteLine("");
-            privateLogCount("Total checks", GetSharedData().m_total_checks);
-            if (GetSharedData().m_total_not_tested > 0)
-                privateLogCount("Total not tested", GetSharedData().m_total_not_tested);
+            privateLogCount("Total checks", GetSharedData().GetTotalChecks());
+            if (GetSharedData().GetTotalNotTested() > 0)
+                privateLogCount("Total not tested", GetSharedData().GetTotalNotTested());
             if (HasSharedFailure())
-                privateLogCount("Total failed tests", GetSharedData().m_total_failed_tests);
-            privateLogCount("Total functions tested", GetSharedData().m_total_functions_tested);
-            if (GetSharedData().m_total_timed_functions > 0)
-                privateLogCount("Total functions timed", GetSharedData().m_total_timed_functions);
-            privateLogCount("Total tests", GetSharedData().m_total_tests);
+                privateLogCount("Total failed tests", GetSharedData().GetTotalFailedTests());
+            privateLogCount("Total functions tested", GetSharedData().GetTotalFunctionsTested());
+            if (GetSharedData().GetTotalTimedFunctions() > 0)
+                privateLogCount("Total functions timed", GetSharedData().GetTotalTimedFunctions());
+            privateLogCount("Total tests", GetSharedData().GetTotalTests());
         }
     }
 
@@ -888,10 +888,10 @@ private:
         if (GetSharedData().GetLogger() == NULL)
             LogWriteLine("Error setting logger!");
 
-        ++GetSharedData().m_constructions;
-        ++GetSharedData().m_total_tests;
+        GetSharedData().IncConstructions();
+        GetSharedData().IncTotalTests();
 
-        m_test_number = GetSharedData().m_constructions;
+        m_test_number = GetSharedData().GetConstructions();
     }
 
     static void privateClearSharedData()
@@ -911,7 +911,7 @@ private:
     {
         if (line_number > 0)
         {
-            ++GetSharedData().m_total_failed_tests;
+            GetSharedData().IncTotalFailedTests();
             m_check_failures.Append("LINE: ");
             m_check_failures.Append(static_cast<unsigned long>(line_number));
             m_check_failures.Append("\n");
