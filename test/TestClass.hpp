@@ -69,7 +69,6 @@ public:
         , m_sample_time(secs, nanosecs)
         , m_check_count(0)
         , m_failure_check_count(0)
-        , m_previous_member_function_length(0)
         , m_test_number(0)
         , m_logged(false)
     {
@@ -139,7 +138,6 @@ public:
     void SetClassName(TestString const& class_name)
     {
         m_class_name = class_name;
-        privateUpdateMaxFunctionLength();
     }
 
     TestString const& GetFunctionName() const throw()
@@ -150,7 +148,6 @@ public:
     void SetFunctionName(TestString const& function_name)
     {
         m_function_name = function_name;
-        privateUpdateMaxFunctionLength();
     }
 
     TestString const& GetArgs() const throw()
@@ -164,7 +161,6 @@ public:
             m_args = args;
         else
             m_args.Clear();
-        privateUpdateMaxFunctionLength();
     }
 
     /// return string as class name::function name([args]) [const]
@@ -896,10 +892,6 @@ private:
         ++GetSharedData().m_total_tests;
 
         m_test_number = GetSharedData().m_constructions;
-
-        // Calculate longest function output so results can be
-        // padded to create aligned columns.
-        privateUpdateMaxFunctionLength();
     }
 
     static void privateClearSharedData()
@@ -907,39 +899,6 @@ private:
         // Free shared pointers to prevent false positives
         // for memory leak detection.
         GetSharedData().Clear();
-    }
-
-    // Pad the member function with spaces to line up right column.
-    TestString privateGetMemberFunctionPadding()
-    {
-        TestString padding;
-        ocl_size_type len = GetTestName().GetLength();
-        if (len < GetSharedData().m_max_member_function_length)
-            padding.Append(TestString(' ', GetSharedData().m_max_member_function_length - len));
-        return padding;
-    }
-
-    void privateUpdateMaxFunctionLength()
-    {
-        TestString member_function = GetTestName();
-        if (m_previous_member_function_length > 0)
-        {
-            ocl_size_type new_len = member_function.GetLength();
-
-            // a call to SetFunctionName or SetArgs has changed the length,
-            // so re-calculate the max length.
-            if (new_len > m_previous_member_function_length)
-                GetSharedData().m_max_member_function_length = new_len;
-            else
-                GetSharedData().m_max_member_function_length = m_previous_member_function_length;
-        }
-        else
-        {
-            // first time to be set, so update the static max length.
-            m_previous_member_function_length = GetSharedData().m_max_member_function_length;
-            if (member_function.GetLength() > GetSharedData().m_max_member_function_length)
-                GetSharedData().m_max_member_function_length = member_function.GetLength();
-        }
     }
 
     void privateSetFilename(TestString const& filename)
@@ -1009,10 +968,6 @@ private:
     // test failures for this function.
     ocl_size_type m_failure_check_count;
     TestString m_check_failures;
-
-    // Store m_max_member_function_length before update in this class.
-    // This can change as SetFunctionName or SetArgs is called.
-    ocl_size_type m_previous_member_function_length;
 
     // Debug test number helper for identifying when a test crashes.
     ocl_size_type m_test_number;
