@@ -38,6 +38,7 @@ public:
         , m_total_checks(0)
         , m_total_not_tested(0)
         , m_total_failed_tests(0)
+        , m_total_leaked_tests(0)
         , m_total_functions_tested(0)
         , m_total_timed_functions(0)
         , m_total_tests(0)
@@ -168,6 +169,21 @@ public:
         ++m_total_failed_tests;
     }
 
+    SizeType GetTotalLeakedTests() const throw()
+    {
+        return m_total_leaked_tests;
+    }
+
+    void SetTotalLeakedTests(SizeType total_leaked_tests) throw()
+    {
+        m_total_leaked_tests = total_leaked_tests;
+    }
+
+    void IncTotalLeakedTests()
+    {
+        ++m_total_leaked_tests;
+    }
+
     SizeType GetTotalFunctionsTested() const throw()
     {
         return m_total_functions_tested;
@@ -255,6 +271,7 @@ private:
     SizeType m_total_checks;
     SizeType m_total_not_tested;
     SizeType m_total_failed_tests;
+    SizeType m_total_leaked_tests;
     SizeType m_total_functions_tested;
     SizeType m_total_timed_functions;
     SizeType m_total_tests;

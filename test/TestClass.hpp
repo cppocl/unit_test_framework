@@ -265,6 +265,7 @@ public:
         m_leak_check.Stop();
         if (m_leak_check.IsLeaking())
         {
+            GetSharedData().IncTotalLeakedTests();
             TestString msg(' ', error_padding);
             msg.Append("Memory leak detected!");
             LogWriteLine(msg);
@@ -588,7 +589,8 @@ public:
 // Shared data helper functions
     static bool HasSharedFailure() throw()
     {
-        return GetSharedData().GetTotalFailedTests() > 0;
+        return (GetSharedData().GetTotalFailedTests() > 0) ||
+               (GetSharedData().GetTotalLeakedTests() > 0);
     }
 
 // Unit test helper functions.
@@ -939,6 +941,8 @@ private:
             if (GetSharedData().GetTotalTimedFunctions() > 0)
                 privateLogCount("Total functions timed", GetSharedData().GetTotalTimedFunctions());
             privateLogCount("Total tests", GetSharedData().GetTotalTests());
+            if (GetSharedData().GetTotalLeakedTests() > 0)
+                privateLogCount("Total memory leaks", GetSharedData().GetTotalLeakedTests());
         }
     }
 
