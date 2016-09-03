@@ -29,6 +29,7 @@ limitations under the License.
 #include "TestStdioFileFunctor.hpp"
 #include "TestMemoryLeakCheck.hpp"
 #include "TestMemoryCounter.hpp"
+#include "TestSetupTeardownFunctor.hpp"
 
 #include <cstring>
 #include <climits>
@@ -100,6 +101,9 @@ public:
         SetClassName(class_name);
         SetFunctionName(function_name);
         SetArgs(args);
+
+        // Start the setup part of a fixture, after leak detection starts.
+        Setup();
     }
 
     virtual ~TestClass()
@@ -185,6 +189,60 @@ public:
         }
 
         return str;
+    }
+
+private:
+    // Setup and tear down functionality, called via Execute function.
+    template<bool const is_setup>
+    void SetupTeardown()
+    {
+        TestSetupTeardownFunctor*& setup_or_teardown = GetSetupOrTeardown<is_setup>();
+
+        if (setup_or_teardown != NULL)
+        {
+            setup_or_teardown->Execute();
+            setup_or_teardown = NULL;
+        }
+    }
+
+    // Setting the setup and tear down functions, which get called later.
+    // See TEST_SETUP and TEST_TEARDOWN macros for usage.
+    template<bool const is_setup>
+    static void SetSetupTeardown(TestSetupTeardownFunctor& setup_teardown_functor)
+    {
+        TestSetupTeardownFunctor*& setup_or_teardown = GetSetupOrTeardown<is_setup>();
+
+        TestString class_name;
+        if (setup_or_teardown != NULL)
+            class_name.Assign(setup_or_teardown->GetClassName());
+
+        // If setup_or_teardown is null or class name has changed then set the functor.
+        if (class_name != setup_teardown_functor.GetClassName())
+            setup_or_teardown = &setup_teardown_functor;
+    }
+
+// Call the user defined setup and tear down functions via TestClass::Execute.
+public:
+    void Setup()
+    {
+        SetupTeardown<true>();
+    }
+
+    void Teardown()
+    {
+        SetupTeardown<false>();
+    }
+
+// Set the appropriate class objects via using the TEST_SETUP and TEST_TEARDOWN macros.
+public:
+    static void SetSetup(TestSetupTeardownFunctor& setup_functor)
+    {
+        SetSetupTeardown<true>(setup_functor);
+    }
+
+    static void SetTeardown(TestSetupTeardownFunctor& teardown_functor)
+    {
+        SetSetupTeardown<false>(teardown_functor);
     }
 
 // General helper functions.
@@ -286,6 +344,9 @@ public:
         m_logged = true;
 
         privateLogFunction();
+
+        // Ensure tear down happens before leak checking stops.
+        Teardown();
 
         LogLeaks();
     }
@@ -939,6 +1000,24 @@ private:
     {
         static TestClass* prev_test = NULL;
         return prev_test;
+    }
+
+    static TestSetupTeardownFunctor*& GetSetup()
+    {
+        static TestSetupTeardownFunctor* setup_functor;
+        return setup_functor;
+    }
+
+    static TestSetupTeardownFunctor*& GetTeardown()
+    {
+        static TestSetupTeardownFunctor* teardown_functor;
+        return teardown_functor;
+    }
+
+    template<bool const is_setup>
+    static TestSetupTeardownFunctor*& GetSetupOrTeardown()
+    {
+        return is_setup ? GetSetup() : GetTeardown();
     }
 
 // Data for this test.

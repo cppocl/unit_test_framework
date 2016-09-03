@@ -85,10 +85,25 @@ private:
     int m_value;
 };
 
+// Ensure that variable names don't class in final binary.
+namespace
+{
+    Example* example_ptr = NULL;
+}
 
-// When a test fails, the output is on multiple lines,
-// so this macro can set the number of spaces to indent the failure messages.
-TEST_FAILURE_INDENT(4);
+// Example of a fixture, also known as Setup/Tear down,
+// which is designed to work with testing classes.
+// NOYR: Need to put setup and tear down before the tests for the class.
+TEST_SETUP(Example)
+{
+    example_ptr = new Example(10);
+}
+
+TEST_TEARDOWN(Example)
+{
+    delete example_ptr;
+}
+
 
 // Implement unit tests for functions and member functions.
 
@@ -148,6 +163,12 @@ TEST_MEMBER_FUNCTION(Example, Inc, NA)
     CHECK_ZERO(example.GetValue());
     example.Inc();
     CHECK_EQUAL(example.GetValue(), 1);
+
+    for (int i = 0; i < 9; ++i)
+        example.Inx();
+
+    // Test Inc will count to 10 and compare against the object setup using fixtures.
+    CHECK_EQUAL(example.GetValue(), example_ptr->GetValue());
 }
 
 // When testing a combination of function calls,

@@ -60,6 +60,7 @@ CHECK_PERFORMANCE(function_call, min_iterations)
 CHECK_EXCEPTION(expression)
 CHECK_ALL_EXCEPTIONS(expression)
 
+
 ## Macros for customizing test
 
 These macros provide further control over the output produced for each test
@@ -85,6 +86,7 @@ IsDigit     /* Return true when character is in '0'..'9' */
 ToInt       /* Convert character or string to integer type */
 Sleep       /* Sleep in milliseconds */
 
+
 ## Pre-processor define for memory leak detection
 
 To enable memory leak detection in unit test builds, add the pre-processor define TEST_LEAK_DETECT to your project.
@@ -92,9 +94,6 @@ Current support is for Visual C++ on Windows only.
 
 
 ## Examples for unit tests
-
-    // Only need to call this once for all unit tests, outside of any test.
-    TEST_FAILURE_INDENT(4);
 
     // Perform some checks on some functions.
     TEST(TestSomeFunctions)
@@ -124,6 +123,45 @@ Current support is for Visual C++ on Windows only.
     {
         std::string str;
         CHECK_ZERO(str.length ());
+    }
+
+
+## Examples for class unit tests with fixtures (setup and tear down)
+
+    class MyClass
+    {
+    public:
+        MyClass(int value = 0)
+            : m_value(value)
+        {
+        }
+        int GetValue() const throw()
+        {
+            return m_value;
+        }
+    private:
+        int m_value;
+    };
+
+    namespace
+    {
+        MyClass* my_class_ptr = nullptr;
+    }
+
+    TEST_SETUP(MyClass)
+    {
+         my_class_ptr = new MyClass(1);
+    }
+
+    TEST_TEARDOWN(MyClass)
+    {
+        delete my_class_ptr;
+    }
+
+    TEST_CONST_MEMBER_FUNCTION(MyClass, GetValue, NA)
+    {
+        CHECK_NOT_NULL(my_class_ptr);
+        CHECK_EQUAL(my_class_ptr->GetValue(), 1);
     }
 
 
