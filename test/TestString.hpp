@@ -142,6 +142,16 @@ public:
         return ::strcmp(m_string, str.Ptr()) == 0;
     }
 
+    bool operator !=(char const* str) const
+    {
+        return !(*this == str);
+    }
+
+    bool operator !=(TestString const& str) const
+    {
+        return !(*this == str);
+    }
+
 public:
     char const* Ptr() const throw()
     {
@@ -272,7 +282,7 @@ public:
 
     void Prepend(TestString const& str)
     {
-        if ((str != NULL) && (*str != '\0'))
+        if ((str.m_string != NULL) && (*str.m_string != '\0'))
         {
             TestStringUtility::SafeReallocAppend(m_string,
                                                  m_length,
