@@ -134,6 +134,9 @@ struct TestMemoryLeakCheck
     void DumpAll()
     {
         _CrtDumpMemoryLeaks();
+
+        // Already reported leaks, so prevent Visual Studio reporting them again.
+        _CrtSetDbgFlag(0);
     }
 
     template<typename T>

@@ -83,7 +83,8 @@ public:
         }
         else if (GetSharedData().GetLogger() == NULL)
         {
-            // Force logger to be created before memory leak checking starts.
+            // Force logger to be created before memory leak checking starts,
+            // so that this does not get recorded in the start/end memory checking.
             LogWriteLine("Unable to create logging!");
         }
 
@@ -96,11 +97,8 @@ public:
         // but after the previous test has the memory leak checking stopped.
         StartLeakChecking();
 
-        privateIncConstruction();
-
-        SetClassName(class_name);
-        SetFunctionName(function_name);
-        SetArgs(args);
+        privateSetupPostLeakCheckingData(class_name, function_name, args);
+        privateIncrementCounters();
 
         // Start the setup part of a fixture, after leak detection starts.
         Setup();
@@ -123,7 +121,7 @@ public:
 
             // Clear the logger to ensure the allocation
             // for the first test is freed.
-            privateClearSharedData();
+            GetSharedData().Clear();
 
             // Any memory leaks will get reported by dumping
             // all information supported for the platform,
@@ -340,8 +338,6 @@ public:
     {
         privateStopLeakChecking();
         privateLogLeaks();
-        if (IsLast())
-            m_leak_check.DumpAll();
     }
 
     template<typename T>
@@ -952,24 +948,25 @@ private:
         }
     }
 
-    // Every function or member function test calls this construct function,
-    // which sets up the initial logger and keeps track of number of tests.
-    void privateIncConstruction()
+    // This data needs to be set after leak checking so that
+    // dynamic data is not falsely reported as a memory leak.
+    void privateSetupPostLeakCheckingData(char const* class_name,
+                                          char const* function_name,
+                                          char const* args)
     {
-        if (GetSharedData().GetLogger() == NULL)
-            LogWriteLine("Error setting logger!");
+        SetClassName(class_name);
+        SetFunctionName(function_name);
+        SetArgs(args);
+    }
 
+    // Keep track of constructions,
+    // totals and current test number for every test.
+    void privateIncrementCounters()
+    {
         GetSharedData().IncConstructions();
         GetSharedData().IncTotalTests();
 
         m_test_number = GetSharedData().GetConstructions();
-    }
-
-    static void privateClearSharedData()
-    {
-        // Free shared pointers to prevent false positives
-        // for memory leak detection.
-        GetSharedData().Clear();
     }
 
     void privateSetFilename(TestString const& filename)
@@ -1051,10 +1048,12 @@ private:
     // The amount of time to run the performance test.
     TestTime m_sample_time;
 
-    // total checks for this function.
+    // Total checks for this function.
     ocl_size_type m_check_count;
 
-    // test failures for this function.
+    // Test failures for this function.
+    // Only record check or timing failures as these have specific tests.
+    // Memory leaks do not affect this failure count.
     ocl_size_type m_failure_check_count;
     TestString m_check_failures;
 
