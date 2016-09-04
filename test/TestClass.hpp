@@ -256,22 +256,6 @@ public:
         m_leak_check.Start();
     }
 
-    void StopLeakChecking()
-    {
-        // Clear any dynamically allocated memory within this test before
-        // identifying any leaks in unit tests.
-        Clear();
-
-        m_leak_check.Stop();
-        if (m_leak_check.IsLeaking())
-        {
-            GetSharedData().IncTotalLeakedTests();
-            TestString msg(' ', error_padding);
-            msg.Append("Memory leak detected!");
-            LogWriteLine(msg);
-        }
-    }
-
     /// Get status for tests and failures.
     bool HasTests() const throw()
     {
@@ -354,7 +338,8 @@ public:
 
     void LogLeaks()
     {
-        StopLeakChecking();
+        privateStopLeakChecking();
+        privateLogLeaks();
         if (IsLast())
             m_leak_check.DumpAll();
     }
@@ -732,6 +717,29 @@ protected:
         m_check_failures.Clear();
     }
 
+// Memory leak private helpers.
+private:
+    void privateStopLeakChecking()
+    {
+        // Clear any dynamically allocated memory within this test before
+        // identifying any leaks in unit tests.
+        Clear();
+
+        m_leak_check.Stop();
+    }
+
+    void privateLogLeaks()
+    {
+        if (m_leak_check.IsLeaking())
+        {
+            GetSharedData().IncTotalLeakedTests();
+            TestString msg(' ', error_padding);
+            msg.Append("Memory leak detected!");
+            LogWriteLine(msg);
+        }
+    }
+
+// Log reporting private helpers.
 private:
     // Log the whole line for a function or member function.
     void privateLogFunction()
