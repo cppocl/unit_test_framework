@@ -859,30 +859,28 @@ private:
             Max(max_digits + TestStringUtility::UnsafeLength(str_test) + 1,
                 TestStringUtility::UnsafeLength(str_test)) + 1;
 
-        TestString whole_str, msg_str, num_str, pad_str;
+        // Build up the string with number of tests or failed tests, then appended message.
+        TestString whole_str;
+        TestString msg_str;
 
         if (m_check_count > 0)
         {
             if (m_failure_check_count > 0)
             {
-                num_str.Append(static_cast<unsigned long>(m_failure_check_count));
+                whole_str.Append(static_cast<unsigned long>(m_failure_check_count));
                 msg_str.Append(str_failed);
             }
             else
             {
-                num_str.Append(static_cast<unsigned long>(m_check_count));
+                whole_str.Append(static_cast<unsigned long>(m_check_count));
                 msg_str.Append((m_check_count > 1) ? str_tests : str_test);
             }
-            num_str.PadLeft(' ', max_digits);
+            whole_str.PadLeft(' ', max_digits);
+            whole_str.Append(" ");
         }
         else
             msg_str.Append(str_no_tests);
 
-        if (!num_str.IsEmpty())
-        {
-            whole_str.Append(num_str);
-            whole_str.Append(" ");
-        }
         whole_str.Append(msg_str);
         whole_str.PadRight(' ', max_chars);
 
@@ -928,7 +926,7 @@ private:
     static void privateLogCount(TestString const& msg, ocl_size_type count)
     {
         TestString count_msg(msg);
-        count_msg += " = ";
+        count_msg.Append(" = ");
         count_msg.Append(static_cast<unsigned long>(count));
         if (GetLogger() != NULL)
             GetLogger()->WriteLine(count_msg);
@@ -939,7 +937,7 @@ private:
     {
         if (GetLogger() != NULL)
         {
-            GetLogger()->WriteLine("");
+            GetLogger()->WriteEOL();
             privateLogCount("Total checks", GetSharedData().GetTotalChecks());
             if (GetSharedData().GetTotalNotTested() > 0)
                 privateLogCount("Total not tested", GetSharedData().GetTotalNotTested());
