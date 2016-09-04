@@ -76,7 +76,6 @@ While in a unit test, these functions are provided as helpers for common functio
 
 StrLen      /* Return the length of a char* or wchar_t* variable as a size_t */
 StrEnd      /* Return a pointer to the end of the string, i.e. position of '\0' */
-SetStr      /* Set a const char* pointer and length from a source string */
 StrCpy      /* Same as strcpy (without Microsoft warnings) */
 StrCmp      /* Same as strcmp (without Microsoft warnings) */
 CharCount   /* Count all characters matching character(s) to find in string */
