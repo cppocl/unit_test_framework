@@ -44,7 +44,7 @@ public:
         : m_length(size_type_default)
         , m_string(NULL)
     {
-        if (str != NULL)
+        if ((str != NULL) && (*str != '\0'))
             TestStringUtility::UnsafeAllocateCopy(m_string, m_length, str);
     }
 
@@ -132,14 +132,18 @@ public:
     {
         if (m_string == NULL)
             return (str == NULL) || (*str == '\0');
-        return ::strcmp(m_string, str) == 0;
+        if (str != NULL)
+            return ::strcmp(m_string, str) == 0;
+        return false;
     }
 
     bool operator ==(TestString const& str) const
     {
         if (m_string == NULL)
-            return str.m_string == NULL;
-        return ::strcmp(m_string, str.Ptr()) == 0;
+            return (str.m_string == NULL) || (*str.m_string == '\0');
+        if (str.m_string != NULL)
+            return ::strcmp(m_string, str.Ptr()) == 0;
+        return false;
     }
 
     bool operator !=(char const* str) const

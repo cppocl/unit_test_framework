@@ -18,6 +18,7 @@ limitations under the License.
 #define OCL_GUARD_TEST_TESTCLASSSHAREDDATA_HPP
 
 #include "StdioTestLog.hpp"
+#include "TestString.hpp"
 #include <cstddef>
 
 namespace ocl
@@ -224,6 +225,21 @@ public:
         m_total_tests = total_tests;
     }
 
+    char const* GetClassName() const throw()
+    {
+        return m_class_name;
+    }
+
+    void SetClassName(char const* class_name) throw()
+    {
+        m_class_name = class_name;
+    }
+
+    bool IsClassNameSame(char const* class_name) const
+    {
+        return TestString(m_class_name) == class_name;
+    }
+
     void IncTotalTests()
     {
         ++m_total_tests;
@@ -275,6 +291,9 @@ private:
     SizeType m_total_functions_tested;
     SizeType m_total_timed_functions;
     SizeType m_total_tests;
+
+    // Last class name set for TestClass.
+    char const* m_class_name;
 
     // message for start of each test.
     const char* m_success_message;

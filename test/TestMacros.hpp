@@ -39,10 +39,10 @@ TEST_MEMBER_FUNCTION(MyString, SetSize, size_t)
 #include "TestSetupTeardownFunctor.hpp"
 
 #define TEST_SETUP_TEARDOWN(Type, is_setup, class_name) \
-    class TestSetupTeardownFunctor_##Type_##class_name : public ocl::TestSetupTeardownFunctor \
+    class TestSetupTeardownFunctor_##Type##_##class_name : public ocl::TestSetupTeardownFunctor \
     { \
         public: \
-        TestSetupTeardownFunctor_##Type_##class_name(char const* name = #class_name) : \
+        TestSetupTeardownFunctor_##Type##_##class_name(char const* name = #class_name) : \
             ocl::TestSetupTeardownFunctor(name, is_setup) \
         { \
             if (IsSetup()) \
@@ -51,12 +51,12 @@ TEST_MEMBER_FUNCTION(MyString, SetSize, size_t)
                 ocl::TestClass::SetTeardown(*this); \
         } \
         void Execute(); \
-    } TestSetupTeardownFunctor_##Type_##class_name##_instance; \
-    void TestSetupTeardownFunctor_##Type_##class_name::Execute()
+    } TestSetupTeardownFunctor_##Type##_##class_name##_instance; \
+    void TestSetupTeardownFunctor_##Type##_##class_name::Execute()
 
-#define TEST_SETUP(class_name) TEST_SETUP_TEARDOWN(class_name, true, Setup)
+#define TEST_SETUP(class_name) TEST_SETUP_TEARDOWN(Setup, true, class_name)
 
-#define TEST_TEARDOWN(class_name)  TEST_SETUP_TEARDOWN(class_name, false, Teardown)
+#define TEST_TEARDOWN(class_name)  TEST_SETUP_TEARDOWN(Teardown, false, class_name)
 
 #ifndef TEST
 #define TEST(name) \
