@@ -74,7 +74,7 @@ struct TestNumericUtility
         char* str = NULL;
         if (max_chars > 0)
         {
-            TestMemoryUtility<char>::Allocate(str, max_chars + 1);
+            TestMemoryUtility<char, SizeType>::Allocate(str, max_chars + 1);
             if (str != NULL)
             {
                 sprintf(str, fmt, value);

@@ -828,7 +828,7 @@ private:
         msg.Append("time ");
         if (m_timed_function_calls > 0)
         {
-            diff_time /= m_timed_function_calls;
+            diff_time /= static_cast<size_t>(m_timed_function_calls);
             privateAppendTime(msg, diff_time, false);
         }
         else

@@ -109,7 +109,7 @@ public:
 
     TestTime& operator /=(size_t div_by) throw()
     {
-        m_nanoseconds /= div_by;
+        m_nanoseconds /= static_cast<ocl_uint64>(div_by);
         return *this;
     }
 

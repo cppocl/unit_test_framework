@@ -44,7 +44,7 @@ struct TestMemoryUtility
     {
         GetCounter().Inc();
         SizeType const alloc_size_in_bytes = elements * sizeof(Type);
-        Type* ptr = static_cast<Type*>(::malloc(alloc_size_in_bytes));
+        Type* ptr = static_cast<Type*>(::malloc(static_cast<size_t>(alloc_size_in_bytes)));
         return ptr;
     }
 

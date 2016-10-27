@@ -221,7 +221,7 @@ public:
         if ((count > 0) && remove)
         {
             size_type chars_remaining = m_length - sub_str.m_length - start;
-            ::memmove(m_string + start, m_string + start + count, chars_remaining);
+            ::memmove(m_string + start, m_string + start + count, static_cast<size_t>(chars_remaining));
             *(m_string + start + chars_remaining) = '\0';
             m_length -= count;
             if (m_length == 0)
@@ -389,7 +389,7 @@ public:
                     char* start = str;
                     for (char* str_end = str + count; str < str_end; ++str)
                         *str = ch;
-                    ::memcpy(str, value, value_len);
+                    ::memcpy(str, value, static_cast<size_t>(value_len));
                     *(str + value_len) = '\0';
                     Append(start, count + value_len);
                     TestStringUtility::FastFree(start);

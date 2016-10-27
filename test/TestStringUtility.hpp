@@ -202,8 +202,8 @@ struct TestStringUtility
 #pragma warning(push)
 #pragma warning(disable : 4996)
 #endif
-        return static_cast<CharType*>(::memcpy(dest, src,
-                                      (UnsafeLength(src) + 1) * sizeof(CharType)));
+        size_t copy_size = static_cast<size_t>((UnsafeLength(src) + 1) * sizeof(CharType));
+        return static_cast<CharType*>(::memcpy(dest, src, copy_size));
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
@@ -252,7 +252,7 @@ struct TestStringUtility
     template<typename CharType>
     static void Allocate(CharType*& dest, size_type dest_len)
     {
-        dest = TestMemoryUtility<CharType>::Allocate(dest_len + 1);
+        dest = TestMemoryUtility<CharType, size_type>::Allocate(dest_len + 1);
     }
 
     template<typename CharType>
@@ -275,7 +275,7 @@ struct TestStringUtility
     {
         if ((src != NULL) && (src_len > 0))
         {
-            dest = TestMemoryUtility<CharType>::UnsafeAllocateCopy(src, src_len + 1);
+            dest = TestMemoryUtility<CharType, size_type>::UnsafeAllocateCopy(src, src_len + 1);
             if (dest != NULL)
             {
                 dest_len = src_len;
@@ -314,7 +314,7 @@ struct TestStringUtility
                                    CharType const* src,
                                    size_type src_len)
     {
-        dest = TestMemoryUtility<CharType>::UnsafeAllocateCopy(src, src_len + 1);
+        dest = TestMemoryUtility<CharType, size_type>::UnsafeAllocateCopy(src, src_len + 1);
         dest_len = (dest != NULL) ? src_len : static_cast<size_type>(0);
     }
 
@@ -351,7 +351,7 @@ struct TestStringUtility
                 }
                 else
                 {
-                    ::memcpy(dest, src, dest_len + 1);
+                    ::memcpy(dest, src, static_cast<size_t>(dest_len + 1));
                     dest_len = len;
                 }
             }
@@ -387,14 +387,14 @@ struct TestStringUtility
             if (new_dest != NULL)
             {
                 if ((str1 != NULL) && (str1_len > static_cast<size_type>(0)))
-                    ::memcpy(new_dest, str1, str1_len);
+                    ::memcpy(new_dest, str1, static_cast<size_t>(str1_len));
                 else
                 {
                     new_len -= str1_len;
                     str1_len = static_cast<size_type>(0);
                 }
                 if ((str2 != NULL) && (str2_len > static_cast<size_type>(0)))
-                    ::memcpy(new_dest + str1_len, str2, str2_len);
+                    ::memcpy(new_dest + str1_len, str2, static_cast<size_t>(str2_len));
                 else
                     new_len -= str2_len;
                 SetNullChar(*(new_dest + new_len));
