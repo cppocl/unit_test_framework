@@ -161,7 +161,7 @@ public:
 
     void SetArgs(TestString const& args)
     {
-        if (args == "NA")
+        if (args != "NA")
             m_args = args;
         else
             m_args.Clear();
