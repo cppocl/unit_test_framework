@@ -41,16 +41,19 @@ TEST_MEMBER_FUNCTION(MyString, SetSize, size_t)
 #define TEST_SETUP_TEARDOWN(Type, is_setup, class_name) \
     class TestSetupTeardownFunctor_##Type##_##class_name : public ocl::TestSetupTeardownFunctor \
     { \
+        private: \
+            TestSetupTeardownFunctor_##Type##_##class_name(TestSetupTeardownFunctor_##Type##_##class_name const&) : \
+            TestSetupTeardownFunctor_##Type##_##class_name& operator=(TestSetupTeardownFunctor_##Type##_##class_name const&) : \
         public: \
-        TestSetupTeardownFunctor_##Type##_##class_name(char const* name = #class_name) : \
-            ocl::TestSetupTeardownFunctor(name, is_setup) \
-        { \
-            if (IsSetup()) \
-                ocl::TestClass::SetSetup(*this); \
-            else \
-                ocl::TestClass::SetTeardown(*this); \
-        } \
-        void Execute(); \
+            TestSetupTeardownFunctor_##Type##_##class_name(char const* name = #class_name) : \
+                ocl::TestSetupTeardownFunctor(name, is_setup) \
+            { \
+                if (IsSetup()) \
+                    ocl::TestClass::SetSetup(*this); \
+                else \
+                    ocl::TestClass::SetTeardown(*this); \
+            } \
+            void Execute(); \
     } TestSetupTeardownFunctor_##Type##_##class_name##_instance; \
     void TestSetupTeardownFunctor_##Type##_##class_name::Execute()
 
@@ -62,7 +65,11 @@ TEST_MEMBER_FUNCTION(MyString, SetSize, size_t)
 #define TEST(name) \
 class TestGeneral_##name : public ocl::TestClass \
 { \
-public:TestGeneral_##name(); \
+private: \
+    TestGeneral_##name(TestGeneral_##name const&); \
+    TestGeneral_##name& operator=(TestGeneral_##name const&); \
+public: \
+    TestGeneral_##name(); \
 } g_TestGeneral_##name; \
 TestGeneral_##name::TestGeneral_##name() \
     : ocl::TestClass(#name, "", "")
@@ -74,7 +81,11 @@ TestGeneral_##name::TestGeneral_##name() \
 #define TEST_FUNCTION(function_name, args) \
 class Test_##function_name##_##args : public ocl::TestClass \
 { \
-public:Test_##function_name##_##args(); \
+private: \
+    Test_##function_name##_##args(Test_##function_name##_##args const&); \
+    Test_##function_name##_##args& operator=(Test_##function_name##_##args const&); \
+public: \
+    Test_##function_name##_##args(); \
 } g_Test_##function_name##_##args; \
 Test_##function_name##_##args::Test_##function_name##_##args() \
     : ocl::TestClass("", #function_name, #args)
@@ -86,7 +97,11 @@ Test_##function_name##_##args::Test_##function_name##_##args() \
 #define TEST_FUNCTION_TIME(function_name, args, secs, millisecs) \
 class TimedTest_##function_name##_##args : public ocl::TestClass \
 { \
-public:TimedTest_##function_name##_##args(); \
+private: \
+    TimedTest_##function_name##_##args(TimedTest_##function_name##_##args const&); \
+    TimedTest_##function_name##_##args& operator=(TimedTest_##function_name##_##args const&); \
+public: \
+    TimedTest_##function_name##_##args(); \
 } g_TimedTest_##function_name##_##args; \
 TimedTest_##function_name##_##args::TimedTest_##function_name##_##args() \
     : ocl::TestClass("", #function_name, #args, false, true, secs, millisecs * ocl::TestTime::MICROSECONDS_PER_SECOND)
@@ -98,7 +113,11 @@ TimedTest_##function_name##_##args::TimedTest_##function_name##_##args() \
 #define TEST_MEMBER_FUNCTION(class_name, function_name, args) \
 class Test_##class_name##_##function_name##_##args : public ocl::TestClass \
 { \
-public:Test_##class_name##_##function_name##_##args(); \
+private: \
+    Test_##class_name##_##function_name##_##args(Test_##class_name##_##function_name##_##args const&); \
+    Test_##class_name##_##function_name##_##args& operator=(Test_##class_name##_##function_name##_##args const&); \
+public: \
+    Test_##class_name##_##function_name##_##args(); \
 } g_Test_##class_name##_##function_name##_##args; \
 Test_##class_name##_##function_name##_##args::Test_##class_name##_##function_name##_##args() \
     : ocl::TestClass(#class_name, #function_name, #args)
@@ -110,7 +129,11 @@ Test_##class_name##_##function_name##_##args::Test_##class_name##_##function_nam
 #define TEST_MEMBER_FUNCTION_TIME(class_name, function_name, args, secs, millisecs) \
 class TimedTest_##class_name##_##function_name##_##args : public ocl::TestClass \
 { \
-public:TimedTest_##class_name##_##function_name##_##args(); \
+private: \
+    TimedTest_##class_name##_##function_name##_##args(TimedTest_##class_name##_##function_name##_##args const&); \
+    TimedTest_##class_name##_##function_name##_##args& operator=(TimedTest_##class_name##_##function_name##_##args const&); \
+public: \
+    TimedTest_##class_name##_##function_name##_##args(); \
 } g_TimedTest_##class_name##_##function_name##_##args; \
 TimedTest_##class_name##_##function_name##_##args::TimedTest_##class_name##_##function_name##_##args() \
     : ocl::TestClass(#class_name, #function_name, #args, false, true, secs, millisecs * ocl::TestTime::MICROSECONDS_PER_SECOND)
@@ -122,7 +145,11 @@ TimedTest_##class_name##_##function_name##_##args::TimedTest_##class_name##_##fu
 #define TEST_CONST_MEMBER_FUNCTION(class_name, function_name, args) \
 class Test_##class_name##_##function_name##_##args##_const : public ocl::TestClass \
 { \
-public:Test_##class_name##_##function_name##_##args##_const(); \
+private: \
+    Test_##class_name##_##function_name##_##args##_const(Test_##class_name##_##function_name##_##args##_const const&); \
+    Test_##class_name##_##function_name##_##args##_const& operator=(Test_##class_name##_##function_name##_##args##_const const&); \
+public: \
+    Test_##class_name##_##function_name##_##args##_const(); \
 } g_Test_##class_name##_##function_name##_##args##_const; \
 Test_##class_name##_##function_name##_##args##_const::Test_##class_name##_##function_name##_##args##_const() \
     : ocl::TestClass(#class_name, #function_name, #args, true)
@@ -134,7 +161,11 @@ Test_##class_name##_##function_name##_##args##_const::Test_##class_name##_##func
 #define TEST_CONST_MEMBER_FUNCTION_TIME(class_name, function_name, args, secs, millisecs) \
 class TimedTest_##class_name##_##function_name##_##args##_const : public ocl::TestClass \
 { \
-public:TimedTest_##class_name##_##function_name##_##args##_const(); \
+private: \
+    TimedTest_##class_name##_##function_name##_##args##_const(TimedTest_##class_name##_##function_name##_##args##_const const&); \
+    TimedTest_##class_name##_##function_name##_##args##_const& operator=(TimedTest_##class_name##_##function_name##_##args##_const const&); \
+public: \
+    TimedTest_##class_name##_##function_name##_##args##_const(); \
 } g_TimedTest_##class_name##_##function_name##_##args##_const; \
 TimedTest_##class_name##_##function_name##_##args##_const::TimedTest_##class_name##_##function_name##_##args##_const() \
     : ocl::TestClass(#class_name, #function_name, #args, true, true, secs, millisecs * ocl::TestTime::MICROSECONDS_PER_SECOND)
@@ -241,87 +272,87 @@ TEST_OVERRIDE_LOG(MyFunctor, new MyFunctor());
  */
 
 #ifndef CHECK_TRUE
-#define CHECK_TRUE(expression) CheckTrue(#expression, __FILE__, __LINE__, (expression))
+#define CHECK_TRUE(expression) CheckTrue(#expression, __FILE__, (ocl::ocl_size_type)__LINE__, (expression))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_FALSE
-#define CHECK_FALSE(expression) CheckFalse(#expression, __FILE__, __LINE__, (expression))
+#define CHECK_FALSE(expression) CheckFalse(#expression, __FILE__, (ocl::ocl_size_type)__LINE__, (expression))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_EQUAL
-#define CHECK_EQUAL(value1, value2) CheckEqual(#value1 "==" #value2, __FILE__, __LINE__, (value1), (value2))
+#define CHECK_EQUAL(value1, value2) CheckEqual(#value1 "==" #value2, __FILE__, (ocl::ocl_size_type)__LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_NOT_EQUAL
-#define CHECK_NOT_EQUAL(value1, value2) CheckNotEqual(#value1 "!=" #value2, __FILE__, __LINE__, (value1), (value2))
+#define CHECK_NOT_EQUAL(value1, value2) CheckNotEqual(#value1 "!=" #value2, __FILE__, (ocl::ocl_size_type)__LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_GREATER
-#define CHECK_GREATER(value1, value2) CheckGreater(#value1 ">=" #value2, __FILE__, __LINE__, (value1), (value2))
+#define CHECK_GREATER(value1, value2) CheckGreater(#value1 ">=" #value2, __FILE__, (ocl::ocl_size_type)__LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_GREATER_EQUAL
-#define CHECK_GREATER_EQUAL(value1, value2) CheckGreaterEqual(#value1 ">" #value2, __FILE__, __LINE__, (value1), (value2))
+#define CHECK_GREATER_EQUAL(value1, value2) CheckGreaterEqual(#value1 ">" #value2, __FILE__, (ocl::ocl_size_type)__LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_LESS
-#define CHECK_LESS(value1, value2) CheckLess(#value1 "<" #value2, __FILE__, __LINE__, (value1), (value2))
+#define CHECK_LESS(value1, value2) CheckLess(#value1 "<" #value2, __FILE__, (ocl::ocl_size_type)__LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_LESS_EQUAL
-#define CHECK_LESS_EQUAL(value1, value2) CheckLessEqual(#value1 "<=" #value2, __FILE__, __LINE__, (value1), (value2))
+#define CHECK_LESS_EQUAL(value1, value2) CheckLessEqual(#value1 "<=" #value2, __FILE__, (ocl::ocl_size_type)__LINE__, (value1), (value2))
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_NULL
-#define CHECK_NULL(value) CheckNull(#value "== NULL", __FILE__, __LINE__, value)
+#define CHECK_NULL(value) CheckNull(#value "== NULL", __FILE__, (ocl::ocl_size_type)__LINE__, value)
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_NOT_NULL
-#define CHECK_NOT_NULL(value) CheckNotNull(#value "!= NULL", __FILE__, __LINE__, value)
+#define CHECK_NOT_NULL(value) CheckNotNull(#value "!= NULL", __FILE__, (ocl::ocl_size_type)__LINE__, value)
 #else
 #error Unit test conflict with other macro!
 #endif
 
 #ifndef CHECK_ZERO
-#define CHECK_ZERO(value) CheckZero(#value "== 0", __FILE__, __LINE__, (value))
+#define CHECK_ZERO(value) CheckZero(#value "== 0", __FILE__, (ocl::ocl_size_type)__LINE__, (value))
 #endif
 
 #ifndef CHECK_NOT_ZERO
-#define CHECK_NOT_ZERO(value) CheckNotZero(#value "!= 0", __FILE__, __LINE__, (value))
+#define CHECK_NOT_ZERO(value) CheckNotZero(#value "!= 0", __FILE__, (ocl::ocl_size_type)__LINE__, (value))
 #endif
 
 #ifndef CHECK_STRCMP
-#define CHECK_STRCMP(str1, str2) CheckStrCmp("StrCmp(" #str1 "," #str2 ") == 0", __FILE__, __LINE__, str1, str2)
+#define CHECK_STRCMP(str1, str2) CheckStrCmp("StrCmp(" #str1 "," #str2 ") == 0", __FILE__, (ocl::ocl_size_type)__LINE__, str1, str2)
 #endif
 
 #ifndef CHECK_NOT_STRCMP
-#define CHECK_NOT_STRCMP(str1, str2) CheckNotStrCmp("StrCmp(" #str1 "," #str2 ") != 0", __FILE__, __LINE__, str1, str2)
+#define CHECK_NOT_STRCMP(str1, str2) CheckNotStrCmp("StrCmp(" #str1 "," #str2 ") != 0", __FILE__, (ocl::ocl_size_type)__LINE__, str1, str2)
 #endif
 
 #ifndef CHECK_COMPARE
-#define CHECK_COMPARE(value1, value2) CheckCompare("compare " #value1 " = " #value2, __FILE__, __LINE__, value1, value2)
+#define CHECK_COMPARE(value1, value2) CheckCompare("compare " #value1 " = " #value2, __FILE__, (ocl::ocl_size_type)__LINE__, value1, value2)
 #endif
 
 #ifndef CHECK_NOT_COMPARE
-#define CHECK_NOT_COMPARE(value1, value2) CheckNotCompare("compare " #value1 " != " #value2, __FILE__, __LINE__, (value1), (value2))
+#define CHECK_NOT_COMPARE(value1, value2) CheckNotCompare("compare " #value1 " != " #value2, __FILE__, (ocl::ocl_size_type)__LINE__, (value1), (value2))
 #endif
 
 #define CHECK_EXCEPTION(expression, exception_type, expect_exception) \
@@ -335,7 +366,7 @@ TEST_OVERRIDE_LOG(MyFunctor, new MyFunctor());
     { \
         found_exception = true; \
     } \
-    CheckException(#expression, __FILE__, __LINE__, found_exception, expect_exception); \
+    CheckException(#expression, __FILE__, (ocl::ocl_size_type)__LINE__, found_exception, expect_exception); \
 }
 
 #define CHECK_ALL_EXCEPTIONS(expression, expect_exception) \
@@ -349,7 +380,7 @@ TEST_OVERRIDE_LOG(MyFunctor, new MyFunctor());
     { \
         found_exception = true; \
     } \
-    CheckException(#expression, __FILE__, __LINE__, found_exception, expect_exception); \
+    CheckException(#expression, __FILE__, (ocl::ocl_size_type)__LINE__, found_exception, expect_exception); \
 }
 
 #ifndef CHECK_TIME
@@ -357,7 +388,7 @@ TEST_OVERRIDE_LOG(MyFunctor, new MyFunctor());
 #endif
 
 #ifndef CHECK_PERFORMANCE
-#define CHECK_PERFORMANCE(func, min_iterations) for (ocl::TestString filename(__FILE__); !CheckTime(min_iterations, filename, __LINE__); ) func
+#define CHECK_PERFORMANCE(func, min_iterations) for (ocl::TestString filename(__FILE__); !CheckTime((ocl::ocl_size_type)min_iterations, filename, (ocl::ocl_size_type)__LINE__); ) func
 #endif
 
 #endif // OCL_GUARD_TEST_TESTMACROS_HPP

@@ -41,6 +41,10 @@ struct TestFileFunctor
     }
 
 private:
+    TestFileFunctor(TestFileFunctor const&);
+    TestFileFunctor& operator=(TestFileFunctor const&);
+
+private:
     std::ofstream m_ostream;
 };
 
