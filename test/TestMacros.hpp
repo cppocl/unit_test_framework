@@ -42,8 +42,8 @@ TEST_MEMBER_FUNCTION(MyString, SetSize, size_t)
     class TestSetupTeardownFunctor_##Type##_##class_name : public ocl::TestSetupTeardownFunctor \
     { \
         private: \
-            TestSetupTeardownFunctor_##Type##_##class_name(TestSetupTeardownFunctor_##Type##_##class_name const&) : \
-            TestSetupTeardownFunctor_##Type##_##class_name& operator=(TestSetupTeardownFunctor_##Type##_##class_name const&) : \
+            TestSetupTeardownFunctor_##Type##_##class_name(TestSetupTeardownFunctor_##Type##_##class_name const&); \
+            TestSetupTeardownFunctor_##Type##_##class_name& operator=(TestSetupTeardownFunctor_##Type##_##class_name const&); \
         public: \
             TestSetupTeardownFunctor_##Type##_##class_name(char const* name = #class_name) : \
                 ocl::TestSetupTeardownFunctor(name, is_setup) \
