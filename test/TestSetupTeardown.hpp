@@ -69,7 +69,7 @@ public:
     }
 
     template<bool const is_setup>
-    char const* GetClassName() const throw()
+    TestString GetClassName() const throw()
     {
         return is_setup ? GetSetupClassName() : GetTeardownClassName();
     }

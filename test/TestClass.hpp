@@ -196,14 +196,20 @@ public:
     void Setup()
     {
         TestSetupTeardown& setup_teardown = privateSetupTeardown();
-        if (setup_teardown.IsSetupSet())
+        TestString const& this_class_name = GetClassName();
+        TestString class_name = setup_teardown.GetClassName<true>();
+        if (setup_teardown.IsSetupSet() && this_class_name == class_name)
             setup_teardown.Execute<true>();
     }
 
     void Teardown()
     {
         TestSetupTeardown& setup_teardown = privateSetupTeardown();
-        if (setup_teardown.IsTeardownSet() && setup_teardown.IsSetupRun())
+        TestString const& this_class_name = GetClassName();
+        TestString class_name = setup_teardown.GetClassName<false>();
+        if (setup_teardown.IsTeardownSet() &&
+            setup_teardown.IsSetupRun() &&
+            this_class_name == class_name)
             setup_teardown.Execute<false>();
     }
 
@@ -1008,7 +1014,7 @@ private:
         static TestSetupTeardown setup_teardown;
         return setup_teardown;
     }
-    
+
 // Data for this test.
 private:
     TestMemoryLeakCheck m_leak_check;

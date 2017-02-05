@@ -143,6 +143,7 @@
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -153,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\TestClass.tests.cpp" />
+    <ClCompile Include="..\..\..\TestMacros.tests.cpp" />
     <ClCompile Include="..\..\..\TestCompare.tests.cpp" />
     <ClCompile Include="..\..\..\TestConverterUtility.tests.cpp" />
     <ClCompile Include="..\..\..\TestIntegerUtility.tests.cpp" />
