@@ -18,10 +18,10 @@ limitations under the License.
 
 namespace
 {
-    class LocalTestClass
+    class LocalFixtureTestClass
     {
     public:
-        LocalTestClass() : m_value(0)
+        LocalFixtureTestClass() : m_value(0)
         {
         }
 
@@ -39,33 +39,35 @@ namespace
         int m_value;
     };
 
-    LocalTestClass g_local_test_class;
+    LocalFixtureTestClass g_local_test_class;
 }
 
-TEST_SETUP(LocalTestClass)
+// Extra setup and teardown for verifying that multiple fixtures
+// access the correct classes.
+TEST_SETUP(LocalFixtureTestClass)
 {
-    g_local_test_class.SetValue(1);
+    g_local_test_class.SetValue(2);
 }
 
-TEST_TEARDOWN(LocalTestClass)
+TEST_TEARDOWN(LocalFixtureTestClass)
 {
-    g_local_test_class.SetValue(-1);
+    g_local_test_class.SetValue(-2);
 }
 
-TEST_MEMBER_FUNCTION(LocalTestClass, GetValue, NA)
+TEST_MEMBER_FUNCTION(LocalFixtureTestClass, GetValue, NA)
 {
-    LocalTestClass local_test_class;
-    CHECK_EQUAL(g_local_test_class.GetValue(), 1);
+    LocalFixtureTestClass local_test_class;
+    CHECK_EQUAL(g_local_test_class.GetValue(), 2);
     CHECK_EQUAL(local_test_class.GetValue(), 0);
     local_test_class = g_local_test_class;
-    CHECK_EQUAL(local_test_class.GetValue(), 1);
+    CHECK_EQUAL(local_test_class.GetValue(), 2);
 }
 
-TEST_MEMBER_FUNCTION(LocalTestClass, SetValue, int)
+TEST_MEMBER_FUNCTION(LocalFixtureTestClass, SetValue, int)
 {
-    LocalTestClass local_test_class;
-    CHECK_EQUAL(g_local_test_class.GetValue(), 1);
+    LocalFixtureTestClass local_test_class;
+    CHECK_EQUAL(g_local_test_class.GetValue(), 2);
     CHECK_EQUAL(local_test_class.GetValue(), 0);
-    local_test_class.SetValue(3);
-    CHECK_EQUAL(local_test_class.GetValue(), 3);
+    local_test_class.SetValue(4);
+    CHECK_EQUAL(local_test_class.GetValue(), 4);
 }

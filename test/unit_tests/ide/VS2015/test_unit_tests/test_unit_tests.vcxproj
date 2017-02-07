@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\TestClass.tests.cpp" />
+    <ClCompile Include="..\..\..\TestFixtures.tests.cpp" />
     <ClCompile Include="..\..\..\TestMacros.tests.cpp" />
     <ClCompile Include="..\..\..\TestCompare.tests.cpp" />
     <ClCompile Include="..\..\..\TestConverterUtility.tests.cpp" />
