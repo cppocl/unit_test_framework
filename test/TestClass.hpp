@@ -836,6 +836,7 @@ private:
         {
             diff_time /= static_cast<size_t>(m_timed_function_calls);
             privateAppendTime(msg, diff_time, false);
+            msg.Append(" ");
         }
         else
             msg.Append("?"); // Too fast too get accurate timing.
@@ -846,14 +847,14 @@ private:
     // Log the part that follows the function name.
     void privateLogNumberOfRunTests()
     {
-        char const* str_test     = "TEST  ";
-        char const* str_tests    = "TESTS ";
-        char const* str_failed   = "FAILED";
+        char const* str_test     = "    TEST  ";
+        char const* str_tests    = "    TESTS ";
+        char const* str_failed   = "    FAILED";
         char const* str_no_tests = "* NO TESTS *";
 
         TestString::size_type const max_chars = 
             Max(max_digits + TestStringUtility::UnsafeLength(str_test) + 1,
-                TestStringUtility::UnsafeLength(str_test)) + 1;
+                TestStringUtility::UnsafeLength(str_test));
 
         // Build up the string with number of tests or failed tests, then appended message.
         TestString whole_str;
