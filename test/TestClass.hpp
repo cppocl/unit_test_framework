@@ -533,7 +533,14 @@ public:
 
         ++m_timed_function_calls;
 
-        return m_current_time > stop_time;
+        bool complete = m_current_time > stop_time;
+        if (complete)
+        {
+            unsigned long call_time = TestTime::GetCallTimeInNanoseconds();
+            m_current_time -= TestTime(call_time * static_cast<unsigned long>(m_timed_function_calls));
+        }
+
+        return complete;
     }
 
     /// While the current time has not reached the start time + sample time,

@@ -66,6 +66,11 @@ public:
         SetTime(seconds, nanoseconds);
     }
 
+    TestTime(unsigned long nanoseconds)
+        : m_nanoseconds(nanoseconds)
+    {
+    }
+
     TestTime(TestTime const& other_time) throw()
         : m_nanoseconds(other_time.m_nanoseconds)
     {
@@ -99,6 +104,12 @@ public:
     bool operator >=(TestTime const& other_time) const throw()
     {
         return m_nanoseconds >= other_time.m_nanoseconds;
+    }
+
+    TestTime& operator -= (TestTime const& time_to_subtract) throw()
+    {
+        m_nanoseconds -= time_to_subtract.m_nanoseconds;
+        return *this;
     }
 
     TestTime& operator +=(TestTime const& time_to_add) throw()
@@ -138,7 +149,7 @@ public:
     /// Update with the current system time.
     void Refresh()
     {
-        clock_t ticks = clock();
+        clock_t ticks = ::clock();
         privateFromClock(ticks, CLOCKS_PER_SEC, m_nanoseconds);
     }
 
@@ -222,18 +233,37 @@ public:
         m_nanoseconds = nanoseconds;
     }
 
-    void GetDiffTime(TestTime const& other_time,
+    void GetDiffTime(TestTime const& start_time,
                      TestTime& diff_time) const throw()
     {
-        if (m_nanoseconds > other_time.m_nanoseconds)
-            diff_time.m_nanoseconds = m_nanoseconds - other_time.m_nanoseconds;
+        if (m_nanoseconds > start_time.m_nanoseconds)
+            diff_time.m_nanoseconds = m_nanoseconds - start_time.m_nanoseconds;
         else
-            diff_time.m_nanoseconds = other_time.m_nanoseconds - m_nanoseconds;
+            diff_time.m_nanoseconds = 0;
     }
 
 // Static helper member functions,
 // with conversion functions added to aid readability of code.
 public:
+    static unsigned long GetCallTimeInNanoseconds(unsigned long sample_in_milliseconds = 10UL)
+    {
+        static unsigned long call_time_in_nanoseconds = 0UL;
+        if (call_time_in_nanoseconds == 0UL)
+        {
+            clock_t start = ::clock();
+            clock_t elapsed_milliseconds = 0;
+            clock_t count = 1; // start with at least the one call for initial clock.
+            while (static_cast<unsigned long>(elapsed_milliseconds) < sample_in_milliseconds)
+            {
+                clock_t elapsed = ::clock() - start;
+                elapsed_milliseconds = (elapsed * CLOCKS_PER_SEC) / 1000;
+                ++count;
+            }
+            call_time_in_nanoseconds = static_cast<unsigned long>((elapsed_milliseconds * 1000000) / sample_in_milliseconds / count);
+        }
+        return call_time_in_nanoseconds;
+    }
+
     static void Sleep(unsigned long milliseconds)
     {
         unsigned long expected_seconds = milliseconds / MILLISECONDS_PER_SECOND;
