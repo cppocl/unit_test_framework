@@ -384,7 +384,7 @@ TEST_OVERRIDE_LOG(MyFunctor, new MyFunctor());
 }
 
 #ifndef CHECK_TIME
-#define CHECK_TIME(func) for (; !CheckTime(); ) func
+#define CHECK_TIME(func) while (true) { func; if (CheckTime()) break; }
 #endif
 
 #ifndef CHECK_PERFORMANCE
