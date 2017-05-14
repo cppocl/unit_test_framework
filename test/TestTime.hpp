@@ -124,6 +124,20 @@ public:
         return *this;
     }
 
+    TestTime operator -(TestTime const& time_to_add) throw()
+    {
+        TestTime tm(*this);
+        tm -= time_to_add;
+        return tm;
+    }
+
+    TestTime operator +(TestTime const& time_to_add) throw()
+    {
+        TestTime tm(*this);
+        tm += time_to_add;
+        return tm;
+    }
+
 public:
     bool IsSet() const throw()
     {

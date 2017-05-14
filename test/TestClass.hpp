@@ -68,6 +68,7 @@ public:
         , m_current_time(m_start_time)
         , m_timed_function_calls(0)
         , m_sample_time(secs, nanosecs)
+        , m_stop_time(m_start_time + m_sample_time)
         , m_check_count(0)
         , m_failure_check_count(0)
         , m_test_number(0)
@@ -526,21 +527,18 @@ public:
     /// @note This function also refreshes the current time.
     bool CheckTime()
     {
-        TestTime stop_time(m_start_time);
-        stop_time += m_sample_time;
-
         m_current_time.Refresh();
 
         ++m_timed_function_calls;
 
-        bool complete = m_current_time > stop_time;
-        if (complete)
+        bool time_complete = m_current_time > m_stop_time;
+        if (time_complete)
         {
             unsigned long call_time = TestTime::GetCallTimeInNanoseconds();
             m_current_time -= TestTime(call_time * static_cast<unsigned long>(m_timed_function_calls));
         }
 
-        return complete;
+        return time_complete;
     }
 
     /// While the current time has not reached the start time + sample time,
@@ -549,14 +547,11 @@ public:
     /// @note This function also refreshes the current time.
     bool CheckTime(ocl_size_type min_iterations, TestString const& filename, ocl_size_type line_number)
     {
-        TestTime stop_time(m_start_time);
-        stop_time += m_sample_time;
-
         m_current_time.Refresh();
 
         ++m_timed_function_calls;
 
-        bool time_complete = m_current_time > stop_time;
+        bool time_complete = m_current_time > m_stop_time;
 
         if (time_complete && (m_timed_function_calls < min_iterations))
         {
@@ -1043,6 +1038,10 @@ private:
 
     // The amount of time to run the performance test.
     TestTime m_sample_time;
+
+    // When this test is timed, record the end time.
+    // NOTE: This must be defined after m_start_time and m_sample_time.
+    TestTime m_stop_time;
 
     // Total checks for this function.
     ocl_size_type m_check_count;
