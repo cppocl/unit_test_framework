@@ -849,14 +849,10 @@ private:
     // Log the part that follows the function name.
     void privateLogNumberOfRunTests()
     {
-        char const* str_test     = "    TEST  ";
-        char const* str_tests    = "    TESTS ";
-        char const* str_failed   = "    FAILED";
+        char const* str_test     = " TEST   ";
+        char const* str_tests    = " TESTS  ";
+        char const* str_failed   = " FAILED ";
         char const* str_no_tests = "* NO TESTS *";
-
-        TestString::size_type const max_chars = 
-            Max(max_digits + TestStringUtility::UnsafeLength(str_tests) + 1,
-                TestStringUtility::UnsafeLength(str_test));
 
         // Build up the string with number of tests or failed tests, then appended message.
         TestString whole_str;
@@ -881,7 +877,14 @@ private:
             msg_str.Append(str_no_tests);
 
         whole_str.Append(msg_str);
-        whole_str.PadRight(' ', max_chars);
+
+        static const ocl_size_type str_no_tests_len = TestStringUtility::UnsafeLength(str_no_tests);
+        static const ocl_size_type str_failed_len   = TestStringUtility::UnsafeLength(str_failed);
+
+        // Calculate difference between no tests and number + tests to ensure the padding lines
+        // up the functions in the right column.
+        ocl_size_type padding = (max_digits + str_failed_len + 1) - str_no_tests_len;
+        whole_str.PadRight(' ', str_no_tests_len + padding);
 
         LogWrite(whole_str);
     }
