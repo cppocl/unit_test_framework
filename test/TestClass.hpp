@@ -855,7 +855,7 @@ private:
         char const* str_no_tests = "* NO TESTS *";
 
         TestString::size_type const max_chars = 
-            Max(max_digits + TestStringUtility::UnsafeLength(str_test) + 1,
+            Max(max_digits + TestStringUtility::UnsafeLength(str_tests) + 1,
                 TestStringUtility::UnsafeLength(str_test));
 
         // Build up the string with number of tests or failed tests, then appended message.

@@ -384,11 +384,11 @@ TEST_OVERRIDE_LOG(MyFunctor, new MyFunctor());
 }
 
 #ifndef CHECK_TIME
-#define CHECK_TIME(func) while (true) { func; if (CheckTime()) break; }
+#define CHECK_TIME(func) do { func; } while (!CheckTime())
 #endif
 
 #ifndef CHECK_PERFORMANCE
-#define CHECK_PERFORMANCE(func, min_iterations) for (ocl::TestString filename(__FILE__); !CheckTime((ocl::ocl_size_type)min_iterations, filename, (ocl::ocl_size_type)__LINE__); ) func
+#define CHECK_PERFORMANCE(func, min_iterations) for (ocl::TestString filename(__FILE__);;) { func; if (CheckTime((ocl::ocl_size_type)min_iterations, filename, (ocl::ocl_size_type)__LINE__)) break; }
 #endif
 
 #endif // OCL_GUARD_TEST_TESTMACROS_HPP
