@@ -17,7 +17,7 @@ This unit test framework provides a variety of features in a single library, inc
 
 ## How to use
 
-Copy the `test` folder into any location and include `Test.hpp` from the test folder
+Copy the `test` folder into any location you wish to share the unit test code from, then include `Test.hpp` from the test folder into your source file with the tests.
 
 ## Code Examples
 
