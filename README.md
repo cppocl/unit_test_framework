@@ -2,6 +2,8 @@
 
 ![](header_image.jpg)
 
+## Features
+
 This unit test framework provides a variety of features in a single library, including:
 * Testing for success with CHECK_TRUE, CHECK_EQUAL, etc.
 * Identify tests as functions, member functions and const member functions.
@@ -13,9 +15,15 @@ This unit test framework provides a variety of features in a single library, inc
 * Provide custom logging (replace stdio output).
 * Test for C++ exceptions.
 
+## How to use
+
+Copy the `test` folder into any location and include `Test.hpp` from the test folder
+
 ## Code Examples
 
 ```cpp
+#include "test/Test.hpp"
+
 TEST(MyTest)
 {
     int a = 1;
