@@ -12,3 +12,43 @@ This unit test framework provides a variety of features in a single library, inc
 * Override test output for function names and arguments.
 * Provide custom logging (replace stdio output).
 * Test for C++ exceptions.
+
+## Code Examples
+
+```cpp
+TEST(MyTest)
+{
+    int a = 1;
+    CHECK_TRUE(a == 1);
+
+    CHECK_EQUAL(a, 1);
+}
+
+class MyClass
+{
+public:
+    int MultiplyBy2(int i)
+    {
+        return i * 2;
+    }
+
+    int Multiply(int i1, int i2)
+    {
+        return i1 * i2;
+    }
+};
+
+TEST_MEMBER_FUNCTION(MyClass, MultiplyBy2, int)
+{
+    MyClass a;
+    CHECK_EQUAL(a.MultiplyBy2(2), 4);
+}
+
+TEST_MEMBER_FUNCTION(MyClass, Multiply, int_int)
+{
+    TEST_OVERRIDE_ARGS("int, int");
+
+    MyClass a;
+    CHECK_EQUAL(a.Multiply(2, 3), 6);
+}
+```
