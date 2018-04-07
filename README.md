@@ -60,3 +60,15 @@ TEST_MEMBER_FUNCTION(MyClass, Multiply, int_int)
     CHECK_EQUAL(a.Multiply(2, 3), 6);
 }
 ```
+
+## Output Example
+
+```
+     (1) SUCCESS -      2  TESTS  MyTest
+     (2) SUCCESS -      1  TEST   MyClass::MultiplyBy2(int)
+     (3) SUCCESS -      1  TEST   MyClass::Multiply(int, int)
+
+Total checks = 4
+Total functions tested = 2
+Total tests = 3
+```
