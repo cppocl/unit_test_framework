@@ -38,7 +38,7 @@ public:
         , m_logged_line(0)
         , m_total_checks(0)
         , m_total_not_tested(0)
-        , m_total_failed_tests(0)
+        , m_total_failed_checks(0)
         , m_total_leaked_tests(0)
         , m_total_functions_tested(0)
         , m_total_timed_functions(0)
@@ -155,19 +155,19 @@ public:
         ++m_total_not_tested;
     }
 
-    SizeType GetTotalFailedTests() const throw()
+    SizeType GetTotalFailedChecks() const throw()
     {
-        return m_total_failed_tests;
+        return m_total_failed_checks;
     }
 
-    void SetTotalFailedTests(SizeType total_failed_tests) throw()
+    void SetTotalFailedTests(SizeType total_failed_checks) throw()
     {
-        m_total_failed_tests = total_failed_tests;
+        m_total_failed_checks = total_failed_checks;
     }
 
-    void IncTotalFailedTests()
+    void IncTotalFailedChecks()
     {
-        ++m_total_failed_tests;
+        ++m_total_failed_checks;
     }
 
     SizeType GetTotalLeakedTests() const throw()
@@ -286,7 +286,7 @@ private:
     // Counts for all tests.
     SizeType m_total_checks;
     SizeType m_total_not_tested;
-    SizeType m_total_failed_tests;
+    SizeType m_total_failed_checks;
     SizeType m_total_leaked_tests;
     SizeType m_total_functions_tested;
     SizeType m_total_timed_functions;

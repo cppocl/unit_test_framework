@@ -572,7 +572,7 @@ public:
 // Shared data helper functions
     static bool HasSharedFailure() throw()
     {
-        return (GetSharedData().GetTotalFailedTests() > 0) ||
+        return (GetSharedData().GetTotalFailedChecks() > 0) ||
                (GetSharedData().GetTotalLeakedTests() > 0);
     }
 
@@ -944,7 +944,7 @@ private:
             if (GetSharedData().GetTotalNotTested() > 0)
                 privateLogCount("Total not tested", GetSharedData().GetTotalNotTested());
             if (HasSharedFailure())
-                privateLogCount("Total failed tests", GetSharedData().GetTotalFailedTests());
+                privateLogCount("Total failed checks", GetSharedData().GetTotalFailedChecks());
             privateLogCount("Total functions tested", GetSharedData().GetTotalFunctionsTested());
             if (GetSharedData().GetTotalTimedFunctions() > 0)
                 privateLogCount("Total functions timed", GetSharedData().GetTotalTimedFunctions());
@@ -985,7 +985,7 @@ private:
     {
         if (line_number > 0)
         {
-            GetSharedData().IncTotalFailedTests();
+            GetSharedData().IncTotalFailedChecks();
             m_check_failures.Append("LINE: ");
             m_check_failures.Append(static_cast<unsigned long>(line_number));
             m_check_failures.Append("\n");
