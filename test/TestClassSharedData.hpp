@@ -17,6 +17,10 @@ limitations under the License.
 #ifndef OCL_GUARD_TEST_TESTCLASSSHAREDDATA_HPP
 #define OCL_GUARD_TEST_TESTCLASSSHAREDDATA_HPP
 
+#ifdef _MSC_VER
+#include "WinConsoleTestLog.hpp"
+#endif
+
 #include "StdioTestLog.hpp"
 #include "TestString.hpp"
 #include <cstddef>
@@ -60,7 +64,11 @@ public:
     TestLog* GetLogger()
     {
         if (m_logger == NULL)
+#ifdef _MSC_VER
+            m_logger = new WinConsoleTestLog;
+#else
             m_logger = new StdioTestLog;
+#endif
         return m_logger;
     }
 

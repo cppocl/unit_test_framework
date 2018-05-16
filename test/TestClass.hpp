@@ -73,6 +73,7 @@ public:
         , m_failure_check_count(0)
         , m_test_number(0)
         , m_logged(false)
+        , m_multi_line_errors(false)
     {
         GetSharedData().SetClassName(class_name);
 
@@ -320,6 +321,16 @@ public:
         return m_current_time;
     }
 
+    bool GetMultiLineErrors() const
+    {
+        return m_multi_line_errors;
+    }
+
+    void LogMultiLineErrors(bool multi_line_errors)
+    {
+        m_multi_line_errors = multi_line_errors;
+    }
+
     void LogTests()
     {
         if (m_logged)
@@ -556,6 +567,7 @@ public:
         if (time_complete && (m_timed_function_calls < min_iterations))
         {
             ++m_failure_check_count;
+            GetSharedData().IncTotalFailedChecks();
             TestString error;
             error.Append(m_timed_function_calls);
             error.Append(" iterations less than expected ");
@@ -697,6 +709,7 @@ protected:
         if (failed)
         {
             ++m_failure_check_count;
+            GetSharedData().IncTotalFailedChecks();
             privateCheckFailed(expression, line_number);
         }
 
@@ -890,7 +903,7 @@ private:
     }
 
     // Log the output for a failed check macro.
-    void privateLogFailures()
+    void privateLogFailuresMultiLine()
     {
         TestString const indent(' ', error_padding);
 
@@ -913,15 +926,51 @@ private:
             {
                 m_check_failures.GetSubString(msg, 0, pos + 1, true);
                 msg.Prepend(indent);
-                LogWrite(msg);
             }
             else
             {
-                m_check_failures.Prepend(indent);
-                LogWrite(m_check_failures);
+                msg.Assign(indent);
+                msg.Append(m_check_failures);
                 m_check_failures.Clear();
             }
+            LogWrite(msg);
         }
+    }
+
+    void privateLogFailuresSingleLine()
+    {
+        TestString const indent(' ', error_padding);
+
+        TestString msg;
+
+        // Extract each line from the string until there are no more failed checks.
+        while (!m_check_failures.IsEmpty())
+        {
+            ocl_size_type pos = 0;
+            msg.Append(indent);
+            msg.Append(m_filename);
+            if (m_check_failures.Find('\n', pos))
+            {
+                TestString submsg;
+                m_check_failures.GetSubString(submsg, 0, pos + 1, true);
+                msg.Append(submsg);
+            }
+            else
+            {
+                msg.Append(m_check_failures);
+                m_check_failures.Clear();
+            }
+            LogWrite(msg);
+            msg.Clear();
+        }
+    }
+
+    void privateLogFailures()
+    {
+        if (m_multi_line_errors)
+            privateLogFailuresMultiLine();
+        else
+            privateLogFailuresSingleLine();
     }
 
     // Log the number of checks for a tested function, e.g. 5 TESTS or 1 TEST.
@@ -941,14 +990,14 @@ private:
         {
             GetLogger()->WriteEOL();
             privateLogCount("Total checks", GetSharedData().GetTotalChecks());
-            if (GetSharedData().GetTotalNotTested() > 0)
-                privateLogCount("Total not tested", GetSharedData().GetTotalNotTested());
             if (HasSharedFailure())
                 privateLogCount("Total failed checks", GetSharedData().GetTotalFailedChecks());
+            if (GetSharedData().GetTotalNotTested() > 0)
+                privateLogCount("Total functions not tested", GetSharedData().GetTotalNotTested());
             privateLogCount("Total functions tested", GetSharedData().GetTotalFunctionsTested());
             if (GetSharedData().GetTotalTimedFunctions() > 0)
                 privateLogCount("Total functions timed", GetSharedData().GetTotalTimedFunctions());
-            privateLogCount("Total tests", GetSharedData().GetTotalTests());
+            privateLogCount("Total function tests", GetSharedData().GetTotalTests());
             if (GetSharedData().GetTotalLeakedTests() > 0)
                 privateLogCount("Total memory leaks", GetSharedData().GetTotalLeakedTests());
         }
@@ -983,12 +1032,22 @@ private:
     void privateCheckFailed(TestString const& expression,
                             ocl_size_type line_number)
     {
+        // If multi line, display line and expression on separate lines.
+        // For single line errors, display filename, line number in brackets, ": error: EXPRESSION: " and expression last.
         if (line_number > 0)
         {
-            GetSharedData().IncTotalFailedChecks();
-            m_check_failures.Append("LINE: ");
-            m_check_failures.Append(static_cast<unsigned long>(line_number));
-            m_check_failures.Append("\n");
+            if (m_multi_line_errors)
+            {
+                m_check_failures.Append("LINE: ");
+                m_check_failures.Append(static_cast<unsigned long>(line_number));
+                m_check_failures.Append("\n");
+            }
+            else
+            {
+                m_check_failures.Append("(");
+                m_check_failures.Append(static_cast<unsigned long>(line_number));
+                m_check_failures.Append("): error: ");
+            }
         }
         if ((expression != NULL) && (*expression != '\0'))
         {
@@ -996,6 +1055,8 @@ private:
             m_check_failures.Append(expression);
             m_check_failures.Append("\n");
         }
+        else if (!m_multi_line_errors)
+            m_check_failures.Append("\n"); // Always ensure at least one new line exists.
     }
 
 private:
@@ -1060,6 +1121,10 @@ private:
 
     // Only log test results once.
     bool m_logged;
+
+    // Log errors across multiple lines for a single file,
+    // or each error with each file on the same line.
+    bool m_multi_line_errors;
 
 private:
     TestClass(TestClass const&);
