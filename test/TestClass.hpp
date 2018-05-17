@@ -993,11 +993,11 @@ private:
             if (HasSharedFailure())
                 privateLogCount("Total failed checks", GetSharedData().GetTotalFailedChecks());
             if (GetSharedData().GetTotalNotTested() > 0)
-                privateLogCount("Total functions not tested", GetSharedData().GetTotalNotTested());
-            privateLogCount("Total functions tested", GetSharedData().GetTotalFunctionsTested());
+                privateLogCount("Total not tested", GetSharedData().GetTotalNotTested());
+            privateLogCount("Total tested", GetSharedData().GetTotalFunctionsTested());
             if (GetSharedData().GetTotalTimedFunctions() > 0)
-                privateLogCount("Total functions timed", GetSharedData().GetTotalTimedFunctions());
-            privateLogCount("Total function tests", GetSharedData().GetTotalTests());
+                privateLogCount("Total timed", GetSharedData().GetTotalTimedFunctions());
+            privateLogCount("Total tests", GetSharedData().GetTotalTests());
             if (GetSharedData().GetTotalLeakedTests() > 0)
                 privateLogCount("Total memory leaks", GetSharedData().GetTotalLeakedTests());
         }
