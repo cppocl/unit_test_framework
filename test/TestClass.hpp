@@ -136,31 +136,37 @@ public:
 
 // Functions for managing the function or member function test.
 public:
+    /// Get the class name for the test, which can also be an empty string.
     TestString const& GetClassName() const throw()
     {
         return m_class_name;
     }
 
+    /// Set the class name for the test, which can also be an empty string.
     void SetClassName(TestString const& class_name)
     {
         m_class_name = class_name;
     }
 
+    /// Get the function or member function name for the test, which can also be empty.
     TestString const& GetFunctionName() const throw()
     {
         return m_function_name;
     }
 
+    /// Set the function or member function name for the test, which can also be empty.
     void SetFunctionName(TestString const& function_name)
     {
         m_function_name = function_name;
     }
 
+    /// Get the function or member function arguments for the test, which can also be empty.
     TestString const& GetArgs() const throw()
     {
         return m_args;
     }
 
+    /// Set the function or member function arguments for the test, which can also be empty.
     void SetArgs(TestString const& args)
     {
         if (args != "NA")
