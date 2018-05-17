@@ -44,8 +44,8 @@ public:
         , m_total_not_tested(0)
         , m_total_failed_checks(0)
         , m_total_leaked_tests(0)
-        , m_total_functions_tested(0)
-        , m_total_timed_functions(0)
+        , m_total_tested(0)
+        , m_total_timed(0)
         , m_total_tests(0)
 
         // Padded to be lined up for output as columns.
@@ -193,34 +193,34 @@ public:
         ++m_total_leaked_tests;
     }
 
-    SizeType GetTotalFunctionsTested() const throw()
+    SizeType GetTotalTested() const throw()
     {
-        return m_total_functions_tested;
+        return m_total_tested;
     }
 
-    void SetTotalFunctionsTested(SizeType total_functions_tested) throw()
+    void SetTotalTested(SizeType total_tested) throw()
     {
-        m_total_functions_tested = total_functions_tested;
+        m_total_tested = total_tested;
     }
 
-    void IncTotalFunctionsTested()
+    void IncTotalTested()
     {
-        ++m_total_functions_tested;
+        ++m_total_tested;
     }
 
-    SizeType GetTotalTimedFunctions() const throw()
+    SizeType GetTotalTimed() const throw()
     {
-        return m_total_timed_functions;
+        return m_total_timed;
     }
 
-    void SetTotalTimedFunctions(SizeType total_timed_functions) throw()
+    void SetTotalTimed(SizeType total_timed) throw()
     {
-        m_total_timed_functions = total_timed_functions;
+        m_total_timed = total_timed;
     }
 
     void IncTotalTimedFunctions()
     {
-        ++m_total_timed_functions;
+        ++m_total_timed;
     }
 
     SizeType GetTotalTests() const throw()
@@ -292,12 +292,14 @@ private:
     SizeType m_logged_line;
 
     // Counts for all tests.
+    // The counts are either for a check, e.g. CHECK_TRUE, CHECK_EQUAL, etc.
+    // or a test, e.g. TEST, TEST_FUNCTION, etc.
     SizeType m_total_checks;
     SizeType m_total_not_tested;
     SizeType m_total_failed_checks;
     SizeType m_total_leaked_tests;
-    SizeType m_total_functions_tested;
-    SizeType m_total_timed_functions;
+    SizeType m_total_tested;
+    SizeType m_total_timed;
     SizeType m_total_tests;
 
     // Last class name set for TestClass.

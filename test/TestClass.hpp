@@ -338,7 +338,7 @@ public:
 
         m_logged = true;
 
-        privateLogFunction();
+        privateLogTest();
 
         // Ensure tear down happens before leak checking stops.
         Teardown();
@@ -752,10 +752,10 @@ private:
 
 // Log reporting private helpers.
 private:
-    // Log the whole line for a function or member function.
-    void privateLogFunction()
+    // Log the whole line for a test name, function or member function name.
+    void privateLogTest()
     {
-        privateLogFunctionLineNumber();
+        privateLogTestLineNumber();
 
         privateLogTestStatus();
 
@@ -773,8 +773,8 @@ private:
             privateLogFailures();
     }
 
-    // Log the current tested function with a line number.
-    void privateLogFunctionLineNumber()
+    // Log the current test or function with a line number.
+    void privateLogTestLineNumber()
     {
         TestString str, line_number_str;
 
@@ -796,7 +796,7 @@ private:
         if (HasTests())
         {
             if (!IsGeneralTest())
-                GetSharedData().IncTotalFunctionsTested();
+                GetSharedData().IncTotalTested();
             if (HasFailed() || m_leak_check.IsLeaking())
                 LogWrite(GetSharedData().GetFailedMessage());
             else
@@ -994,9 +994,9 @@ private:
                 privateLogCount("Total failed checks", GetSharedData().GetTotalFailedChecks());
             if (GetSharedData().GetTotalNotTested() > 0)
                 privateLogCount("Total not tested", GetSharedData().GetTotalNotTested());
-            privateLogCount("Total tested", GetSharedData().GetTotalFunctionsTested());
-            if (GetSharedData().GetTotalTimedFunctions() > 0)
-                privateLogCount("Total timed", GetSharedData().GetTotalTimedFunctions());
+            privateLogCount("Total tested", GetSharedData().GetTotalTested());
+            if (GetSharedData().GetTotalTimed() > 0)
+                privateLogCount("Total timed", GetSharedData().GetTotalTimed());
             privateLogCount("Total tests", GetSharedData().GetTotalTests());
             if (GetSharedData().GetTotalLeakedTests() > 0)
                 privateLogCount("Total memory leaks", GetSharedData().GetTotalLeakedTests());
