@@ -1049,7 +1049,7 @@ private:
                 m_check_failures.Append("): error: ");
             }
         }
-        if ((expression != NULL) && (*expression != '\0'))
+        if (!expression.IsEmpty())
         {
             m_check_failures.Append("EXPRESSION: ");
             m_check_failures.Append(expression);
